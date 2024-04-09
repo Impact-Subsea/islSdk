@@ -177,9 +177,9 @@ bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>temperatureCalValid
 <a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>measureNow</b> ()</td></tr>
 <tr class="memdesc:a1a3d512c6f1242cc930e31640a26c64e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Triggers a measurement of the pressure. <br /></td></tr>
 <tr class="separator:a1a3d512c6f1242cc930e31640a26c64e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2c4367a127fa0ea36b393b4c8d0f9523" id="r_a2c4367a127fa0ea36b393b4c8d0f9523"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_isl_sdk_1_1_isd4000.html#a2c4367a127fa0ea36b393b4c8d0f9523">startLogging</a> () <a class="el" href="class_isl_sdk_1_1_callback.html">override</a></td></tr>
-<tr class="memdesc:a2c4367a127fa0ea36b393b4c8d0f9523"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts logging for the device.  <br /></td></tr>
-<tr class="separator:a2c4367a127fa0ea36b393b4c8d0f9523"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab6435f021c31cc319a919e4b02453e30" id="r_ab6435f021c31cc319a919e4b02453e30"><td class="memItemLeft" align="right" valign="top">bool_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_isl_sdk_1_1_isd4000.html#ab6435f021c31cc319a919e4b02453e30">startLogging</a> () <a class="el" href="class_isl_sdk_1_1_callback.html">override</a></td></tr>
+<tr class="memdesc:ab6435f021c31cc319a919e4b02453e30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Starts logging for the device.  <br /></td></tr>
+<tr class="separator:ab6435f021c31cc319a919e4b02453e30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5768a891f78f552ba560da2857584473" id="r_a5768a891f78f552ba560da2857584473"><td class="memItemLeft" align="right" valign="top">bool_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_isl_sdk_1_1_isd4000.html#a5768a891f78f552ba560da2857584473">saveConfig</a> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> std::string &amp;<a class="el" href="class_isl_sdk_1_1_callback.html">fileName</a>) <a class="el" href="class_isl_sdk_1_1_callback.html">override</a></td></tr>
 <tr class="memdesc:a5768a891f78f552ba560da2857584473"><td class="mdescLeft">&#160;</td><td class="mdescRight">Saves the configuration with the provided file name.  <br /></td></tr>
 <tr class="separator:a5768a891f78f552ba560da2857584473"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -221,12 +221,12 @@ bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>hasAhrs</b> ()</td>
 <a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>processPacket</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_isl_hdlc_packet.html">IslHdlcPacket</a> &amp;<a class="el" href="class_isl_sdk_1_1_callback.html">packet</a>)</td></tr>
 <tr class="separator:abbfc737181253959317542e0fa3f3670 inherit pub_methods_class_isl_sdk_1_1_isl_hdlc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_isl_sdk_1_1_logging_device"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_isl_sdk_1_1_logging_device')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_isl_sdk_1_1_logging_device.html">IslSdk::LoggingDevice</a></td></tr>
-<tr class="memitem:ace145a628ca1a9417063c3a536eb87c3 inherit pub_methods_class_isl_sdk_1_1_logging_device" id="r_ace145a628ca1a9417063c3a536eb87c3"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>setLogger</b> (std::shared_ptr&lt; <a class="el" href="class_isl_sdk_1_1_log_writer.html">LogWriter</a> &gt; <a class="el" href="class_isl_sdk_1_1_callback.html">logger</a>, <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *<a class="el" href="class_isl_sdk_1_1_callback.html">trackData</a>, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size)</td></tr>
-<tr class="separator:ace145a628ca1a9417063c3a536eb87c3 inherit pub_methods_class_isl_sdk_1_1_logging_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4c5fd2a6692521e6382d66f075236d3b inherit pub_methods_class_isl_sdk_1_1_logging_device" id="r_a4c5fd2a6692521e6382d66f075236d3b"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>log</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *data, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size, <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> dataType, bool_t canSkip=<a class="el" href="class_isl_sdk_1_1_callback.html">true</a>)</td></tr>
-<tr class="separator:a4c5fd2a6692521e6382d66f075236d3b inherit pub_methods_class_isl_sdk_1_1_logging_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a555dc1714845d436c0f0fb41adacb300 inherit pub_methods_class_isl_sdk_1_1_logging_device" id="r_a555dc1714845d436c0f0fb41adacb300"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>setLogger</b> (std::shared_ptr&lt; <a class="el" href="class_isl_sdk_1_1_log_writer.html">LogWriter</a> &gt; &amp;<a class="el" href="class_isl_sdk_1_1_callback.html">logger</a>, <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *<a class="el" href="class_isl_sdk_1_1_callback.html">trackData</a>, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size)</td></tr>
+<tr class="separator:a555dc1714845d436c0f0fb41adacb300 inherit pub_methods_class_isl_sdk_1_1_logging_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af316a131629858e667bb30461d1e8748 inherit pub_methods_class_isl_sdk_1_1_logging_device" id="r_af316a131629858e667bb30461d1e8748"><td class="memItemLeft" align="right" valign="top">
+bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>log</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *data, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size, <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> dataType, bool_t canSkip=<a class="el" href="class_isl_sdk_1_1_callback.html">true</a>)</td></tr>
+<tr class="separator:af316a131629858e667bb30461d1e8748 inherit pub_methods_class_isl_sdk_1_1_logging_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65508ee2198b2956cba21503edb2dd2e inherit pub_methods_class_isl_sdk_1_1_logging_device" id="r_a65508ee2198b2956cba21503edb2dd2e"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> <a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>stopLogging</b> ()</td></tr>
 <tr class="separator:a65508ee2198b2956cba21503edb2dd2e inherit pub_methods_class_isl_sdk_1_1_logging_device"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -284,10 +284,10 @@ Public Attributes</h2></td></tr>
 <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_isd4000_1_1_settings.html">Settings</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>settings</b> = m_settings</td></tr>
 <tr class="memdesc:a77e1bb1712759df87dd280abfd16720e"><td class="mdescLeft">&#160;</td><td class="mdescRight">The device settings. <br /></td></tr>
 <tr class="separator:a77e1bb1712759df87dd280abfd16720e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae26f7feeff72e2e507153f3e353f8f6b" id="r_ae26f7feeff72e2e507153f3e353f8f6b"><td class="memItemLeft" align="right" valign="top"><a id="ae26f7feeff72e2e507153f3e353f8f6b" name="ae26f7feeff72e2e507153f3e353f8f6b"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="struct_isl_sdk_1_1_isd4000_1_1_sensor_rates.html">SensorRates</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>sensorsRates</b> = m_requestedRates</td></tr>
-<tr class="memdesc:ae26f7feeff72e2e507153f3e353f8f6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The requested sensor rates. <br /></td></tr>
-<tr class="separator:ae26f7feeff72e2e507153f3e353f8f6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7bfc51acbd7677a8a7f1ffe14fb6290d" id="r_a7bfc51acbd7677a8a7f1ffe14fb6290d"><td class="memItemLeft" align="right" valign="top"><a id="a7bfc51acbd7677a8a7f1ffe14fb6290d" name="a7bfc51acbd7677a8a7f1ffe14fb6290d"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="struct_isl_sdk_1_1_isd4000_1_1_sensor_rates.html">SensorRates</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>sensorRates</b> = m_requestedRates</td></tr>
+<tr class="memdesc:a7bfc51acbd7677a8a7f1ffe14fb6290d"><td class="mdescLeft">&#160;</td><td class="mdescRight">The requested sensor rates. <br /></td></tr>
+<tr class="separator:a7bfc51acbd7677a8a7f1ffe14fb6290d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab47eddc1ad9bc34f8eb3650e973a2260" id="r_ab47eddc1ad9bc34f8eb3650e973a2260"><td class="memItemLeft" align="right" valign="top"><a id="ab47eddc1ad9bc34f8eb3650e973a2260" name="ab47eddc1ad9bc34f8eb3650e973a2260"></a>
 <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> std::vector&lt; std::string &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>hardCodedDepthOutputStrings</b> = m_hardCodedDepthOutputStrings</td></tr>
 <tr class="separator:ab47eddc1ad9bc34f8eb3650e973a2260"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -893,8 +893,8 @@ struct {&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
 
 </div>
 </div>
-<a id="a2c4367a127fa0ea36b393b4c8d0f9523" name="a2c4367a127fa0ea36b393b4c8d0f9523"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2c4367a127fa0ea36b393b4c8d0f9523">&#9670;&#160;</a></span>startLogging()</h2>
+<a id="ab6435f021c31cc319a919e4b02453e30" name="ab6435f021c31cc319a919e4b02453e30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab6435f021c31cc319a919e4b02453e30">&#9670;&#160;</a></span>startLogging()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -903,7 +903,7 @@ struct {&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="class_isl_sdk_1_1_callback.html">void</a> Isd4000::startLogging </td>
+          <td class="memname">bool_t Isd4000::startLogging </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td></td>

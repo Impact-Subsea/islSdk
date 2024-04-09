@@ -5,6 +5,7 @@
 
 #include "types/sdkTypes.h"
 #include "device.h"
+#include "comms/sysPortServices.h"
 #include "comms/ports/sysPort.h"
 #include <list>
 
@@ -62,11 +63,12 @@ namespace IslSdk
         void remove(Device& device);
 
     private:
-        DeviceMgr();
+        DeviceMgr(SysPortServices& sysPortServices);
         const Device::SharedPtr findByAddress(uint8_t address) const;
         void removePortFromAll(SysPort& sysPort);
         void run();
         Device::SharedPtr createDevice(const Device::Info& deviceInfo);
+        SysPortServices& m_sysPortServices;
         std::list<Device::SharedPtr> m_deviceList;
         uint64_t m_timer;
         uint32_t m_hostCommsTimeoutMs;

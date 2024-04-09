@@ -259,7 +259,8 @@ bool_t SolPort::process()
         {
             m_rxBytesCount += size;
 
-            onRxData(*this, &m_rxBuf[0], size);
+            ConstBuffer buf = { &m_rxBuf[0], size };
+            onRxData(*this, buf);
 
             if (m_useTelnet)
             {

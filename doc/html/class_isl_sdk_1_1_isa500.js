@@ -18,7 +18,7 @@ var class_isl_sdk_1_1_isa500 =
     [ "setPingScript", "class_isl_sdk_1_1_isa500.html#a190f62b677b0797502549c0d22a8506f", null ],
     [ "setSensorRates", "class_isl_sdk_1_1_isa500.html#a24b9d6285c08ae98d0a6906b1d8c8972", null ],
     [ "setSettings", "class_isl_sdk_1_1_isa500.html#ad0cc67550a9ae85dd43e3dc228869d10", null ],
-    [ "startLogging", "class_isl_sdk_1_1_isa500.html#a5008d1dbaf9607fdaeb0fb6e0779e576", null ],
+    [ "startLogging", "class_isl_sdk_1_1_isa500.html#a6b401d49932437b6327f6a8ac0ecaa95", null ],
     [ "accel", "class_isl_sdk_1_1_isa500.html#afbe3fbc079eb31a7737f641afefb201b", null ],
     [ "ahrs", "class_isl_sdk_1_1_isa500.html#a3599524b4e5f73ea7e9a0752581f2d1a", null ],
     [ "gyro", "class_isl_sdk_1_1_isa500.html#aaba2274d27f5ce8465b9fb6bfe738bf4", null ],
@@ -33,6 +33,6 @@ var class_isl_sdk_1_1_isa500 =
     [ "onTrigger", "class_isl_sdk_1_1_isa500.html#aa14246eb28e7fcd3f17719e3c3cc39b7", null ],
     [ "onVoltage", "class_isl_sdk_1_1_isa500.html#a6703583c6110d0ca16e114ea4d8304f5", null ],
     [ "scriptVars", "class_isl_sdk_1_1_isa500.html#ac5167a800fec55b40c8706d620a877ad", null ],
-    [ "sensorsRates", "class_isl_sdk_1_1_isa500.html#a20d717bf25b46e4b11c0ff767c56af48", null ],
+    [ "sensorRates", "class_isl_sdk_1_1_isa500.html#a275bd6f368d76d4ee59784dd31a38ce2", null ],
     [ "settings", "class_isl_sdk_1_1_isa500.html#a0661f38e291046690404712216cff2a0", null ]
 ];

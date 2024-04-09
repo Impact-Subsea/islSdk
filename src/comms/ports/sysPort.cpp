@@ -103,7 +103,8 @@ bool_t SysPort::process()
 void SysPort::txComplete(const uint8_t* data, uint_t size)
 {
     m_txBytesCount += size;
-    onTxData(*this, data, size);
+    ConstBuffer buf = { data, size };
+    onTxData(*this, buf);
 }
 //--------------------------------------------------------------------------------------------------
 const std::unique_ptr<AutoDiscovery>& SysPort::getDiscoverer()

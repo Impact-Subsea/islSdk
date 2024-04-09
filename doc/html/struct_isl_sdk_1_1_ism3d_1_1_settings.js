@@ -1,6 +1,6 @@
 var struct_isl_sdk_1_1_ism3d_1_1_settings =
 [
-    [ "CustomStr", "struct_isl_sdk_1_1_ism3d_1_1_settings_1_1_custom_str.html", "struct_isl_sdk_1_1_ism3d_1_1_settings_1_1_custom_str" ],
+    [ "StrOutputSetup", "struct_isl_sdk_1_1_ism3d_1_1_settings_1_1_str_output_setup.html", "struct_isl_sdk_1_1_ism3d_1_1_settings_1_1_str_output_setup" ],
     [ "ahrsMode", "struct_isl_sdk_1_1_ism3d_1_1_settings.html#a48dddf3fc19d3458a9fac0dc5a5d2859", null ],
     [ "baudrate", "struct_isl_sdk_1_1_ism3d_1_1_settings.html#a4eae50ed8541d23961601be655e15ff4", null ],
     [ "clrTurn", "struct_isl_sdk_1_1_ism3d_1_1_settings.html#a772c2d8967e76615adde966d784e4157", null ],

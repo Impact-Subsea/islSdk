@@ -20,7 +20,7 @@ var class_isl_sdk_1_1_isd4000 =
     [ "setSensorRates", "class_isl_sdk_1_1_isd4000.html#a78b1967edb46221e5fe77cf20571087d", null ],
     [ "setSettings", "class_isl_sdk_1_1_isd4000.html#aff5f44c7c3f5989145b2e50c0e7b03d6", null ],
     [ "setTemperatureCalCert", "class_isl_sdk_1_1_isd4000.html#aa4749315e1c97fc4ea9b1f5c1999b2a7", null ],
-    [ "startLogging", "class_isl_sdk_1_1_isd4000.html#a2c4367a127fa0ea36b393b4c8d0f9523", null ],
+    [ "startLogging", "class_isl_sdk_1_1_isd4000.html#ab6435f021c31cc319a919e4b02453e30", null ],
     [ "temperatureCalValid", "class_isl_sdk_1_1_isd4000.html#af2316b14ce2377fc96a19c43a293eddc", null ],
     [ "accel", "class_isl_sdk_1_1_isd4000.html#a0592426492bb93327404edfef0d0a209", null ],
     [ "ahrs", "class_isl_sdk_1_1_isd4000.html#a005377e67ccd769f433f809545d57848", null ],
@@ -36,7 +36,7 @@ var class_isl_sdk_1_1_isd4000 =
     [ "onTemperatureCalCert", "class_isl_sdk_1_1_isd4000.html#ad31148c912886c6a989c5d7263369ff8", null ],
     [ "pressureCal", "class_isl_sdk_1_1_isd4000.html#af1dd91f031aa3964d2a1768b3af2b92d", null ],
     [ "scriptVars", "class_isl_sdk_1_1_isd4000.html#aad7b048d1d9623723a5292ca01dda635", null ],
-    [ "sensorsRates", "class_isl_sdk_1_1_isd4000.html#ae26f7feeff72e2e507153f3e353f8f6b", null ],
+    [ "sensorRates", "class_isl_sdk_1_1_isd4000.html#a7bfc51acbd7677a8a7f1ffe14fb6290d", null ],
     [ "settings", "class_isl_sdk_1_1_isd4000.html#a77e1bb1712759df87dd280abfd16720e", null ],
     [ "temperatureCal", "class_isl_sdk_1_1_isd4000.html#a453edf5e5223d290e11d9cbd20a78b98", null ]
 ];

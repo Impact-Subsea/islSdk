@@ -114,7 +114,7 @@ void SonarImage::render(SonarDataStore& data, const Palette& palette, bool_t reD
                         uint32_t pix = 0x10000;
                         if (renderData.row1)
                         {
-                            pix = calculatePixel(renderData, std::sqrt(rad2));
+                            pix = calculatePixel(renderData, Math::sqrt(rad2));
                         }
                         *img = palette.data[pix].val;
                     }

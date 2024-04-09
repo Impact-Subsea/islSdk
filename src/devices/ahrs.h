@@ -12,6 +12,52 @@
 
 namespace IslSdk
 {
+    class Ahrs
+    {
+    public:
+        const uint_t& deviceId = m_deviceId;                    ///< The device ID of the AHRS. This is the same as the device ID that owns the AHRS.
+
+        /**
+        * @brief A subscribable event for AHRS data.
+        * @param ahrs Ahrs& The AHRS that raised the event.
+        * @param timestampUs uint64_t The timestamp of the AHRS data in microseconds.
+        * @param quaternion Quaternion& The orientation data expressed as a quaternion.
+        * @param magneticHeading real_t A tilt compensated magnetic heading in radians from the magnetometer.
+        * @param turnCount real_t The number of turns about the set axis.
+        */
+        Signal<Ahrs&, uint64_t, const Quaternion&, real_t, real_t> onData;
+
+        template<typename T>
+        Ahrs(uint_t deviceId, T* inst, void (T::* setHead)(const real_t*), void (T::* clrTurns)())
+            : m_deviceId(deviceId),
+            m_setHeading([=](const real_t* heading) {(inst->*setHead)(heading); }),
+            m_clearTurnsCount([=]() {(inst->*clrTurns)(); })
+        {
+        }
+        ~Ahrs() {}
+
+        /**
+        * @brief Set the heading of the AHRS.
+        * @param headingRad The heading in radians.
+        */
+        void setHeading(real_t headingRad);
+
+        /**
+        * @brief Set the heading of the AHRS to the magnetic heading.
+        */
+        void setHeadingToMag();
+
+        /**
+        * @brief Clear the turn count of the AHRS.
+        */
+        void clearTurnsCount();
+
+    private:
+        uint_t m_deviceId;
+        std::function<void(const real_t*)> m_setHeading;
+        std::function<void()> m_clearTurnsCount;
+    };
+
     class GyroSensor
     {
     public:
@@ -204,7 +250,7 @@ namespace IslSdk
         * @param bias The new bias values.
         * @param transform The new transform matrix.
         */
-        void setCal(const Vector3& magBias, const Matrix3x3& transform);
+        void setCal(const Vector3& bias, const Matrix3x3& transform);
 
         /**
         * @brief Start the calibration process for the mag sensor.
@@ -222,7 +268,7 @@ namespace IslSdk
         * @param[out] transformCorrection Matrix3x3* This can be nullptr. As calibrations are compounded this transform correction can be used to correct the aquired data.
         * @return bool_t True if the calibration was successful.
         */
-        bool_t stopCal(bool_t cancel, Vector3* biasCorrection, Matrix3x3* transformCorrection);
+        bool_t stopCal(bool_t cancel, Vector3* biasCorrection=nullptr, Matrix3x3* transformCorrection=nullptr);
 
     private:
         uint_t m_deviceId;
@@ -241,54 +287,8 @@ namespace IslSdk
             std::vector<Vector3> points;
             std::vector<int16_t> surfaceLut;
             Cal() : count(0), maxCount(0), surfaceDiv(0) {}
-            bool_t calculate(real_t radius, Vector3& bias, Matrix3x3& transform);
+            bool_t calculate(Vector3& bias, Matrix3x3& transform);
         } m_cal;
-    };
-
-    class Ahrs
-    {
-    public:
-        const uint_t& deviceId = m_deviceId;                    ///< The device ID of the AHRS. This is the same as the device ID that owns the AHRS.
-
-        /**
-        * @brief A subscribable event for AHRS data.
-        * @param ahrs Ahrs& The AHRS that raised the event.
-        * @param timestampUs uint64_t The timestamp of the AHRS data in microseconds.
-        * @param quaternion Quaternion& The orientation data expressed as a quaternion.
-        * @param magneticHeading real_t A tilt compensated magnetic heading in radians from the magnetometer.
-        * @param turnCount real_t The number of turns about the set axis.
-        */
-        Signal<Ahrs&, uint64_t, const Quaternion&, real_t, real_t> onData;
-
-        template<typename T>
-        Ahrs(uint_t deviceId, T* inst, void (T::* setHead)(const real_t*), void (T::* clrTurns)())
-            : m_deviceId(deviceId),
-            m_setHeading([=](const real_t* heading) {(inst->*setHead)(heading); }),
-            m_clearTurnsCount([=]() {(inst->*clrTurns)(); })
-        {
-        }
-        ~Ahrs() {}
-
-        /**
-        * @brief Set the heading of the AHRS.
-        * @param headingRad The heading in radians.
-        */
-        void setHeading(real_t headingRad);
-
-        /**
-        * @brief Set the heading of the AHRS to the magnetic heading.
-        */
-        void setHeadingToMag();
-
-        /**
-        * @brief Clear the turn count of the AHRS.
-        */
-        void clearTurnsCount();
-
-    private:
-        uint_t m_deviceId;
-        std::function<void(const real_t*)> m_setHeading;
-        std::function<void()> m_clearTurnsCount;
     };
 }
 //--------------------------------------------------------------------------------------------------

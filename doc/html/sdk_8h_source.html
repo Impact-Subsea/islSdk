@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Impact Subsea SDK: C:/Users/Alastair/Desktop/new/sdkExample/islSdk/src/sdk.h Source File</title>
+<title>Impact Subsea SDK: C:/Users/Alastair/Desktop/new/src/sdk.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -119,9 +119,9 @@ $(document).ready(function(){initNavTree('sdk_8h_source.html',''); initResizable
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno"><a class="line" href="class_isl_sdk_1_1_sdk.html">   20</a></span>    <span class="keyword">class </span><a class="code hl_class" href="class_isl_sdk_1_1_sdk.html">Sdk</a></div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>    {</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>    <span class="keyword">public</span>:</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        <span class="keyword">const</span> std::string version = <span class="stringliteral">&quot;3.1.0&quot;</span>;</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>        <a class="code hl_class" href="class_isl_sdk_1_1_device_mgr.html">DeviceMgr</a> devices;</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        <a class="code hl_class" href="class_isl_sdk_1_1_sys_port_mgr.html">SysPortMgr</a> ports;</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        <span class="keyword">const</span> std::string version = <span class="stringliteral">&quot;3.1.1&quot;</span>;</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>        <a class="code hl_class" href="class_isl_sdk_1_1_sys_port_mgr.html">SysPortMgr</a> ports;</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        <a class="code hl_class" href="class_isl_sdk_1_1_device_mgr.html">DeviceMgr</a> devices {ports};</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        <a class="code hl_class" href="class_isl_sdk_1_1_nmea_device_mgr.html">NmeaDeviceMgr</a> nmeaDevices;</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span> </div>
 <div class="line"><a id="l00032" name="l00032"></a><span class="lineno">   32</span>        <a class="code hl_function" href="class_isl_sdk_1_1_sdk.html#a1d7fba221a8de6e4f6a442c932bc273e">Sdk</a>();</div>
@@ -143,16 +143,16 @@ $(document).ready(function(){initNavTree('sdk_8h_source.html',''); initResizable
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
 <div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span><span class="comment">//--------------------------------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclass_isl_sdk_1_1_callback_html"><div class="ttname"><a href="class_isl_sdk_1_1_callback.html">IslSdk::Callback</a></div><div class="ttdoc">This class is used to create a callback.</div><div class="ttdef"><b>Definition</b> sigSlot.h:20</div></div>
+<div class="ttc" id="aclass_isl_sdk_1_1_callback_html"><div class="ttname"><a href="class_isl_sdk_1_1_callback.html">IslSdk::Callback</a></div><div class="ttdoc">This class is used to create a callback.</div><div class="ttdef"><b>Definition</b> sigSlot.h:25</div></div>
 <div class="ttc" id="aclass_isl_sdk_1_1_connection_meta_html"><div class="ttname"><a href="class_isl_sdk_1_1_connection_meta.html">IslSdk::ConnectionMeta</a></div><div class="ttdoc">Connection information for a port. Check the port type to know which elements are valid.</div><div class="ttdef"><b>Definition</b> connectionMeta.h:14</div></div>
 <div class="ttc" id="aclass_isl_sdk_1_1_device_html"><div class="ttname"><a href="class_isl_sdk_1_1_device.html">IslSdk::Device</a></div><div class="ttdoc">The base class for all devices.</div><div class="ttdef"><b>Definition</b> device.h:53</div></div>
-<div class="ttc" id="aclass_isl_sdk_1_1_device_mgr_html"><div class="ttname"><a href="class_isl_sdk_1_1_device_mgr.html">IslSdk::DeviceMgr</a></div><div class="ttdoc">This class manages all the devices.</div><div class="ttdef"><b>Definition</b> deviceMgr.h:16</div></div>
+<div class="ttc" id="aclass_isl_sdk_1_1_device_mgr_html"><div class="ttname"><a href="class_isl_sdk_1_1_device_mgr.html">IslSdk::DeviceMgr</a></div><div class="ttdoc">This class manages all the devices.</div><div class="ttdef"><b>Definition</b> deviceMgr.h:17</div></div>
 <div class="ttc" id="aclass_isl_sdk_1_1_nmea_device_mgr_html"><div class="ttname"><a href="class_isl_sdk_1_1_nmea_device_mgr.html">IslSdk::NmeaDeviceMgr</a></div><div class="ttdef"><b>Definition</b> nmeaDeviceMgr.h:16</div></div>
 <div class="ttc" id="aclass_isl_sdk_1_1_sdk_html"><div class="ttname"><a href="class_isl_sdk_1_1_sdk.html">IslSdk::Sdk</a></div><div class="ttdoc">The main class of the SDK.</div><div class="ttdef"><b>Definition</b> sdk.h:21</div></div>
 <div class="ttc" id="aclass_isl_sdk_1_1_sdk_html_a1d7fba221a8de6e4f6a442c932bc273e"><div class="ttname"><a href="class_isl_sdk_1_1_sdk.html#a1d7fba221a8de6e4f6a442c932bc273e">IslSdk::Sdk::Sdk</a></div><div class="ttdeci">Sdk()</div><div class="ttdoc">Create a new instance of the SDK.</div><div class="ttdef"><b>Definition</b> sdk.cpp:13</div></div>
 <div class="ttc" id="aclass_isl_sdk_1_1_sdk_html_a76ea795aa3edab83c64fc3007e311e86"><div class="ttname"><a href="class_isl_sdk_1_1_sdk.html#a76ea795aa3edab83c64fc3007e311e86">IslSdk::Sdk::run</a></div><div class="ttdeci">void run()</div><div class="ttdoc">Executes the main functionality of the SDK.</div><div class="ttdef"><b>Definition</b> sdk.cpp:24</div></div>
 <div class="ttc" id="aclass_isl_sdk_1_1_sys_port_html"><div class="ttname"><a href="class_isl_sdk_1_1_sys_port.html">IslSdk::SysPort</a></div><div class="ttdoc">Base class for all system ports.</div><div class="ttdef"><b>Definition</b> sysPort.h:28</div></div>
-<div class="ttc" id="aclass_isl_sdk_1_1_sys_port_mgr_html"><div class="ttname"><a href="class_isl_sdk_1_1_sys_port_mgr.html">IslSdk::SysPortMgr</a></div><div class="ttdoc">This class manages all ports.</div><div class="ttdef"><b>Definition</b> sysPortMgr.h:18</div></div>
+<div class="ttc" id="aclass_isl_sdk_1_1_sys_port_mgr_html"><div class="ttname"><a href="class_isl_sdk_1_1_sys_port_mgr.html">IslSdk::SysPortMgr</a></div><div class="ttdoc">This class manages all ports.</div><div class="ttdef"><b>Definition</b> sysPortMgr.h:19</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

@@ -20,9 +20,9 @@ namespace IslSdk
     class Sdk
     {
     public:
-        const std::string version = "3.1.0";
-        DeviceMgr devices;
+        const std::string version = "3.1.1";
         SysPortMgr ports;
+        DeviceMgr devices {ports};
         NmeaDeviceMgr nmeaDevices;
 
         /**

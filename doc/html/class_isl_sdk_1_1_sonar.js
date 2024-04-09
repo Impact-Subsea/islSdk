@@ -22,7 +22,7 @@ var class_isl_sdk_1_1_sonar =
     [ "setSetupSettings", "class_isl_sdk_1_1_sonar.html#abe3eb825a0075df7e3b823de84dde927", null ],
     [ "setSystemSettings", "class_isl_sdk_1_1_sonar.html#a60dfd9cd11885891219f7592a8917b08", null ],
     [ "setTvg", "class_isl_sdk_1_1_sonar.html#aedd1ee4fa0bd44641a7e6d74c06bb1eb", null ],
-    [ "startLogging", "class_isl_sdk_1_1_sonar.html#ab563c116c7a243fe067d63610563e647", null ],
+    [ "startLogging", "class_isl_sdk_1_1_sonar.html#ab196163938890a2e57d4ec741458f3b6", null ],
     [ "startScanning", "class_isl_sdk_1_1_sonar.html#a8dcb334e7dc55c89614b090b415abbb1", null ],
     [ "stopScanning", "class_isl_sdk_1_1_sonar.html#aea5cfeb63cc34fce27cecbfdd98e7828", null ],
     [ "testPattern", "class_isl_sdk_1_1_sonar.html#af0f60b854b1459fabf2fce63515857d0", null ],
@@ -36,7 +36,7 @@ var class_isl_sdk_1_1_sonar =
     [ "onPingData", "class_isl_sdk_1_1_sonar.html#a98c3200d42949b48226a0b68d1ee5388", null ],
     [ "onPwrAndTemp", "class_isl_sdk_1_1_sonar.html#a9989fec048b072482a27dce30d230fbf", null ],
     [ "onSettingsUpdated", "class_isl_sdk_1_1_sonar.html#ace0a8329165bd959f680841d51dc46d1", null ],
-    [ "sensorsRates", "class_isl_sdk_1_1_sonar.html#abdd9da5806f7f0d25b7c0c08a9618c67", null ],
+    [ "sensorRates", "class_isl_sdk_1_1_sonar.html#affc92d3c6de600c16d6ad7a7f631363a", null ],
     [ "settings", "class_isl_sdk_1_1_sonar.html#af9c611cc421f93316506188338f5cc57", null ],
     [ "tvgPoints", "class_isl_sdk_1_1_sonar.html#a336cc4dd80bbdf8acf148703a780b0b7", null ]
 ];

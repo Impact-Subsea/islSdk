@@ -107,7 +107,7 @@ namespace IslSdk
         * @param data const uint8_t* The data received.
         * @param size uint_t The size of the data received.
         */
-        Signal<SysPort&, const uint8_t*, uint_t> onRxData;
+        Signal<SysPort&, const ConstBuffer&> onRxData;
 
         /**
         * @brief A subscribable event for when data is sent on a port.
@@ -115,7 +115,7 @@ namespace IslSdk
         * @param data const uint8_t* The data sent.
         * @param size uint_t The size of the data sent.
         */
-        Signal<SysPort&, const uint8_t*, uint_t> onTxData;
+        Signal<SysPort&, const ConstBuffer&> onTxData;
 
         SysPort(const std::string& name, Type type, uint_t discoveryTimeoutMs);
         virtual ~SysPort();

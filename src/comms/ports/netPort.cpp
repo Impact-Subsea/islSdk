@@ -87,8 +87,8 @@ bool_t NetPort::process()
         while (state == NetSocket::State::Ok && size)
         {
             m_rxBytesCount += size;
-
-            onRxData(*this, &rxBuf[0], size);
+            ConstBuffer buf = { &rxBuf[0], size };
+            onRxData(*this, buf);
 
             if (m_codec)
             {

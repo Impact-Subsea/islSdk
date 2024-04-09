@@ -29,14 +29,19 @@ typedef double double64_t;
 
 namespace IslSdk
 {
-    template<typename T, uint_t N> constexpr uint_t countof(T(&)[N]) { return N; }
-
     struct Point
     {
         real_t x;
         real_t y;
         Point() : x(0), y(0) {}
         Point(real_t x, real_t y) : x(x), y(y) {}
+    };
+
+    struct ConstBuffer
+    {
+        const uint8_t* data;
+        const uint_t size;
+        ConstBuffer(const uint8_t* data, uint_t size) : data(data), size(size) {}
     };
 }
 //--------------------------------------------------------------------------------------------------

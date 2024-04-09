@@ -1,5 +1,6 @@
 var class_isl_sdk_1_1_device_1_1_info =
 [
+    [ "name", "class_isl_sdk_1_1_device_1_1_info.html#a19f371971eaade73fa8ef965fb71f5b7", null ],
     [ "pnSnAsStr", "class_isl_sdk_1_1_device_1_1_info.html#aa7563fb67f69d27e494fedc998d2fc71", null ],
     [ "config", "class_isl_sdk_1_1_device_1_1_info.html#a2cacbe2390447faf5257d8f4946dc7e5", null ],
     [ "firmwareBuildNum", "class_isl_sdk_1_1_device_1_1_info.html#a34879763d91d67378fad671b6b352122", null ],

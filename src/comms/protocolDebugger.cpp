@@ -35,17 +35,17 @@ void ProtocolDebugger::monitorPort(const SysPort::SharedPtr& port)
     m_port->onTxData.connect(slotOnTxData);
 }
 //--------------------------------------------------------------------------------------------------
-void ProtocolDebugger::rxData(SysPort& port, const uint8_t* data, uint_t size)
+void ProtocolDebugger::rxData(SysPort& port, const ConstBuffer& buf)
 {
     if (port.type == SysPort::Type::Serial || port.type == SysPort::Type::Sol)
     {
-        uint_t bytesToProcess = size;
+        uint_t bytesToProcess = buf.size;
 
         while (bytesToProcess)
         {
-            uint_t bytesProcessed = size - bytesToProcess;
-            uint_t frameSize = m_rxCodec.decode(&data[size - bytesToProcess], &bytesToProcess);
-            m_rxProcessedBytes += (size - bytesToProcess) - bytesProcessed;
+            uint_t bytesProcessed = buf.size - bytesToProcess;
+            uint_t frameSize = m_rxCodec.decode(&buf.data[buf.size - bytesToProcess], &bytesToProcess);
+            m_rxProcessedBytes += (buf.size - bytesToProcess) - bytesProcessed;
 
             if (frameSize)
             {
@@ -56,21 +56,21 @@ void ProtocolDebugger::rxData(SysPort& port, const uint8_t* data, uint_t size)
     }
     else
     {
-        decodeFrame(data, size, size, false);
+        decodeFrame(buf.data, buf.size, buf.size, false);
     }
 }
 //--------------------------------------------------------------------------------------------------
-void ProtocolDebugger::txData(SysPort& port, const uint8_t* data, uint_t size)
+void ProtocolDebugger::txData(SysPort& port, const ConstBuffer& buf)
 {
     if (port.type == SysPort::Type::Serial || port.type == SysPort::Type::Sol)
     {
-        uint_t bytesToProcess = size;
+        uint_t bytesToProcess = buf.size;
 
         while (bytesToProcess)
         {
-            uint_t bytesProcessed = size - bytesToProcess;
-            uint_t frameSize = m_txCodec.decode(&data[size - bytesToProcess], &bytesToProcess);
-            m_txProcessedBytes += (size - bytesToProcess) - bytesProcessed;
+            uint_t bytesProcessed = buf.size - bytesToProcess;
+            uint_t frameSize = m_txCodec.decode(&buf.data[buf.size - bytesToProcess], &bytesToProcess);
+            m_txProcessedBytes += (buf.size - bytesToProcess) - bytesProcessed;
 
             if (frameSize)
             {
@@ -81,7 +81,7 @@ void ProtocolDebugger::txData(SysPort& port, const uint8_t* data, uint_t size)
     }
     else
     {
-        decodeFrame(data, size, size, true);
+        decodeFrame(buf.data, buf.size, buf.size, true);
     }
 }
 //--------------------------------------------------------------------------------------------------

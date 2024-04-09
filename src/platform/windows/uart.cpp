@@ -3,6 +3,7 @@
 #include "uart.h"
 #include <aclapi.h>
 #include <winerror.h>
+#include <array>
 
 #pragma comment(lib, "advapi32.lib")
 
@@ -23,9 +24,9 @@ std::vector<std::string> Uart::getNames()
         while (moreData)
         {
             WCHAR portName[32];
-            WCHAR name[64];
-            DWORD nameSize = countof(name);
-            DWORD portNameSize = sizeof(portName);
+            std::array<WCHAR, 64> name;
+            DWORD nameSize = static_cast<DWORD>(name.size());
+            DWORD portNameSize = static_cast<DWORD>(sizeof(portName));
 
             moreData = RegEnumValueW(regKey, idx, &name[0], &nameSize, 0, 0, (LPBYTE)&portName[0], &portNameSize) == ERROR_SUCCESS;
             idx++;
@@ -67,9 +68,9 @@ Uart::~Uart()
 bool_t Uart::open()
 {
     HANDLE handle;
-    WCHAR str[32] = { L"\\\\.\\" };
+    std::array<WCHAR, 32> str = { L"\\\\.\\" };
 
-    if (!MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, name.c_str(), -1, &str[4], countof(str) - 4))
+    if (!MultiByteToWideChar(CP_UTF8, MB_PRECOMPOSED, name.c_str(), -1, &str[4], static_cast<int>(str.size() - 4)))
     {
         return false;
     }
@@ -185,7 +186,7 @@ void Uart::threadRxTx()
     OVERLAPPED ovWaitOnRx = {0};
     OVERLAPPED ovRead = { 0 };
     OVERLAPPED ovWrite = { 0 };
-    HANDLE events[4];
+    std::array<HANDLE, 4> events;
     bool_t error = false;
     DWORD commEvent = 0;
     DWORD bytesRead = 0;
@@ -220,7 +221,7 @@ void Uart::threadRxTx()
             }
         }
 
-        DWORD result = WaitForMultipleObjects(countof(events), &events[0], FALSE, INFINITE);
+        DWORD result = WaitForMultipleObjects(static_cast<DWORD>(events.size()), &events[0], FALSE, INFINITE);
 
         switch (result)
         {

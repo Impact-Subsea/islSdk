@@ -64,13 +64,15 @@ bool_t LogPlayer::getIslDeviceTrackData(const LogFile::Track& track, Device::Inf
     }
     else if (track.dataType == static_cast<uint8_t>(LoggingDevice::Type::Unknown) && track.data.size() == 11)
     {
-        //uint8_t trackId = track.data[0];
-        //uint32_t appId = Mem::get32Bit(&track.data[1]);
-        info.sn = Mem::get16Bit(&track.data[5]);
-        info.pn = Mem::get16Bit(&track.data[7]);
-        //uint16_t pid = Mem::get16Bit(&track.data[9]);
         info.pid = Device::Pid::Sonar;
-
+        info.pn = Mem::get16Bit(&track.data[7]);
+        info.sn = Mem::get16Bit(&track.data[5]);
+        info.config = 0;
+        info.mode = 0;
+        info.status = 0;
+        info.firmwareBuildNum = 0;
+        info.firmwareVersionBcd = 0;
+        info.inUse = false;
         return true;
     }
     return false;
@@ -167,7 +169,7 @@ std::vector<uint8_t> LogPlayer::convertOldFormat(const LogReader::RecordData& re
             Mem::memcpy(&data[8], &record.data[6], 4);      // baudrate
             Mem::memcpy(&data[12], &record.data[11], 12);   // ipAddress, netmask, gateway
             Mem::pack32Bit(&data[24], 33005);               // port
-            data[26] = record.data[23];                        // phyPortMode
+            data[26] = record.data[23];                     // phyPortMode
             data[27] = record.data[24];                     // phyMdixMode
             data[28] = record.data[25] & 0x01;              // useDhcp
             data[29] = record.data[25] & 0x04;              // invertHeadDirection

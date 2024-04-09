@@ -6,6 +6,11 @@
 #include "types/sdkTypes.h"
 #include <functional>
 #include <vector>
+#ifdef PYTHON_WRAPPER
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+namespace py = pybind11;
+#endif
 
 //--------------------------------------- Class Definition -----------------------------------------
 namespace IslSdk
@@ -111,8 +116,6 @@ namespace IslSdk
         friend class Signal<Args...>;
     };
 
-#ifndef PYTHON_WRAPPER
-
     /**
     * @brief This class is used to create a signal.
     * The signal connects to slots, which contain the function pointer, and calls them when the signal is called.
@@ -123,6 +126,26 @@ namespace IslSdk
     private:
         std::vector<Slot<Args...>*> slotArray;
         std::function<void(uint_t)> callback;
+#ifdef PYTHON_WRAPPER
+        struct PyFunc
+        {
+            py::weakref self;
+            py::weakref func;
+        };
+        std::vector<PyFunc> m_pyFunc;
+
+        int_t pyFind(const PyFunc& pyfunc)
+        {
+            for (uint_t i = 0; i < m_pyFunc.size(); i++)
+            {
+                if (m_pyFunc[i].self.is(pyfunc.self) && m_pyFunc[i].func.is(pyfunc.func))
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
+#endif
         int_t iter;
 
         int_t find(const Slot<Args...>& slot)
@@ -158,7 +181,7 @@ namespace IslSdk
         *
         * @brief Default constructor.
         */
-        constexpr Signal() : callback(nullptr), iter(-1){}
+        constexpr Signal() : callback(nullptr), iter(-1) {}
 
         /**
         * @brief Constructor which take a callback function for subscriber count changes.
@@ -240,13 +263,93 @@ namespace IslSdk
             }
         }
 
+#ifdef PYTHON_WRAPPER
+        void pyConnect(py::function& func)
+        {
+            PyFunc pyFunc;
+
+            if (py::hasattr(func, "__self__") && py::hasattr(func, "__func__"))
+            {
+                pyFunc.self = py::weakref(func.attr("__self__"));
+                pyFunc.func = py::weakref(func.attr("__func__"));
+            }
+            else
+            {
+                pyFunc.func = py::weakref(func);
+            }
+
+            if (pyFind(pyFunc) < 0)
+            {
+                m_pyFunc.push_back(pyFunc);
+
+                if (callback != nullptr)
+                {
+                    callback(slotArray.size() + m_pyFunc.size());
+                }
+            }
+        }
+
+        void pyDisconnect(py::function& func)
+        {
+            PyFunc pyFunc;
+
+            if (py::hasattr(func, "__self__") && py::hasattr(func, "__func__"))
+            {
+                pyFunc.self = py::weakref(func.attr("__self__"));
+                pyFunc.func = py::weakref(func.attr("__func__"));
+            }
+            else
+            {
+                pyFunc.func = py::weakref(func);
+            }
+
+            int_t i = pyFind(pyFunc);
+
+            if (i >= 0)
+            {
+                if (iter >= i)
+                {
+                    iter--;
+                }
+
+                m_pyFunc.erase(m_pyFunc.begin() + i);
+
+                if (callback != nullptr)
+                {
+                    callback(slotArray.size() + m_pyFunc.size());
+                }
+            }
+        }
+
+        template <typename T>
+        py::object convertArg(const T& arg)
+        {
+            return py::cast(arg, py::return_value_policy::reference);
+        }
+
+        template <typename T>
+        py::object convertArg(T& arg)
+        {
+            return py::cast(arg, py::return_value_policy::reference);
+        }
+
+        py::object convertArg(const ConstBuffer& arg)
+        {
+            return py::cast(arg, py::return_value_policy::copy);
+        }
+
+#endif
         /**
         * @brief Checks if the signal has subscribers.
         * @return True if the signal has subscribers.
         */
         bool_t hasSubscribers(void)
         {
+#ifdef PYTHON_WRAPPER
+            return slotArray.size() + m_pyFunc.size() != 0;
+#else
             return slotArray.size() != 0;
+#endif
         }
 
         /**
@@ -260,150 +363,48 @@ namespace IslSdk
                 (*slotArray[iter])(p...);
             }
             iter = -1;
-        }
-    };
+#ifdef PYTHON_WRAPPER
+            py::gil_scoped_acquire scopedAcquire;
+            py::weakref none = py::weakref();
 
-#else
-
-    class BaseSignal
-    {
-    public:
-        BaseSignal(std::function<void(uint_t)> func) : callback(func), callbackEnable(false) {}
-        ~BaseSignal() {}
-        std::function<void(uint_t)> callback;
-        bool_t callbackEnable;
-
-        void pyEnableCallback(bool_t enable)
-        {
-            callbackEnable = enable;
-
-            if (callback != nullptr)
+            for (iter = 0; iter < static_cast<int_t>(m_pyFunc.size()); iter++)
             {
-                callback(callbackEnable);
-            }
-        }
-    };
-
-    template<typename... Args>
-    class Signal : public BaseSignal
-    {
-    private:
-        std::vector<Slot<Args...>*> slotArray;
-        void* pyObj;
-        void(*pyCallback)(void* pyObj, Args...);
-        int_t iter;
-
-        int_t find(Slot<Args...>& slot)
-        {
-            for (size_t i = 0; i < slotArray.size(); i++)
-            {
-                if (slotArray[i] == &slot)
+                if (!m_pyFunc[iter].func.is(none))
                 {
-                    return i;
+                    py::object func = m_pyFunc[iter].func();
+                    if (!func.is_none())
+                    {
+                        if (!m_pyFunc[iter].self.is(none))
+                        {
+                            py::object self = m_pyFunc[iter].self();
+                            if (!self.is_none())
+                            {
+                                py::tuple args = py::make_tuple(convertArg(p)...);
+                                func(self, *args);
+                            }
+                            else
+                            {
+                                m_pyFunc.erase(m_pyFunc.begin() + iter);
+                                iter--;
+                            }
+                        }
+                        else
+                        {
+                            py::tuple args = py::make_tuple(convertArg(p)...);
+                            func(*args);
+                        }
+                    }
+                    else
+                    {
+                        m_pyFunc.erase(m_pyFunc.begin() + iter);
+                        iter--;
+                    }
                 }
-            }
-            return -1;
-        }
-
-        bool_t addSlot(Slot<Args...>& slot)
-        {
-            if (find(slot) < 0)
-            {
-                slot.sigArray.push_back(this);
-                slotArray.push_back(&slot);
-
-                if (callback != nullptr)
-                {
-                    callback(slotArray.size() || callbackEnable);
-                }
-            }
-            return false;
-        }
-
-    public:
-
-        // default constructor
-        constexpr Signal() : pyObj(nullptr), pyCallback(nullptr), BaseSignal(nullptr), iter(-1) {}
-        template<typename T>  Signal(T* inst, void (T::* func)(uint_t)) : pyObj(nullptr), pyCallback(nullptr), BaseSignal([=](uint_t count) {(inst->*func)(count); }), iter(-1) {}
-        Signal(std::function<void(uint_t)> func) : pyObj(nullptr), pyCallback(nullptr), BaseSignal(func), iter(-1) {}
-
-        // copy/move constructor
-        Signal(const Signal&) = delete;
-        Signal(Signal&&) noexcept = delete;
-
-        // copy/move assignment
-        Signal& operator=(const Signal&) = delete;
-        Signal& operator=(Signal&&) noexcept = delete;
-
-        ~Signal()
-        {
-            for (size_t i = 0; i < slotArray.size(); i++)
-            {
-                slotArray[i]->remove(this);
-            }
-        }
-
-        template<typename T> void setSubscribersChangedCallback(T* inst, void (T::* func)(uint_t))
-        {
-            callback = ([=](uint_t count) {(inst->*func)(count); });
-        }
-
-        void setSubscribersChangedCallback(void (*func)(uint_t))
-        {
-            callback = func;
-        }
-
-        void connect(Slot<Args...>& slot)
-        {
-            addSlot(slot);
-        }
-
-        void disconnect(Slot<Args...>& slot)
-        {
-            int_t i = find(slot);
-
-            if (i >= 0)
-            {
-                if (iter >= i)
-                {
-                    iter--;
-                }
-                slotArray[i]->remove(this);
-                slotArray.erase(slotArray.begin() + i);
-
-                if (callback != nullptr)
-                {
-                    callback(slotArray.size() || callbackEnable);
-                }
-            }
-        }
-
-        bool_t hasSubscribers(void)
-        {
-            return slotArray.size() != 0 || callbackEnable;
-        }
-
-        void pySetCallback(void* obj, void(*func)(void* pyObj, Args...))
-        {
-            pyObj = obj;
-            pyCallback = func;
-        }
-
-        void operator()(Args... p)
-        {
-            for (iter = 0; iter < slotArray.size(); iter++)
-            {
-                (*slotArray[iter])(p...);
             }
             iter = -1;
-
-            if (callbackEnable && pyCallback)
-            {
-                pyCallback(pyObj, p...);
-            }
+#endif
         }
     };
-#endif
 }
-//--------------------------------------------------------------------------------------------------
+//--------------------------------------------------------------------------------------------------cls
 #endif

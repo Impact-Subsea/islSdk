@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['write_0',['write',['../class_isl_sdk_1_1_net_port.html#ab2bd18ba1cb4c6873952df1cf11ed5de',1,'IslSdk::NetPort::write()'],['../class_isl_sdk_1_1_sol_port.html#aa24f2cbebc872eb00d64943cb31705ce',1,'IslSdk::SolPort::write()'],['../class_isl_sdk_1_1_uart_port.html#a4972350e0130e7ed2b83e1906646ed83',1,'IslSdk::UartPort::write()']]]
+  ['updatecalvalues_0',['updatecalvalues',['../class_isl_sdk_1_1_gyro_sensor.html#a4662d22094da13078842df893c44e242',1,'IslSdk::GyroSensor::updateCalValues()'],['../class_isl_sdk_1_1_accel_sensor.html#afc8eb7ac0a0f09741f25d30ebd9a2123',1,'IslSdk::AccelSensor::updateCalValues()'],['../class_isl_sdk_1_1_mag_sensor.html#ab597576c0c3429bfdc892de6b1a986c3',1,'IslSdk::MagSensor::updateCalValues()']]]
 ];

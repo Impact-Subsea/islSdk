@@ -21,11 +21,11 @@ namespace IslSdk
         bool_t m_showPayload;
 
     private:
-        Slot<SysPort&, const uint8_t*, uint_t> slotOnRxData{ this, &ProtocolDebugger::rxData };
-        Slot<SysPort&, const uint8_t*, uint_t> slotOnTxData{ this, &ProtocolDebugger::txData };
+        Slot<SysPort&, const ConstBuffer&> slotOnRxData{ this, &ProtocolDebugger::rxData };
+        Slot<SysPort&, const ConstBuffer&> slotOnTxData{ this, &ProtocolDebugger::txData };
 
-        void rxData(SysPort& port, const uint8_t* data, uint_t size);
-        void txData(SysPort& port, const uint8_t* data, uint_t size);
+        void rxData(SysPort& port, const ConstBuffer& buf);
+        void txData(SysPort& port, const ConstBuffer& buf);
         void processBytes(SysPort& port, const uint8_t* data, uint_t size, bool_t isTx);
         void decodeFrame(const uint8_t* frame, uint_t size, uint_t totalByteCount, bool_t isRx);
         SysPort::SharedPtr m_port;

@@ -256,22 +256,6 @@ XmlElementPtr XmlFile::setRoot(const std::string& name)
     return m_root;
 }
 //-------------------------------------------------------------------------------------------------
-XmlElementPtr XmlFile::findElementOnRoot(const std::string& name)
-{
-    if (m_root)
-    {
-        for (auto const& child : m_root->elements)
-        {
-            if (child->name == name)
-            {
-                return child;
-            }
-        }
-    }
-
-    return XmlElementPtr();
-}
-//-------------------------------------------------------------------------------------------------
 bool_t XmlFile::hasKey(const XmlElementPtr& element, const std::string& key)
 {
     return element && element->m_attributes.count(key);

@@ -216,8 +216,8 @@ bool_t Isa500::loadConfig(const std::string& fileName, Device::Info* info, Setti
     XmlFile file;
     if (file.open(fileName))
     {
-        XmlElementPtr baseNode = file.findElementOnRoot("ISA500");
-        if (baseNode)
+        XmlElementPtr baseNode = file.root();
+        if (baseNode && baseNode->name == "ISA500")
         {
             ok = true;
             if (info)
@@ -266,10 +266,10 @@ bool_t Isa500::loadConfig(const std::string& fileName, Device::Info* info, Setti
     return ok;
 }
 //--------------------------------------------------------------------------------------------------
-void Isa500::startLogging()
+bool_t Isa500::startLogging()
 {
     Device::startLogging();
-    logSettings();
+    return logSettings();
 }
 //--------------------------------------------------------------------------------------------------
 void Isa500::connectionEvent(bool_t isConnected)
@@ -615,17 +615,14 @@ void Isa500::echogramSignalSubscribersChanged(uint_t subscriberCount)
     }
 }
 //--------------------------------------------------------------------------------------------------
-void Isa500::logSettings()
+bool_t Isa500::logSettings()
 {
-    if (islogging())
-    {
-        uint8_t data[Settings::size + 1];
+    uint8_t data[Settings::size + 1];
 
-        data[0] = static_cast<uint8_t>(Device::Commands::ReplyBit) | static_cast<uint8_t>(Commands::GetSettings);
-        m_settings.serialise(&data[1], sizeof(data) - 1);
+    data[0] = static_cast<uint8_t>(Device::Commands::ReplyBit) | static_cast<uint8_t>(Commands::GetSettings);
+    m_settings.serialise(&data[1], sizeof(data) - 1);
 
-        log(&data[0], sizeof(data), static_cast<uint8_t>(LoggingDataType::packetData), false);
-    }
+    return log(&data[0], sizeof(data), static_cast<uint8_t>(LoggingDataType::packetData), false);
 }
 //--------------------------------------------------------------------------------------------------
 void Isa500::getData(uint32_t flags)
@@ -799,8 +796,8 @@ void Isa500::Settings::defaults()
     headingOffsetRad = 0;
     turnsAbout = { 0,0,1 };
     turnsAboutEarthFrame = false;
-    clrTurn = { false, 3, {reinterpret_cast<const uint8_t*>("#c\r") } };
-    setHeading2Mag = { false, 3, {reinterpret_cast<const uint8_t*>("#m\r")} };
+    clrTurn = Device::CustomStr(false, "#c\r");
+    setHeading2Mag = Device::CustomStr(false, "#m\r");
     multiEchoLimit = 10;
     frequency = 500000;
     txPulseWidthUs = 200;
@@ -820,8 +817,8 @@ void Isa500::Settings::defaults()
     aOutMaxRange = 120;
     aOutMinVal = 0;
     aOutMaxVal = 5;
-    strTrigger[0] = { 0, false, 500, false, false, { false, 3, reinterpret_cast<const uint8_t*>("#p\r") } };
-    strTrigger[1] = { 0, false, 500, false, false, { false, 3, reinterpret_cast<const uint8_t*>("#o\r") } };
+    pingStr = { 0, false, 500, false, false, Device::CustomStr(false, "#p\r") };
+    ahrsStr = { 0, false, 500, false, false, Device::CustomStr(false, "#o\r") };
 }
 //--------------------------------------------------------------------------------------------------
 bool_t Isa500::Settings::check(std::vector<std::string>& errMsgs) const
@@ -849,6 +846,10 @@ bool_t Isa500::Settings::check(std::vector<std::string>& errMsgs) const
     Utils::checkVar(maxRange, 0.0, 300.0, errMsgs, "maxRange out of range");
     Utils::checkVar(distanceOffset, -100.0, 100.0, errMsgs, "distanceOffset out of range");
     Utils::checkVar(anaMode, AnalogueOutMode::None, AnalogueOutMode::Current, errMsgs, "anaMode out of range");
+    Utils::checkVar<uint_t>(clrTurn.str.size(), 0, Device::CustomStr::size, errMsgs, "clrTurn string too long");
+    Utils::checkVar<uint_t>(setHeading2Mag.str.size(), 0, Device::CustomStr::size, errMsgs, "setHeading2Mag string too long");
+    Utils::checkVar<uint_t>(pingStr.interrogation.str.size(), 0, Device::CustomStr::size, errMsgs, "pingStr string too long");
+	Utils::checkVar<uint_t>(ahrsStr.interrogation.str.size(), 0, Device::CustomStr::size, errMsgs, "ahrsStr string too long");
 
     return errMsgs.empty();
 }
@@ -875,13 +876,11 @@ uint_t Isa500::Settings::serialise(uint8_t* buf, uint_t size) const
         Mem::packFloat32(&buf, turnsAbout.z);
         *buf++ = turnsAboutEarthFrame;
         *buf++ = clrTurn.enable;
-        *buf++ = clrTurn.size;
-        Mem::memcpy(buf, &clrTurn.str[0], sizeof(clrTurn.str));
-        buf += sizeof(clrTurn.str);
+        *buf++ = static_cast<uint8_t>(clrTurn.str.size());
+        buf += clrTurn.packStr(buf);
         *buf++ = setHeading2Mag.enable;
-        *buf++ = setHeading2Mag.size;
-        Mem::memcpy(buf, &setHeading2Mag.str[0], sizeof(setHeading2Mag.str));
-        buf += sizeof(setHeading2Mag.str);
+        *buf++ = static_cast<uint8_t>(setHeading2Mag.str.size());
+        buf += setHeading2Mag.packStr(buf);
         *buf++ = multiEchoLimit;
         Mem::pack32Bit(&buf, frequency);
         Mem::pack16Bit(&buf, txPulseWidthUs);
@@ -901,25 +900,23 @@ uint_t Isa500::Settings::serialise(uint8_t* buf, uint_t size) const
         Mem::packFloat32(&buf, aOutMinVal);
         Mem::packFloat32(&buf, aOutMaxVal);
 
-        *buf++ = strTrigger[0].strId;
-        *buf++ = static_cast<uint8_t>(strTrigger[0].intervalEnabled);
-        Mem::pack32Bit(&buf, strTrigger[0].intervalMs);
-        *buf++ = static_cast<uint8_t>(strTrigger[0].triggerEnabled);
-        *buf++ = static_cast<uint8_t>(strTrigger[0].triggerEdge);
-        *buf++ = static_cast<uint8_t>(strTrigger[0].interrogation.enable);
-        *buf++ = strTrigger[0].interrogation.size;
-        Mem::memcpy(buf, &strTrigger[0].interrogation.str[0], sizeof(strTrigger[0].interrogation.str));
-        buf += sizeof(strTrigger[0].interrogation.str);
+        *buf++ = pingStr.strId;
+        *buf++ = static_cast<uint8_t>(pingStr.intervalEnabled);
+        Mem::pack32Bit(&buf, pingStr.intervalMs);
+        *buf++ = static_cast<uint8_t>(pingStr.triggerEnabled);
+        *buf++ = static_cast<uint8_t>(pingStr.triggerEdge);
+        *buf++ = static_cast<uint8_t>(pingStr.interrogation.enable);
+        *buf++ = static_cast<uint8_t>(pingStr.interrogation.str.size());
+        buf += ahrsStr.interrogation.packStr(buf);
 
-        *buf++ = strTrigger[1].strId;
-        *buf++ = static_cast<uint8_t>(strTrigger[1].intervalEnabled);
-        Mem::pack32Bit(&buf, strTrigger[1].intervalMs);
-        *buf++ = static_cast<uint8_t>(strTrigger[1].triggerEnabled);
-        *buf++ = static_cast<uint8_t>(strTrigger[1].triggerEdge);
-        *buf++ = static_cast<uint8_t>(strTrigger[1].interrogation.enable);
-        *buf++ = strTrigger[1].interrogation.size;
-        Mem::memcpy(buf, &strTrigger[1].interrogation.str[0], sizeof(strTrigger[1].interrogation.str));
-        buf += sizeof(strTrigger[1].interrogation.str);
+        *buf++ = ahrsStr.strId;
+        *buf++ = static_cast<uint8_t>(ahrsStr.intervalEnabled);
+        Mem::pack32Bit(&buf, ahrsStr.intervalMs);
+        *buf++ = static_cast<uint8_t>(ahrsStr.triggerEnabled);
+        *buf++ = static_cast<uint8_t>(ahrsStr.triggerEdge);
+        *buf++ = static_cast<uint8_t>(ahrsStr.interrogation.enable);
+        *buf++ = static_cast<uint8_t>(ahrsStr.interrogation.str.size());
+        buf += ahrsStr.interrogation.packStr(buf);
 
         return buf - start;
     }
@@ -949,13 +946,13 @@ uint_t Isa500::Settings::deserialise(const uint8_t* data, uint_t size)
         turnsAbout.z = Mem::getFloat32(&data);
         turnsAboutEarthFrame = *data++;
         clrTurn.enable = *data++;
-        clrTurn.size = *data++;
-        Mem::memcpy(&clrTurn.str[0], data, sizeof(clrTurn.str));
-        data += sizeof(clrTurn.str);
+        uint_t size = *data++;
+        clrTurn.str = StringUtils::toStr(data, size);
+        data += clrTurn.size;
         setHeading2Mag.enable = *data++;
-        setHeading2Mag.size = *data++;
-        Mem::memcpy(&setHeading2Mag.str[0], data, sizeof(setHeading2Mag.str));
-        data += sizeof(setHeading2Mag.str);
+        size = *data++;
+        setHeading2Mag.str = StringUtils::toStr(data, size);
+        data += setHeading2Mag.size;
         multiEchoLimit = *data++;
         frequency = Mem::get32Bit(&data);
         txPulseWidthUs = Mem::get16Bit(&data);
@@ -977,25 +974,25 @@ uint_t Isa500::Settings::deserialise(const uint8_t* data, uint_t size)
         aOutMinVal = Mem::getFloat32(&data);
         aOutMaxVal = Mem::getFloat32(&data);
 
-        strTrigger[0].strId = *data++;
-        strTrigger[0].intervalEnabled = (bool_t)*data++;
-        strTrigger[0].intervalMs = Mem::get32Bit(&data);
-        strTrigger[0].triggerEnabled = (bool_t)*data++;
-        strTrigger[0].triggerEdge = (bool_t)*data++;
-        strTrigger[0].interrogation.enable = (bool_t)*data++;
-        strTrigger[0].interrogation.size = *data++;
-        Mem::memcpy(&strTrigger[0].interrogation.str[0], data, sizeof(strTrigger[0].interrogation.str));
-        data += sizeof(strTrigger[0].interrogation.str);
+        pingStr.strId = *data++;
+        pingStr.intervalEnabled = (bool_t)*data++;
+        pingStr.intervalMs = Mem::get32Bit(&data);
+        pingStr.triggerEnabled = (bool_t)*data++;
+        pingStr.triggerEdge = (bool_t)*data++;
+        pingStr.interrogation.enable = (bool_t)*data++;
+        size = *data++;
+        pingStr.interrogation.str = StringUtils::toStr(data, size);
+        data += pingStr.interrogation.size;
 
-        strTrigger[1].strId = *data++;
-        strTrigger[1].intervalEnabled = (bool_t)*data++;
-        strTrigger[1].intervalMs = Mem::get32Bit(&data);
-        strTrigger[1].triggerEnabled = (bool_t)*data++;
-        strTrigger[1].triggerEdge = (bool_t)*data++;
-        strTrigger[1].interrogation.enable = (bool_t)*data++;
-        strTrigger[1].interrogation.size = *data++;
-        Mem::memcpy(&strTrigger[1].interrogation.str[0], data, sizeof(strTrigger[1].interrogation.str));
-        data += sizeof(strTrigger[1].interrogation.str);
+        ahrsStr.strId = *data++;
+        ahrsStr.intervalEnabled = (bool_t)*data++;
+        ahrsStr.intervalMs = Mem::get32Bit(&data);
+        ahrsStr.triggerEnabled = (bool_t)*data++;
+        ahrsStr.triggerEdge = (bool_t)*data++;
+        ahrsStr.interrogation.enable = (bool_t)*data++;
+        size = *data++;
+        ahrsStr.interrogation.str = StringUtils::toStr(data, size);
+        data += ahrsStr.interrogation.size;
 
         return data - start;
     }
@@ -1032,14 +1029,15 @@ bool_t Isa500::Settings::load(const XmlElementPtr& xml)
             turnsAbout.y = node->getReal("y", 0.0);
             turnsAbout.z = node->getReal("z", 0.0);
         }
+
+        uint8_t buf[Device::CustomStr::size];
         turnsAboutEarthFrame = xml->getBool("turnsAboutEarthFrame", true);
         clrTurn.enable = xml->getBool("clrTurnStrEnable", true);
-        clrTurn.size = static_cast<uint8_t>(xml->getBytes("clrTurnStr",
-            &clrTurn.str[0], sizeof(clrTurn.str)));
+        uint_t size = xml->getBytes("clrTurnStr", &buf[0], sizeof(buf));
+        clrTurn.str = StringUtils::toStr(&buf[0], size);
         setHeading2Mag.enable = xml->getBool("setHeading2MagStrEnable", true);
-        setHeading2Mag.size = static_cast<uint8_t>(xml->getBytes("setHeading2MagStr",
-            &setHeading2Mag.str[0], sizeof(setHeading2Mag.str)));
-
+        size = xml->getBytes("setHeading2MagStr", &buf[0], sizeof(buf));
+        setHeading2Mag.str = StringUtils::toStr(&buf[0], size);
         multiEchoLimit = static_cast<uint8_t>(xml->getUint("multiEchoLimit", 10));
         frequency = static_cast<uint32_t>(xml->getUint("frequency", 500000));
         txPulseWidthUs = static_cast<uint16_t>(xml->getUint("txPulseWidthUs", 200));
@@ -1063,27 +1061,27 @@ bool_t Isa500::Settings::load(const XmlElementPtr& xml)
         node = xml->findElement("pingString");
         if (node)
         {
-            strTrigger[0].strId = static_cast<uint8_t>(node->getUint("id", 0));
-            strTrigger[0].intervalEnabled = node->getBool("intervalEnabled", false);
-            strTrigger[0].intervalMs = static_cast<uint32_t>(node->getUint("intervalMs", 500));
-            strTrigger[0].triggerEnabled = node->getBool("triggerEnabled", false);
-            strTrigger[0].triggerEdge = node->getBool("triggerEdge", false);
-            strTrigger[0].interrogation.enable = node->getBool("interrogationEnabled", false);
-            strTrigger[0].interrogation.size = static_cast<uint8_t>(node->getBytes("interrogationStr",
-                &strTrigger[0].interrogation.str[0], sizeof(strTrigger[0].interrogation.str)));
+            pingStr.strId = static_cast<uint8_t>(node->getUint("id", 0));
+            pingStr.intervalEnabled = node->getBool("intervalEnabled", false);
+            pingStr.intervalMs = static_cast<uint32_t>(node->getUint("intervalMs", 500));
+            pingStr.triggerEnabled = node->getBool("triggerEnabled", false);
+            pingStr.triggerEdge = node->getBool("triggerEdge", false);
+            pingStr.interrogation.enable = node->getBool("interrogationEnabled", false);
+            size = xml->getBytes("interrogationStr", &buf[0], sizeof(buf));
+            pingStr.interrogation.str = StringUtils::toStr(&buf[0], size);
         }
 
         node = xml->findElement("ahrsString");
         if (node)
         {
-            strTrigger[1].strId = static_cast<uint8_t>(node->getUint("id", 0));
-            strTrigger[1].intervalEnabled = node->getBool("intervalEnabled", false);
-            strTrigger[1].intervalMs = static_cast<uint32_t>(node->getUint("intervalMs", 500));
-            strTrigger[1].triggerEnabled = node->getBool("triggerEnabled", false);
-            strTrigger[1].triggerEdge = node->getBool("triggerEdge", false);
-            strTrigger[1].interrogation.enable = node->getBool("interrogationEnabled", false);
-            strTrigger[1].interrogation.size = static_cast<uint8_t>(node->getBytes("interrogationStr",
-                &strTrigger[1].interrogation.str[0], sizeof(strTrigger[1].interrogation.str)));
+            ahrsStr.strId = static_cast<uint8_t>(node->getUint("id", 0));
+            ahrsStr.intervalEnabled = node->getBool("intervalEnabled", false);
+            ahrsStr.intervalMs = static_cast<uint32_t>(node->getUint("intervalMs", 500));
+            ahrsStr.triggerEnabled = node->getBool("triggerEnabled", false);
+            ahrsStr.triggerEdge = node->getBool("triggerEdge", false);
+            ahrsStr.interrogation.enable = node->getBool("interrogationEnabled", false);
+            size = xml->getBytes("interrogationStr", &buf[0], sizeof(buf));
+            ahrsStr.interrogation.str = StringUtils::toStr(&buf[0], size);
         }
     }
     return ok;
@@ -1114,9 +1112,9 @@ void Isa500::Settings::save(XmlElementPtr& xml) const
 
         xml->addBool("turnsAboutEarthFrame", turnsAboutEarthFrame);
         xml->addBool("clrTurnStrEnable", clrTurn.enable);
-        xml->addBytes("clrTurnStr", &clrTurn.str[0], clrTurn.size);
+        xml->addBytes("clrTurnStr", reinterpret_cast<const uint8_t*>(clrTurn.str.c_str()), clrTurn.str.size());
         xml->addBool("setHeading2MagStrEnable", setHeading2Mag.enable);
-        xml->addBytes("setHeading2MagStr", &setHeading2Mag.str[0], setHeading2Mag.size);
+        xml->addBytes("setHeading2MagStr", reinterpret_cast<const uint8_t*>(setHeading2Mag.str.c_str()), setHeading2Mag.str.size());
 
         xml->addUint("multiEchoLimit", multiEchoLimit);
         xml->addUint("frequency", frequency);
@@ -1139,18 +1137,18 @@ void Isa500::Settings::save(XmlElementPtr& xml) const
         xml->addReal("aOutMaxVal", aOutMaxVal, 3);
 
         node = xml->addElement("pingString");
-        node->addUint("id", strTrigger[0].strId);
-        node->addBool("intervalEnabled", strTrigger[0].intervalEnabled);
-        node->addUint("intervalMs", strTrigger[0].intervalMs);
-        node->addBool("interrogationEnabled", strTrigger[0].interrogation.enable);
-        node->addBytes("interrogationStr", &strTrigger[0].interrogation.str[0], strTrigger[0].interrogation.size);
+        node->addUint("id", pingStr.strId);
+        node->addBool("intervalEnabled", pingStr.intervalEnabled);
+        node->addUint("intervalMs", pingStr.intervalMs);
+        node->addBool("interrogationEnabled", pingStr.interrogation.enable);
+        node->addBytes("interrogationStr", reinterpret_cast<const uint8_t*>(pingStr.interrogation.str.c_str()), pingStr.interrogation.str.size());
 
         node = xml->addElement("ahrsString");
-        node->addUint("id", strTrigger[1].strId);
-        node->addBool("intervalEnabled", strTrigger[1].intervalEnabled);
-        node->addUint("intervalMs", strTrigger[1].intervalMs);
-        node->addBool("interrogationEnabled", strTrigger[1].interrogation.enable);
-        node->addBytes("interrogationStr", &strTrigger[1].interrogation.str[0], strTrigger[1].interrogation.size);
+        node->addUint("id", ahrsStr.strId);
+        node->addBool("intervalEnabled", ahrsStr.intervalEnabled);
+        node->addUint("intervalMs", ahrsStr.intervalMs);
+        node->addBool("interrogationEnabled", ahrsStr.interrogation.enable);
+        node->addBytes("interrogationStr", reinterpret_cast<const uint8_t*>(ahrsStr.interrogation.str.c_str()), ahrsStr.interrogation.str.size());
     }
 }
 //--------------------------------------------------------------------------------------------------

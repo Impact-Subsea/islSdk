@@ -100,17 +100,25 @@ namespace IslSdk
             void fromBuf(const uint8_t* data);
             bool_t isDifferent(const Info& d) const;
             std::string pnSnAsStr() const;          ///< Form a string from pn and sn as shown on the lable.
+            std::string name() const;               ///< Form a name string from pid.
         };
 
         class CustomStr
         {
         public:
+            static const uint_t size = 32;
             bool_t enable;
-            uint8_t size;
-            uint8_t str[32];
-
-            CustomStr();
-            CustomStr(bool_t enable, uint8_t len, const uint8_t* data);
+            std::string str;
+            CustomStr() : enable(false) {}
+            CustomStr(bool_t enable, const std::string& str) : enable(false), str(str) {}
+            uint_t packStr(uint8_t* ptr) const
+            {
+                for (uint_t i = 0; i < size; i++)
+				{
+                    *ptr++ = i < str.size() ? str[i] : 0;
+				}
+                return size;
+            }
         };
 
         const uint_t& reconnectCount = m_reconnectCount;                ///< The number of times the device has been reconnected.
@@ -252,7 +260,7 @@ namespace IslSdk
         void enqueuePacket(const uint8_t* data, uint_t size);
         void sendPacket(const uint8_t* data, uint_t size);
         void connectionSettingsUpdated(const ConnectionMeta& meta, bool_t isHalfDuplex);
-        void startLogging() override;
+        bool_t startLogging() override;
         bool_t m_connectionDataSynced;
         uint64_t m_epochUs;
 

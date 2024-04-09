@@ -57,9 +57,9 @@ bool_t BmpFile::save(const std::string& filename, const uint32_t* image, uint_t 
         if (bpp == 32)
         {
             header[30] = 3;
-            header[56] = 0xff;
+            header[54] = 0xff;
             header[59] = 0xff;
-            header[62] = 0xff;
+            header[64] = 0xff;
             header[69] = 0xff;
 
             header[70] = 0x20;

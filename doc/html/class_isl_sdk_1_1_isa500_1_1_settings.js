@@ -1,8 +1,9 @@
 var class_isl_sdk_1_1_isa500_1_1_settings =
 [
-    [ "CustomStr", "struct_isl_sdk_1_1_isa500_1_1_settings_1_1_custom_str.html", "struct_isl_sdk_1_1_isa500_1_1_settings_1_1_custom_str" ],
+    [ "StrOutputSetup", "struct_isl_sdk_1_1_isa500_1_1_settings_1_1_str_output_setup.html", "struct_isl_sdk_1_1_isa500_1_1_settings_1_1_str_output_setup" ],
     [ "check", "class_isl_sdk_1_1_isa500_1_1_settings.html#a96213bd3cc93c59ddc8911493f902db9", null ],
     [ "ahrsMode", "class_isl_sdk_1_1_isa500_1_1_settings.html#af68f29d9234f8e1b18c73bd3e371549d", null ],
+    [ "ahrsStr", "class_isl_sdk_1_1_isa500_1_1_settings.html#a60f652001f354c28051de85e791adbf3", null ],
     [ "anaMode", "class_isl_sdk_1_1_isa500_1_1_settings.html#aa5ad808622d5628ce40026ec98f5451b", null ],
     [ "aOutMaxRange", "class_isl_sdk_1_1_isa500_1_1_settings.html#a0e81bef9a80787b08295a096c57fef25", null ],
     [ "aOutMaxVal", "class_isl_sdk_1_1_isa500_1_1_settings.html#a34760d8f9f178df8dcd11f6e624cef06", null ],
@@ -21,6 +22,7 @@ var class_isl_sdk_1_1_isa500_1_1_settings =
     [ "multiEchoLimit", "class_isl_sdk_1_1_isa500_1_1_settings.html#a39a4e89d216633fbf7827e44ea69d1ec", null ],
     [ "orientationOffset", "class_isl_sdk_1_1_isa500_1_1_settings.html#a9ab57adaff74857fd865c696df4efda7", null ],
     [ "parity", "class_isl_sdk_1_1_isa500_1_1_settings.html#a251fc3f94969171491954d4a063ccd99", null ],
+    [ "pingStr", "class_isl_sdk_1_1_isa500_1_1_settings.html#ab90c02da06d1eedb29fe74b7250575e7", null ],
     [ "setHeading2Mag", "class_isl_sdk_1_1_isa500_1_1_settings.html#a5ef2778750688d03d253162d10e4c0c5", null ],
     [ "speedOfSound", "class_isl_sdk_1_1_isa500_1_1_settings.html#a46706884dd54e8707f515dbb794e508e", null ],
     [ "stopBits", "class_isl_sdk_1_1_isa500_1_1_settings.html#ac9b2238f192d369897a78749093d7ced", null ],

@@ -64,7 +64,6 @@ namespace IslSdk
         bool_t save(const std::string& fileName);
         XmlElementPtr setRoot(const std::string& name);
         XmlElementPtr root() { return m_root; }
-        XmlElementPtr findElementOnRoot(const std::string& name);
 
     private:
         void parseElement(XmlElementPtr parent, std::ifstream& file);

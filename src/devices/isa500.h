@@ -9,6 +9,7 @@
 #include "files/xmlFile.h"
 #include "ahrs.h"
 #include <string>
+#include <array>
 
 //--------------------------------------- Class Definition -----------------------------------------
 
@@ -30,6 +31,16 @@ namespace IslSdk
         class Settings                                  /// Isa500 Settings.
         {
         public:
+            struct StrOutputSetup
+            {
+                uint8_t strId;                          ///< Id of the string 0 = script.
+                bool_t intervalEnabled;                 ///< If true then autonomously ping and output at the defined interval.
+                uint32_t intervalMs;                    ///< Interval in milliseconds to autonomously output.
+                bool_t triggerEnabled;                  ///< If true the device will ping and output when trigged by the TTL input.
+                bool_t triggerEdge;                     ///< If true then the action will happen on the rising edge, false = falling edge.
+                Device::CustomStr interrogation;        ///< Custom interrogation string.
+            };
+
             Device::UartMode uartMode;                  ///< Serial port mode.
             uint32_t baudrate;                          ///< Serial port baudrate. Limits are standard bauds between 300 and 115200.
             Device::Parity parity;                      ///< Serial parity.
@@ -61,15 +72,8 @@ namespace IslSdk
             real_t aOutMaxRange;                        ///< Value in meteres. "aOutMaxRange" and "aOutMaxVal" define another point. e.g 10 metres = 10 volt. These 2 points define a straight line which relates range to output value.
             real_t aOutMinVal;                          ///< Volts or milliamps depending on mode.
             real_t aOutMaxVal;                          ///< Volts or milliamps depending on mode.
-            struct CustomStr
-            {
-                uint8_t strId;                          ///< Id of the string 0 = script.
-                bool_t intervalEnabled;                 ///< If true then autonomously ping and output at the defined interval.
-                uint32_t intervalMs;                    ///< Interval in milliseconds to autonomously output.
-                bool_t triggerEnabled;                  ///< If true the device will ping and output when trigged by the TTL input.
-                bool_t triggerEdge;                     ///< If true then the action will happen on the rising edge, false = falling edge.
-                Device::CustomStr interrogation;        ///< Custom interrogation string.
-            } strTrigger[2];
+            StrOutputSetup pingStr;                     ///< Ping string setup.    
+            StrOutputSetup ahrsStr;					    ///< AHRS string setup.
 
             static const uint_t size = 249;             ///< Size of the packed structure in bytes.
             Settings();
@@ -83,7 +87,7 @@ namespace IslSdk
 
         struct SensorRates
         {
-        uint32_t ping;                                  ///< Interval in milliseconds between pings. Zero means no pings.
+            uint32_t ping;                              ///< Interval in milliseconds between pings. Zero means no pings.
             uint32_t ahrs;                              ///< Interval in milliseconds between AHRS data. Zero means no AHRS data.
             uint32_t gyro;                              ///< Interval in milliseconds between gyro data. Zero means no gyro data.
             uint32_t accel;                             ///< Interval in milliseconds between accelerometer data. Zero means no accelerometer data.
@@ -266,7 +270,7 @@ namespace IslSdk
         /**
         * @brief Starts logging for the Isa500.
         */
-        void startLogging() override;
+        bool_t startLogging() override;
 
         bool_t hasAhrs() { return (info.config & LicenceFlags::ahrs) != 0; }                        ///< Returns true if the device has the AHRS licence.
         bool_t hasEchoGram() { return (info.config & LicenceFlags::echogram) != 0; }                ///< Returns true if the device has the echogram licence.
@@ -275,7 +279,7 @@ namespace IslSdk
         bool_t hasCurrentLoop() { return (info.mode & 0x02) == 0; }                                 ///< Returns true if the device has current loop analogue output.
 
         const Settings& settings = m_settings;                                                      ///< The current settings.
-        const SensorRates& sensorsRates = m_requestedRates;                                         ///< The current sensor rates.
+        const SensorRates& sensorRates = m_requestedRates;                                          ///< The current sensor rates.
         const std::vector<std::string>& hardCodedPingOutputStrings = m_hardCodedPingOutputStrings;
         const std::vector<std::string>& hardCodedAhrsOutputStrings = m_hardCodedAhrsOutputStrings;
         const ScriptVars& scriptVars = m_scriptVars;                                                ///< The variables available to the script.
@@ -329,7 +333,7 @@ namespace IslSdk
         bool_t newPacket(uint8_t command, const uint8_t* data, uint_t size) override;
         void signalSubscribersChanged(uint_t subscriberCount);
         void echogramSignalSubscribersChanged(uint_t subscriberCount);
-        void logSettings();
+        bool_t logSettings();
         void getData(uint32_t flags);
         void getSettings();
         void getAhrsCal();

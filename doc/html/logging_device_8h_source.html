@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Impact Subsea SDK: C:/Users/Alastair/Desktop/new/sdkExample/islSdk/src/logging/loggingDevice.h Source File</title>
+<title>Impact Subsea SDK: C:/Users/Alastair/Desktop/new/src/logging/loggingDevice.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -123,9 +123,9 @@ $(document).ready(function(){initNavTree('logging_device_8h_source.html',''); in
 <div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        <span class="keyword">typedef</span> std::shared_ptr&lt;LoggingDevice&gt; SharedPtr;</div>
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        <a class="code hl_class" href="class_isl_sdk_1_1_logging_device.html">LoggingDevice</a>() : m_trackId(0), m_active(<span class="keyword">false</span>) {}</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>        <span class="keyword">virtual</span> <a class="code hl_class" href="class_isl_sdk_1_1_logging_device.html">~LoggingDevice</a>() {}</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        <span class="keywordtype">void</span> setLogger(std::shared_ptr&lt;LogWriter&gt; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">logger</a>, <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint8_t</a>* <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">trackData</a>, <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint_t</a> size);</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>        <span class="keywordtype">void</span> log(<span class="keyword">const</span> <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint8_t</a>* data, <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint_t</a> size, <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint8_t</a> dataType, bool_t canSkip = <span class="keyword">true</span>);</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> startLogging();</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        <span class="keywordtype">void</span> setLogger(std::shared_ptr&lt;LogWriter&gt;&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">logger</a>, <span class="keyword">const</span> <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint8_t</a>* <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">trackData</a>, <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint_t</a> size);</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>        bool_t log(<span class="keyword">const</span> <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint8_t</a>* data, <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint_t</a> size, <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint8_t</a> dataType, bool_t canSkip = <span class="keyword">true</span>);</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        <span class="keyword">virtual</span> bool_t startLogging();</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> stopLogging();</div>
 <div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> newPacketEvent(<span class="keyword">const</span> <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint8_t</a>* data, <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint_t</a> size) = 0;</div>
 <div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        <span class="keyword">virtual</span> <span class="keywordtype">void</span> logData(<a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint8_t</a> dataType, <span class="keyword">const</span> std::vector&lt;uint8_t&gt; data) {};</div>
@@ -144,7 +144,7 @@ $(document).ready(function(){initNavTree('logging_device_8h_source.html',''); in
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="comment">//--------------------------------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclass_isl_sdk_1_1_callback_html"><div class="ttname"><a href="class_isl_sdk_1_1_callback.html">IslSdk::Callback</a></div><div class="ttdoc">This class is used to create a callback.</div><div class="ttdef"><b>Definition</b> sigSlot.h:20</div></div>
+<div class="ttc" id="aclass_isl_sdk_1_1_callback_html"><div class="ttname"><a href="class_isl_sdk_1_1_callback.html">IslSdk::Callback</a></div><div class="ttdoc">This class is used to create a callback.</div><div class="ttdef"><b>Definition</b> sigSlot.h:25</div></div>
 <div class="ttc" id="aclass_isl_sdk_1_1_logging_device_html"><div class="ttname"><a href="class_isl_sdk_1_1_logging_device.html">IslSdk::LoggingDevice</a></div><div class="ttdef"><b>Definition</b> loggingDevice.h:15</div></div>
 <div class="ttc" id="aclass_isl_sdk_1_1_nmea_html"><div class="ttname"><a href="class_isl_sdk_1_1_nmea.html">IslSdk::Nmea</a></div><div class="ttdef"><b>Definition</b> nmea.h:14</div></div>
 </div><!-- fragment --></div><!-- contents -->

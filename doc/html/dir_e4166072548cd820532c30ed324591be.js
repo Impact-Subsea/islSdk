@@ -6,5 +6,6 @@ var dir_e4166072548cd820532c30ed324591be =
     [ "connectionMeta.h", "connection_meta_8h_source.html", null ],
     [ "islHdlc.h", "isl_hdlc_8h_source.html", null ],
     [ "protocolDebugger.h", "protocol_debugger_8h_source.html", null ],
-    [ "sysPortMgr.h", "sys_port_mgr_8h_source.html", null ]
+    [ "sysPortMgr.h", "sys_port_mgr_8h_source.html", null ],
+    [ "sysPortServices.h", "sys_port_services_8h_source.html", null ]
 ];

@@ -14,7 +14,7 @@ var class_isl_sdk_1_1_sys_port =
     [ "onError", "class_isl_sdk_1_1_sys_port.html#a266a3216208b996aea1e5a8dfd9d41ca", null ],
     [ "onOpen", "class_isl_sdk_1_1_sys_port.html#aec44ab903b066448236c65c79dc9de16", null ],
     [ "onPortStats", "class_isl_sdk_1_1_sys_port.html#ad05f971b8fb6c84b01b7610e00d1ef82", null ],
-    [ "onRxData", "class_isl_sdk_1_1_sys_port.html#aa2233c6d2f5a086392474bcf4ec18f92", null ],
-    [ "onTxData", "class_isl_sdk_1_1_sys_port.html#a6d47db7a87c907cc781aeb1981bffd08", null ],
+    [ "onRxData", "class_isl_sdk_1_1_sys_port.html#ad1287dd564557d9fc478980b5b240bb2", null ],
+    [ "onTxData", "class_isl_sdk_1_1_sys_port.html#aa5bc1469d5e393ab5f85b134d06065be", null ],
     [ "type", "class_isl_sdk_1_1_sys_port.html#a0f465c0f23e6007a61f33a4c60934dc2", null ]
 ];

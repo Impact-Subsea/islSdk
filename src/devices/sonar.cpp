@@ -10,6 +10,8 @@
 
 using namespace IslSdk;
 
+const uint_t Sonar::maxAngle;
+
 //--------------------------------------------------------------------------------------------------
 Sonar::Sonar(const Device::Info& info) : Device(info), m_macAddress{}
 {
@@ -265,10 +267,10 @@ std::array<Point, 9> Sonar::getDefaultTvg()
 }
 
 //--------------------------------------------------------------------------------------------------
-void Sonar::startLogging()
+bool_t Sonar::startLogging()
 {
     Device::startLogging();
-    logSettings();
+    return logSettings();
 }
 //--------------------------------------------------------------------------------------------------
 bool_t Sonar::saveConfig(const std::string& fileName)
@@ -276,7 +278,7 @@ bool_t Sonar::saveConfig(const std::string& fileName)
     bool_t ok = false;
 
     XmlFile file;
-    XmlElementPtr rootXml = file.setRoot("Sonar");
+    XmlElementPtr rootXml = file.setRoot("SONAR");
     if (rootXml)
     {
         XmlSettings::saveDeviceInfo(info, rootXml);
@@ -322,8 +324,8 @@ bool_t Sonar::loadConfig(const std::string& fileName, Device::Info* info, Settin
     XmlFile file;
     if (file.open(fileName))
     {
-        XmlElementPtr baseNode = file.findElementOnRoot("Sonar");
-        if (baseNode)
+        XmlElementPtr baseNode = file.root();
+        if (baseNode && baseNode->name == "SONAR")
         {
             ok = true;
             if (info)
@@ -777,18 +779,15 @@ void Sonar::sonarDataSignalSubscribersChanged(uint_t subscriberCount)
     }
 }
 //--------------------------------------------------------------------------------------------------
-void Sonar::logSettings()
+bool_t Sonar::logSettings()
 {
-    if (islogging())
-    {
-        uint8_t data[Settings::size + 7];
+    uint8_t data[Settings::size + 7];
 
-        data[0] = static_cast<uint8_t>(Device::Commands::ReplyBit) | static_cast<uint8_t>(Commands::GetSettings);
-        Mem::memcpy(&data[1], &m_macAddress[0], 6);
-        m_settings.serialise(&data[7], sizeof(data) - 7);
+    data[0] = static_cast<uint8_t>(Device::Commands::ReplyBit) | static_cast<uint8_t>(Commands::GetSettings);
+    Mem::memcpy(&data[1], &m_macAddress[0], 6);
+    m_settings.serialise(&data[7], sizeof(data) - 7);
 
-        log(&data[0], sizeof(data), static_cast<uint8_t>(LoggingDataType::packetData), false);
-    }
+    return log(&data[0], sizeof(data), static_cast<uint8_t>(LoggingDataType::packetData), false);
 }
 //--------------------------------------------------------------------------------------------------
 void Sonar::getData(uint32_t flags)
@@ -991,7 +990,7 @@ Sonar::System::System()
 void Sonar::System::defaults()
 {
     uartMode = Device::UartMode::Rs232;
-    baudrate = 9600;
+    baudrate = 115200;
     ipAddress = Utils::ipToUint(192, 168, 1, 200);
     netmask = Utils::ipToUint(255, 255, 255, 0);
     gateway = Utils::ipToUint(192, 168, 1, 1);

@@ -81,7 +81,7 @@ void LogReader::process()
 {
     uint64_t timeMs = Time::getTimeMs();
 
-    if (m_playSpeed != 0.0)
+    if (m_playSpeed != 0.0 && m_file.records.size())
     {
         real_t deltaMs = static_cast<real_t>(timeMs - m_lastTimeMs);
         m_playTimer += deltaMs * m_playSpeed;

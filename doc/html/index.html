@@ -161,7 +161,7 @@ Building just the SDK into a static library using cmake</h2>
 <li>Navigate to the islSdk folder and create a new folder named build in which to place the build files. Note the folder name is not important.</li>
 <li>Open a terminal and navigate to the newly created build folder.</li>
 <li>At the terminal command line type: <code>cmake -DCMAKE_BUILD_TYPE=Debug ..</code> Note the space and 2 dots at the end as the CMakeLists.txt file is up a directory. <code>cmake -DCMAKE_BUILD_TYPE=Release ..</code> is another option and will turn off the SDK generated debug messages.</li>
-<li>At the terminal command line type: <code>make</code></li>
+<li>At the terminal command line type: <code>make</code>. If using windows type <code>cmake --build .</code></li>
 </ol>
 <p>The SDK source code will compile to a static library placed in the build/lib folder.</p>
 <h2><a class="anchor" id="autotoc_md9"></a>
@@ -170,7 +170,7 @@ Building the Example App and SDK to produce an executable using cmake</h2>
 <li>Navigate to the folder containing the sdkExample folder, islSdk folder and CMakeLists.txt file. Create a new folder named build in which to place the build files. Note the folder name is not important.</li>
 <li>Open a terminal and navigate to the newly created build folder.</li>
 <li>At the terminal command line type: <code>cmake -DCMAKE_BUILD_TYPE=Debug ..</code> Note the space and 2 dots at the end as the CMakeLists.txt file is up a directory. <code>cmake -DCMAKE_BUILD_TYPE=Release ..</code> is another option and will turn off the SDK generated debug messages.</li>
-<li>At the terminal command line type: <code>make</code></li>
+<li>At the terminal command line type: <code>make</code>. If using windows type <code>cmake --build .</code></li>
 <li>Run the executable by typing <code>bin/sdkExample</code> into the terminal. </li>
 </ol>
 </div></div><!-- PageDoc -->

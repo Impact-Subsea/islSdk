@@ -199,7 +199,7 @@ namespace IslSdk
         
 
         const Settings& settings = m_settings;                              ///< Current settings of the device.
-        const SensorRates& sensorsRates = m_requestedRates;                 ///< Current sensor rates of the device.
+        const SensorRates& sensorRates = m_requestedRates;                  ///< Current sensor rates of the device.
         const std::array<Point, 9>& tvgPoints = m_tvgPoints;                ///< Current TVG (Time Variable Gain) curve of the device.
         const uint8_t(&macAddress)[6] = (&m_macAddress)[0];                 ///< Mac Address of the ethernet interface. Read only, setting has no effect.
 
@@ -340,7 +340,7 @@ namespace IslSdk
         /**
         * @brief Starts logging for the device.
         */
-        void startLogging() override;
+        bool_t startLogging() override;
 
         /**
         * @brief Saves the configuration with the provided file name.
@@ -415,7 +415,7 @@ namespace IslSdk
         bool_t newPacket(uint8_t command, const uint8_t* data, uint_t size) override;
         void signalSubscribersChanged(uint_t subscriberCount);
         void sonarDataSignalSubscribersChanged(uint_t subscriberCount);
-        void logSettings();
+        bool_t logSettings();
 
         void getData(uint32_t flags);
         void getSettings();

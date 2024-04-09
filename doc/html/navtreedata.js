@@ -37,12 +37,12 @@ var NAVTREE =
       [ "Building just the SDK into a static library using cmake", "index.html#autotoc_md8", null ],
       [ "Building the Example App and SDK to produce an executable using cmake", "index.html#autotoc_md9", null ]
     ] ],
-    [ "Impact Subsea Sdk", "md__c_1_2_users_2_alastair_2_desktop_2new_2sdk_example_2isl_sdk_2_r_e_a_d_m_e.html", [
-      [ "Compiling", "md__c_1_2_users_2_alastair_2_desktop_2new_2sdk_example_2isl_sdk_2_r_e_a_d_m_e.html#autotoc_md11", [
-        [ "Using Microsoft Visual Studios with cmake", "md__c_1_2_users_2_alastair_2_desktop_2new_2sdk_example_2isl_sdk_2_r_e_a_d_m_e.html#autotoc_md12", null ],
-        [ "Linux, Windows using cmake", "md__c_1_2_users_2_alastair_2_desktop_2new_2sdk_example_2isl_sdk_2_r_e_a_d_m_e.html#autotoc_md13", null ]
+    [ "Impact Subsea Sdk", "md__c_1_2_users_2_alastair_2_desktop_2new_2_r_e_a_d_m_e.html", [
+      [ "Compiling", "md__c_1_2_users_2_alastair_2_desktop_2new_2_r_e_a_d_m_e.html#autotoc_md11", [
+        [ "Using Microsoft Visual Studios with cmake", "md__c_1_2_users_2_alastair_2_desktop_2new_2_r_e_a_d_m_e.html#autotoc_md12", null ],
+        [ "Linux, Windows using cmake", "md__c_1_2_users_2_alastair_2_desktop_2new_2_r_e_a_d_m_e.html#autotoc_md13", null ]
       ] ],
-      [ "Documentation", "md__c_1_2_users_2_alastair_2_desktop_2new_2sdk_example_2isl_sdk_2_r_e_a_d_m_e.html#autotoc_md14", null ]
+      [ "Documentation", "md__c_1_2_users_2_alastair_2_desktop_2new_2_r_e_a_d_m_e.html#autotoc_md14", null ]
     ] ],
     [ "Classes", "annotated.html", [
       [ "Class List", "annotated.html", "annotated_dup" ],
@@ -64,8 +64,9 @@ var NAVTREE =
 var NAVTREEINDEX =
 [
 "ahrs_8h_source.html",
-"class_isl_sdk_1_1_mag_sensor.html#a968004937e4c70dd637ce6fca59f2f2e",
-"struct_isl_sdk_1_1_gps_device_1_1_gpgga.html#a0e212e9d64246b20b08dedcc94ed9eed"
+"class_isl_sdk_1_1_mag_sensor.html#a13b0b4666d80900c61ba4ea955a7ef01",
+"sonar_image_8h_source.html",
+"unix_2net_socket_8h_source.html"
 ];
 
 var SYNCONMSG = 'click to disable panel synchronisation';

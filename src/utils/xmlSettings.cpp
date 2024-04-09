@@ -36,6 +36,7 @@ bool_t XmlSettings::loadDeviceInfo(Device::Info& info, const XmlElementPtr& xml)
         info.mode = static_cast<uint8_t>(StringUtils::toUint(xml->getAttribute("mode"), ok));
         info.status = static_cast<uint16_t>(StringUtils::toUint(xml->getAttribute("status"), ok));
         info.inUse = false;
+        ok = !ok;
     }
     return ok;
 }

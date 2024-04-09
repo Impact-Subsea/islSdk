@@ -48,10 +48,10 @@ void Palette::setToDefault()
 {
     std::vector<GradientValue> palette;
     palette.emplace_back(0xff000000, static_cast<uint16_t>(static_cast<real_t>(m_data.size() - 2) * 0.0));
-    palette.emplace_back(0xff205aab, static_cast<uint16_t>(static_cast<real_t>(m_data.size() - 2) * 0.22));
-    palette.emplace_back(0xff27ce3d, static_cast<uint16_t>(static_cast<real_t>(m_data.size() - 2) * 0.4));
-    palette.emplace_back(0xffc2ce23, static_cast<uint16_t>(static_cast<real_t>(m_data.size() - 2) * 0.62));
-    palette.emplace_back(0xffce1200, static_cast<uint16_t>(static_cast<real_t>(m_data.size() - 2) * 1.0));
+    palette.emplace_back(0xffab5a20, static_cast<uint16_t>(static_cast<real_t>(m_data.size() - 2) * 0.22));
+    palette.emplace_back(0xff3dce27, static_cast<uint16_t>(static_cast<real_t>(m_data.size() - 2) * 0.4));
+    palette.emplace_back(0xff23cec2, static_cast<uint16_t>(static_cast<real_t>(m_data.size() - 2) * 0.62));
+    palette.emplace_back(0xff0012ce, static_cast<uint16_t>(static_cast<real_t>(m_data.size() - 2) * 1.0));
 
     set(palette, 0xff000000);
 }

@@ -118,7 +118,8 @@ bool_t UartPort::process()
     while (buf = reinterpret_cast<TxRxBuf*>(m_rx.peekNextItem()))
     {
         m_rxBytesCount += buf->size;
-        onRxData(*this, buf->data, buf->size);
+        ConstBuffer buffer = { buf->data, buf->size };
+        onRxData(*this, buffer);
 
         if (m_codec)
         {

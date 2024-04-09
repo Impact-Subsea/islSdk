@@ -686,6 +686,15 @@ uint_t StringUtils::copyMax(const std::string& str, uint8_t* buf, uint_t size)
     return size;
 }
 //--------------------------------------------------------------------------------------------------
+uint_t StringUtils::copyOrFill(const std::string& str, uint8_t* ptr, uint_t size)
+{
+    for (uint_t i = 0; i < size; i++)
+    {
+        *ptr++ = i < str.size() ? str[i] : 0;
+    }
+    return size;
+}
+//--------------------------------------------------------------------------------------------------
 bool_t StringUtils::compareNoCase(const std::string& str1, const std::string& str2)
 {
     if (str1.size() == str2.size())

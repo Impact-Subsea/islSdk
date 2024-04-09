@@ -64,7 +64,7 @@ The `CMakeLists.txt` automatically defines these definitions depending on the pl
 1. Navigate to the islSdk folder and create a new folder named build in which to place the build files. Note the folder name is not important.
 2. Open a terminal and navigate to the newly created build folder.
 3. At the terminal command line type: `cmake -DCMAKE_BUILD_TYPE=Debug ..` Note the space and 2 dots at the end as the CMakeLists.txt file is up a directory. `cmake -DCMAKE_BUILD_TYPE=Release ..` is another option and will turn off the SDK generated debug messages.
-4. At the terminal command line type: `make`
+4. At the terminal command line type: `make`. If using windows type `cmake --build .`
 
 The SDK source code will compile to a static library placed in the build/lib folder.
 
@@ -72,5 +72,5 @@ The SDK source code will compile to a static library placed in the build/lib fol
 1. Navigate to the folder containing the sdkExample folder, islSdk folder and CMakeLists.txt file. Create a new folder named build in which to place the build files. Note the folder name is not important.
 2. Open a terminal and navigate to the newly created build folder.
 3. At the terminal command line type: `cmake -DCMAKE_BUILD_TYPE=Debug ..` Note the space and 2 dots at the end as the CMakeLists.txt file is up a directory. `cmake -DCMAKE_BUILD_TYPE=Release ..` is another option and will turn off the SDK generated debug messages.
-4. At the terminal command line type: `make`
+4. At the terminal command line type: `make`. If using windows type `cmake --build .`
 5. Run the executable by typing `bin/sdkExample` into the terminal.

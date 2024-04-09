@@ -20,9 +20,9 @@ namespace IslSdk
         typedef std::shared_ptr<LoggingDevice> SharedPtr;
         LoggingDevice() : m_trackId(0), m_active(false) {}
         virtual ~LoggingDevice() {}
-        void setLogger(std::shared_ptr<LogWriter> logger, uint8_t* trackData, uint_t size);
-        void log(const uint8_t* data, uint_t size, uint8_t dataType, bool_t canSkip = true);
-        virtual void startLogging();
+        void setLogger(std::shared_ptr<LogWriter>& logger, const uint8_t* trackData, uint_t size);
+        bool_t log(const uint8_t* data, uint_t size, uint8_t dataType, bool_t canSkip = true);
+        virtual bool_t startLogging();
         virtual void stopLogging();
         virtual void newPacketEvent(const uint8_t* data, uint_t size) = 0;
         virtual void logData(uint8_t dataType, const std::vector<uint8_t> data) {};

@@ -12,7 +12,7 @@
 using namespace IslSdk;
 
 //--------------------------------------------------------------------------------------------------
-DeviceMgr::DeviceMgr()
+DeviceMgr::DeviceMgr(SysPortServices& sysPortServices) : m_sysPortServices(sysPortServices)
 {
     m_timer = 0;
     m_hostCommsTimeoutMs = 500;
@@ -175,6 +175,7 @@ Device::SharedPtr DeviceMgr::createDevice(const Device::Info& deviceInfo)
     case Device::Pid::Sonar:
         device = std::make_shared<Sonar>(deviceInfo);
         break;
+
 
     default:
         device = std::make_shared<Device>(deviceInfo);

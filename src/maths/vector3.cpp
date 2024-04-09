@@ -1,7 +1,7 @@
 //------------------------------------------ Includes ----------------------------------------------
 
 #include "maths/vector3.h"
-#include <cmath>
+#include "maths/maths.h"
 
 using namespace IslSdk;
 
@@ -92,7 +92,7 @@ void Vector3::zero()
 //--------------------------------------------------------------------------------------------------
 real_t Vector3::magnitude() const
 {
-    return sqrt(x * x + y * y + z * z);
+    return Math::sqrt(x * x + y * y + z * z);
 }
 //--------------------------------------------------------------------------------------------------
 real_t Vector3::magnitudeSq() const
@@ -125,11 +125,11 @@ Vector3::Axis Vector3::findClosestCardinalAxis() const
 {
     Axis axis;
 
-    if (abs(x) > abs(y) && abs(x) > abs(y))
+    if (Math::abs(x) > Math::abs(y) && Math::abs(x) > Math::abs(z))
     {
         axis = x >= 0.0 ? Axis::xPlus : Axis::xMinus;
     }
-    else if (abs(y) > abs(x) && abs(y) > abs(z))
+    else if (Math::abs(y) > Math::abs(x) && Math::abs(y) > Math::abs(z))
     {
         axis = y >= 0.0 ? Axis::yPlus : Axis::yMinus;
     }

@@ -4,6 +4,7 @@
 //------------------------------------------ Includes ----------------------------------------------
 
 #include "types/sdkTypes.h"
+#include "comms/sysPortServices.h"
 #include "comms/ports/sysPort.h"
 #include "comms/ports/solPort.h"
 #include "comms/ports/netPort.h"
@@ -14,7 +15,7 @@
 
 namespace IslSdk
 {
-    class SysPortMgr                /// This class manages all ports.
+    class SysPortMgr : public SysPortServices       /// This class manages all ports.
     {
         friend class Sdk;
     public:

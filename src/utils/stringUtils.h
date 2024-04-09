@@ -51,6 +51,7 @@ namespace IslSdk
         uint32_t toIp(const std::string& str, bool_t& error);
 
         uint_t copyMax(const std::string& str, uint8_t* buf, uint_t size);
+        uint_t copyOrFill(const std::string& str, uint8_t* ptr, uint_t size);
         bool_t compareNoCase(const std::string& str1, const std::string& str2);
     }
 }

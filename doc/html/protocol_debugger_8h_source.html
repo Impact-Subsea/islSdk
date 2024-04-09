@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.9.8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Impact Subsea SDK: C:/Users/Alastair/Desktop/new/sdkExample/islSdk/src/comms/protocolDebugger.h Source File</title>
+<title>Impact Subsea SDK: C:/Users/Alastair/Desktop/new/src/comms/protocolDebugger.h Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -124,11 +124,11 @@ $(document).ready(function(){initNavTree('protocol_debugger_8h_source.html','');
 <div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        bool_t m_showPayload;</div>
 <div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span> </div>
 <div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>    <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>        <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">Slot&lt;SysPort&amp;, const uint8_t*, uint_t&gt;</a> slotOnRxData{ <span class="keyword">this</span>, &amp;ProtocolDebugger::rxData };</div>
-<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">Slot&lt;SysPort&amp;, const uint8_t*, uint_t&gt;</a> slotOnTxData{ <span class="keyword">this</span>, &amp;ProtocolDebugger::txData };</div>
+<div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>        <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">Slot&lt;SysPort&amp;, const ConstBuffer&amp;&gt;</a> slotOnRxData{ <span class="keyword">this</span>, &amp;ProtocolDebugger::rxData };</div>
+<div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">Slot&lt;SysPort&amp;, const ConstBuffer&amp;&gt;</a> slotOnTxData{ <span class="keyword">this</span>, &amp;ProtocolDebugger::txData };</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span> </div>
-<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        <span class="keywordtype">void</span> rxData(<a class="code hl_class" href="class_isl_sdk_1_1_sys_port.html">SysPort</a>&amp; port, <span class="keyword">const</span> <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint8_t</a>* data, <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint_t</a> size);</div>
-<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        <span class="keywordtype">void</span> txData(<a class="code hl_class" href="class_isl_sdk_1_1_sys_port.html">SysPort</a>&amp; port, <span class="keyword">const</span> <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint8_t</a>* data, <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint_t</a> size);</div>
+<div class="line"><a id="l00027" name="l00027"></a><span class="lineno">   27</span>        <span class="keywordtype">void</span> rxData(<a class="code hl_class" href="class_isl_sdk_1_1_sys_port.html">SysPort</a>&amp; port, <span class="keyword">const</span> <a class="code hl_struct" href="struct_isl_sdk_1_1_const_buffer.html">ConstBuffer</a>&amp; buf);</div>
+<div class="line"><a id="l00028" name="l00028"></a><span class="lineno">   28</span>        <span class="keywordtype">void</span> txData(<a class="code hl_class" href="class_isl_sdk_1_1_sys_port.html">SysPort</a>&amp; port, <span class="keyword">const</span> <a class="code hl_struct" href="struct_isl_sdk_1_1_const_buffer.html">ConstBuffer</a>&amp; buf);</div>
 <div class="line"><a id="l00029" name="l00029"></a><span class="lineno">   29</span>        <span class="keywordtype">void</span> processBytes(<a class="code hl_class" href="class_isl_sdk_1_1_sys_port.html">SysPort</a>&amp; port, <span class="keyword">const</span> <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint8_t</a>* data, <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint_t</a> size, bool_t <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">isTx</a>);</div>
 <div class="line"><a id="l00030" name="l00030"></a><span class="lineno">   30</span>        <span class="keywordtype">void</span> decodeFrame(<span class="keyword">const</span> <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint8_t</a>* frame, <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint_t</a> size, <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint_t</a> <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">totalByteCount</a>, bool_t <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">isRx</a>);</div>
 <div class="line"><a id="l00031" name="l00031"></a><span class="lineno">   31</span>        SysPort::SharedPtr m_port;</div>
@@ -144,10 +144,11 @@ $(document).ready(function(){initNavTree('protocol_debugger_8h_source.html','');
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span> </div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span><span class="comment">//--------------------------------------------------------------------------------------------------</span></div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span><span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclass_isl_sdk_1_1_callback_html"><div class="ttname"><a href="class_isl_sdk_1_1_callback.html">IslSdk::Callback</a></div><div class="ttdoc">This class is used to create a callback.</div><div class="ttdef"><b>Definition</b> sigSlot.h:20</div></div>
+<div class="ttc" id="aclass_isl_sdk_1_1_callback_html"><div class="ttname"><a href="class_isl_sdk_1_1_callback.html">IslSdk::Callback</a></div><div class="ttdoc">This class is used to create a callback.</div><div class="ttdef"><b>Definition</b> sigSlot.h:25</div></div>
 <div class="ttc" id="aclass_isl_sdk_1_1_cobs_html"><div class="ttname"><a href="class_isl_sdk_1_1_cobs.html">IslSdk::Cobs</a></div><div class="ttdef"><b>Definition</b> cobs.h:14</div></div>
 <div class="ttc" id="aclass_isl_sdk_1_1_protocol_debugger_html"><div class="ttname"><a href="class_isl_sdk_1_1_protocol_debugger.html">IslSdk::ProtocolDebugger</a></div><div class="ttdoc">A class for displaying and debugging the comms protocol between the host and device.</div><div class="ttdef"><b>Definition</b> protocolDebugger.h:16</div></div>
 <div class="ttc" id="aclass_isl_sdk_1_1_sys_port_html"><div class="ttname"><a href="class_isl_sdk_1_1_sys_port.html">IslSdk::SysPort</a></div><div class="ttdoc">Base class for all system ports.</div><div class="ttdef"><b>Definition</b> sysPort.h:28</div></div>
+<div class="ttc" id="astruct_isl_sdk_1_1_const_buffer_html"><div class="ttname"><a href="struct_isl_sdk_1_1_const_buffer.html">IslSdk::ConstBuffer</a></div><div class="ttdef"><b>Definition</b> sdkTypes.h:41</div></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

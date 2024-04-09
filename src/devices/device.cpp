@@ -46,15 +46,9 @@ std::string Device::Info::pnSnAsStr() const
     return StringUtils::pnSnToStr(pn, sn);
 }
 //--------------------------------------------------------------------------------------------------
-//--------------------------------------------------------------------------------------------------
-Device::CustomStr::CustomStr() : enable(false), size(0), str{ 0 }
+std::string Device::Info::name() const
 {
-}
-//--------------------------------------------------------------------------------------------------
-Device::CustomStr::CustomStr(bool_t enable, uint8_t len, const uint8_t* data) : enable(enable)
-{
-    size = Math::min<uint8_t>(len, sizeof(str));
-    Mem::memcpy(&str[0], data, size);
+	return StringUtils::pidToStr(pid);
 }
 //--------------------------------------------------------------------------------------------------
 //--------------------------------------------------------------------------------------------------
@@ -67,7 +61,7 @@ Device::Device(const Device::Info& info) : IslHdlc(), m_info(info)
     m_searchCount = 30;
     m_packetResendLimit = 2;
     m_deviceTimeOut = 0;
-    m_deleteTimer = Time::getTimeMs() + 60000;            // Delete this device if not connected within 60 seconds
+    m_deleteTimer = Time::getTimeMs() + 60000;          // Delete this device if not connected within 60 seconds
     m_epochUs = Time::getTimeMs() * 1000;
 }
 //--------------------------------------------------------------------------------------------------
@@ -165,14 +159,14 @@ void Device::connectionSettingsUpdated(const ConnectionMeta& meta, bool_t isHalf
     }
 }
 //---------------------------------------------------------------------------------------------------
-void Device::startLogging()
+bool_t Device::startLogging()
 {
     LoggingDevice::startLogging();
 
     uint8_t buf[9];
     buf[0] = 1;
     Mem::pack64Bit(&buf[1], m_epochUs);
-    log(&buf[0], sizeof(buf), static_cast<uint8_t>(LoggingDataType::LogData), false);
+    return log(&buf[0], sizeof(buf), static_cast<uint8_t>(LoggingDataType::LogData), false);
 }
 //---------------------------------------------------------------------------------------------------
 bool_t Device::shouldDelete() const

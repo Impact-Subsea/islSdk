@@ -180,10 +180,10 @@ void Isd4000::measureNow()
     getData(DataFlags::pressure | DataFlags::temperature);
 }
 //--------------------------------------------------------------------------------------------------
-void Isd4000::startLogging()
+bool_t Isd4000::startLogging()
 {
     Device::startLogging();
-    logSettings();
+    return logSettings();
 }
 //--------------------------------------------------------------------------------------------------
 bool_t Isd4000::saveConfig(const std::string& fileName)
@@ -304,8 +304,8 @@ bool_t Isd4000::loadConfig(const std::string& fileName, Device::Info* info, Sett
     XmlFile file;
     if (file.open(fileName))
     {
-        XmlElementPtr baseNode = file.findElementOnRoot("ISD4000");
-        if (baseNode)
+        XmlElementPtr baseNode = file.root();
+        if (baseNode && baseNode->name == "ISD4000")
         {
             ok = true;
             if (info)
@@ -373,7 +373,7 @@ bool_t Isd4000::loadConfig(const std::string& fileName, Device::Info* info, Sett
                         if (point->name == "point")
                         {
                             uint_t i = StringUtils::toUint(point->getAttribute("id"), ok);
-                            if (i && (i - 1) < countof(pCal->cal.calPoints))
+                            if (i && (i - 1) < pCal->cal.calPoints.size())
                             {
                                 real_t x = point->getReal("measured", -1000.0);
                                 real_t y = point->getReal("actual", -1000.0);
@@ -402,7 +402,7 @@ bool_t Isd4000::loadConfig(const std::string& fileName, Device::Info* info, Sett
                         if (point->name == "point")
                         {
                             uint_t i = StringUtils::toUint(point->getAttribute("id"), ok);
-                            if (i && (i - 1) < countof(pCal->cal.verifyPoints))
+                            if (i && (i - 1) < pCal->cal.verifyPoints.size())
                             {
                                 real_t x = point->getReal("measured", -1000.0);
                                 real_t y = point->getReal("actual", -1000.0);
@@ -446,7 +446,7 @@ bool_t Isd4000::loadConfig(const std::string& fileName, Device::Info* info, Sett
                         if (point->name == "point")
                         {
                             uint_t i = StringUtils::toUint(point->getAttribute("id"), ok);
-                            if (i && (i - 1) < countof(tCal->cal.calPoints))
+                            if (i && (i - 1) < tCal->cal.calPoints.size())
                             {
                                 real_t x = point->getReal("measured", -1000.0);
                                 real_t y = point->getReal("actual", -1000.0);
@@ -475,7 +475,7 @@ bool_t Isd4000::loadConfig(const std::string& fileName, Device::Info* info, Sett
                         if (point->name == "point")
                         {
                             uint_t i = StringUtils::toUint(point->getAttribute("id"), ok);
-                            if (i && (i - 1) < countof(tCal->cal.verifyPoints))
+                            if (i && (i - 1) < tCal->cal.verifyPoints.size())
                             {
                                 real_t x = point->getReal("measured", -1000.0);
                                 real_t y = point->getReal("actual", -1000.0);
@@ -678,12 +678,12 @@ bool_t Isd4000::newPacket(uint8_t command, const uint8_t* data, uint_t size)
         m_pressureCal.cal.day = *data++;
         m_pressureCal.cal.calPointsLength = *data++;
         m_pressureCal.cal.verifyPointsLength = *data++;
-        for (uint_t i = 0; i < countof(m_pressureCal.cal.calPoints); i++)
+        for (uint_t i = 0; i < m_pressureCal.cal.calPoints.size(); i++)
         {
             m_pressureCal.cal.calPoints[i].x = Mem::getFloat32(&data);
             m_pressureCal.cal.calPoints[i].y = Mem::getFloat32(&data);
         }
-        for (uint_t i = 0; i < countof(m_pressureCal.cal.verifyPoints); i++)
+        for (uint_t i = 0; i < m_pressureCal.cal.verifyPoints.size(); i++)
         {
             m_pressureCal.cal.verifyPoints[i].x = Mem::getFloat32(&data);
             m_pressureCal.cal.verifyPoints[i].y = Mem::getFloat32(&data);
@@ -719,12 +719,12 @@ bool_t Isd4000::newPacket(uint8_t command, const uint8_t* data, uint_t size)
         m_temperatureCal.cal.day = *data++;
         m_temperatureCal.cal.calPointsLength = *data++;
         m_temperatureCal.cal.verifyPointsLength = *data++;
-        for (uint_t i = 0; i < countof(m_temperatureCal.cal.calPoints); i++)
+        for (uint_t i = 0; i < m_temperatureCal.cal.calPoints.size(); i++)
         {
             m_temperatureCal.cal.calPoints[i].x = Mem::getFloat32(&data);
             m_temperatureCal.cal.calPoints[i].y = Mem::getFloat32(&data);
         }
-        for (uint_t i = 0; i < countof(m_temperatureCal.cal.verifyPoints); i++)
+        for (uint_t i = 0; i < m_temperatureCal.cal.verifyPoints.size(); i++)
         {
             m_temperatureCal.cal.verifyPoints[i].x = Mem::getFloat32(&data);
             m_temperatureCal.cal.verifyPoints[i].y = Mem::getFloat32(&data);
@@ -928,14 +928,14 @@ void Isd4000::signalSubscribersChanged(uint_t subscriberCount)
     }
 }
 //--------------------------------------------------------------------------------------------------
-void Isd4000::logSettings()
+bool_t Isd4000::logSettings()
 {
     uint8_t data[Settings::size + 1];
 
     data[0] = static_cast<uint8_t>(Device::Commands::ReplyBit) | static_cast<uint8_t>(Commands::GetSettings);
     m_settings.serialise(&data[1], sizeof(data) - 1);
 
-    log(&data[0], sizeof(data), static_cast<uint8_t>(LoggingDataType::packetData), false);
+    return log(&data[0], sizeof(data), static_cast<uint8_t>(LoggingDataType::packetData), false);
 }
 //--------------------------------------------------------------------------------------------------
 void Isd4000::getData(uint32_t flags)
@@ -1101,12 +1101,12 @@ void Isd4000::setCalCert(Commands command, const CalCert& cert)
     *buf++ = cert.day;
     *buf++ = cert.calPointsLength;
     *buf++ = cert.verifyPointsLength;
-    for (uint_t i = 0; i < countof(cert.calPoints); i++)
+    for (uint_t i = 0; i < cert.calPoints.size(); i++)
     {
         Mem::packFloat32(&buf, cert.calPoints[i].x);
         Mem::packFloat32(&buf, cert.calPoints[i].y);
     }
-    for (uint_t i = 0; i < countof(cert.verifyPoints); i++)
+    for (uint_t i = 0; i < cert.verifyPoints.size(); i++)
     {
         Mem::packFloat32(&buf, cert.verifyPoints[i].x);
         Mem::packFloat32(&buf, cert.verifyPoints[i].y);
@@ -1152,16 +1152,16 @@ void Isd4000::Settings::defaults()
     headingOffsetRad = 0;
     turnsAbout = { 0,0,1 };
     turnsAboutEarthFrame = false;
-    clrTurn = { false, 3, {reinterpret_cast<const uint8_t*>("#c\r") } };
-    setHeading2Mag = { false, 3, {reinterpret_cast<const uint8_t*>("#m\r")} };
+    clrTurn = Device::CustomStr(false, "#c\r");
+    setHeading2Mag = Device::CustomStr(false, "#m\r");
     filterPressure = false;
     depthOffset = 0.0;
     pressureOffset = 0.0;
     latitude = 57.1;
-    tareStr = { false, 3, {reinterpret_cast<const uint8_t*>("#t\r") } };
-    unTareStr = { false, 3, {reinterpret_cast<const uint8_t*>("#u\r")} };
-    strTrigger[0] = { 0, false, 500, { false, 3, reinterpret_cast<const uint8_t*>("#d\r") } };
-    strTrigger[1] = { 0, false, 500, { false, 3, reinterpret_cast<const uint8_t*>("#o\r") } };
+    tareStr = Device::CustomStr(false, "#t\r");
+    unTareStr = Device::CustomStr(false, "#u\r");
+    depthStr = { 0, false, 500, Device::CustomStr(false, "#d\r") };
+    ahrsStr = { 0, false, 500, Device::CustomStr(false, "#o\r") };
 }
 //--------------------------------------------------------------------------------------------------
 bool_t Isd4000::Settings::check(std::vector<std::string>& errMsgs) const
@@ -1175,6 +1175,12 @@ bool_t Isd4000::Settings::check(std::vector<std::string>& errMsgs) const
     Utils::checkVar(orientationOffset.magnitude(), 0.99, 1.001, errMsgs, "orientationOffset quaternion is not normalised");
     Utils::checkVar(headingOffsetRad, -Math::pi2, Math::pi2, errMsgs, "headingOffsetRad out of range");
     Utils::checkVar(turnsAbout.magnitude(), 0.99, 1.001, errMsgs, "turnsAbout vector is not normalised");
+    Utils::checkVar<uint_t>(clrTurn.str.size(), 0, Device::CustomStr::size, errMsgs, "clrTurn string too long");
+    Utils::checkVar<uint_t>(setHeading2Mag.str.size(), 0, Device::CustomStr::size, errMsgs, "setHeading2Mag string too long");
+    Utils::checkVar<uint_t>(tareStr.str.size(), 0, Device::CustomStr::size, errMsgs, "tareStr string too long");
+	Utils::checkVar<uint_t>(unTareStr.str.size(), 0, Device::CustomStr::size, errMsgs, "unTareStr string too long");
+    Utils::checkVar<uint_t>(depthStr.interrogation.str.size(), 0, Device::CustomStr::size, errMsgs, "depthStr string too long");
+    Utils::checkVar<uint_t>(ahrsStr.interrogation.str.size(), 0, Device::CustomStr::size, errMsgs, "ahrsStr string too long");
 
     return errMsgs.empty();
 }
@@ -1201,41 +1207,35 @@ uint_t Isd4000::Settings::serialise(uint8_t* buf, uint_t size) const
         Mem::packFloat32(&buf, turnsAbout.z);
         *buf++ = turnsAboutEarthFrame;
         *buf++ = clrTurn.enable;
-        *buf++ = clrTurn.size;
-        Mem::memcpy(buf, &clrTurn.str[0], sizeof(clrTurn.str));
-        buf += sizeof(clrTurn.str);
+        *buf++ = static_cast<uint8_t>(clrTurn.str.size());
+        buf += clrTurn.packStr(buf);
         *buf++ = setHeading2Mag.enable;
-        *buf++ = setHeading2Mag.size;
-        Mem::memcpy(buf, &setHeading2Mag.str[0], sizeof(setHeading2Mag.str));
-        buf += sizeof(setHeading2Mag.str);
+        *buf++ = static_cast<uint8_t>(setHeading2Mag.str.size());
+        buf += setHeading2Mag.packStr(buf);
         *buf++ = filterPressure;
         Mem::packFloat32(&buf, depthOffset);
         Mem::packFloat32(&buf, pressureOffset);
         Mem::packFloat32(&buf, latitude);
         *buf++ = tareStr.enable;
-        *buf++ = tareStr.size;
-        Mem::memcpy(buf, &tareStr.str[0], sizeof(tareStr.str));
-        buf += sizeof(tareStr.str);
+        *buf++ = static_cast<uint8_t>(tareStr.str.size());
+        buf += tareStr.packStr(buf);
         *buf++ = unTareStr.enable;
-        *buf++ = unTareStr.size;
-        Mem::memcpy(buf, &unTareStr.str[0], sizeof(unTareStr.str));
-        buf += sizeof(unTareStr.str);
+        *buf++ = static_cast<uint8_t>(unTareStr.str.size());
+        buf += unTareStr.packStr(buf);
 
-        *buf++ = strTrigger[0].strId;
-        *buf++ = static_cast<uint8_t>(strTrigger[0].intervalEnabled);
-        Mem::pack32Bit(&buf, strTrigger[0].intervalMs);
-        *buf++ = static_cast<uint8_t>(strTrigger[0].interrogation.enable);
-        *buf++ = strTrigger[0].interrogation.size;
-        Mem::memcpy(buf, &strTrigger[0].interrogation.str[0], sizeof(strTrigger[0].interrogation.str));
-        buf += sizeof(strTrigger[0].interrogation.str);
+        *buf++ = depthStr.strId;
+        *buf++ = static_cast<uint8_t>(depthStr.intervalEnabled);
+        Mem::pack32Bit(&buf, depthStr.intervalMs);
+        *buf++ = static_cast<uint8_t>(depthStr.interrogation.enable);
+        *buf++ = static_cast<uint8_t>(depthStr.interrogation.str.size());
+        buf += depthStr.interrogation.packStr(buf);
 
-        *buf++ = strTrigger[1].strId;
-        *buf++ = static_cast<uint8_t>(strTrigger[1].intervalEnabled);
-        Mem::pack32Bit(&buf, strTrigger[1].intervalMs);
-        *buf++ = static_cast<uint8_t>(strTrigger[1].interrogation.enable);
-        *buf++ = strTrigger[1].interrogation.size;
-        Mem::memcpy(buf, &strTrigger[1].interrogation.str[0], sizeof(strTrigger[1].interrogation.str));
-        buf += sizeof(strTrigger[1].interrogation.str);
+        *buf++ = ahrsStr.strId;
+        *buf++ = static_cast<uint8_t>(ahrsStr.intervalEnabled);
+        Mem::pack32Bit(&buf, ahrsStr.intervalMs);
+        *buf++ = static_cast<uint8_t>(ahrsStr.interrogation.enable);
+        *buf++ = static_cast<uint8_t>(ahrsStr.interrogation.str.size());
+        buf += ahrsStr.interrogation.packStr(buf);
 
         return buf - start;
     }
@@ -1265,42 +1265,42 @@ uint_t Isd4000::Settings::deserialise(const uint8_t* data, uint_t size)
         turnsAbout.z = Mem::getFloat32(&data);
         turnsAboutEarthFrame = *data++;
         clrTurn.enable = *data++;
-        clrTurn.size = *data++;
-        Mem::memcpy(&clrTurn.str[0], data, sizeof(clrTurn.str));
-        data += sizeof(clrTurn.str);
+        uint_t size = *data++;
+        clrTurn.str = StringUtils::toStr(data, size);
+        data += clrTurn.size;
         setHeading2Mag.enable = *data++;
-        setHeading2Mag.size = *data++;
-        Mem::memcpy(&setHeading2Mag.str[0], data, sizeof(setHeading2Mag.str));
-        data += sizeof(setHeading2Mag.str);
+        size = *data++;
+        setHeading2Mag.str = StringUtils::toStr(data, size);
+        data += setHeading2Mag.size;
         filterPressure = *data & 0x01;
         data++;
         depthOffset = Mem::getFloat32(&data);
         pressureOffset = Mem::getFloat32(&data);
         latitude = Mem::getFloat32(&data);
-
         tareStr.enable = *data++;
-        tareStr.size = *data++;
-        Mem::memcpy(&tareStr.str[0], data, sizeof(tareStr.str));
-        data += sizeof(tareStr.str);
+        size = *data++;
+        tareStr.str = StringUtils::toStr(data, size);
+        data += tareStr.size;
         unTareStr.enable = *data++;
-        unTareStr.size = *data++;
-        Mem::memcpy(&unTareStr.str[0], data, sizeof(unTareStr.str));
-        data += sizeof(unTareStr.str);
+        size = *data++;
+        unTareStr.str = StringUtils::toStr(data, size);
+        data += unTareStr.size;
 
-        strTrigger[0].strId = *data++;
-        strTrigger[0].intervalEnabled = static_cast<bool_t>(*data++);
-        strTrigger[0].intervalMs = Mem::get32Bit(&data);
-        strTrigger[0].interrogation.enable = static_cast<bool_t>(*data++);
-        strTrigger[0].interrogation.size = *data++;
-        Mem::memcpy(&strTrigger[0].interrogation.str[0], data, sizeof(strTrigger[0].interrogation.str));
-        data += sizeof(strTrigger[0].interrogation.str);
+        depthStr.strId = *data++;
+        depthStr.intervalEnabled = static_cast<bool_t>(*data++);
+        depthStr.intervalMs = Mem::get32Bit(&data);
+        depthStr.interrogation.enable = static_cast<bool_t>(*data++);
+        size = *data++;
+        depthStr.interrogation.str = StringUtils::toStr(data, size);
+        data += depthStr.interrogation.size;
 
-        strTrigger[1].strId = *data++;
-        strTrigger[1].intervalEnabled = static_cast<bool_t>(*data++);
-        strTrigger[1].intervalMs = Mem::get32Bit(&data);
-        strTrigger[1].interrogation.enable = static_cast<bool_t>(*data++);
-        strTrigger[1].interrogation.size = *data++;
-        Mem::memcpy(&strTrigger[1].interrogation.str[0], data, sizeof(strTrigger[1].interrogation.str));
+        ahrsStr.strId = *data++;
+        ahrsStr.intervalEnabled = static_cast<bool_t>(*data++);
+        ahrsStr.intervalMs = Mem::get32Bit(&data);
+        ahrsStr.interrogation.enable = static_cast<bool_t>(*data++);
+        size = *data++;
+        ahrsStr.interrogation.str = StringUtils::toStr(data, size);
+        data += ahrsStr.interrogation.size;
 
         return data - start;
     }
@@ -1337,45 +1337,46 @@ bool_t Isd4000::Settings::load(const XmlElementPtr& xml)
             turnsAbout.y = node->getReal("y", 0.0);
             turnsAbout.z = node->getReal("z", 0.0);
         }
+        uint8_t buf[Device::CustomStr::size];
         turnsAboutEarthFrame = xml->getBool("turnsAboutEarthFrame", true);
         clrTurn.enable = xml->getBool("clrTurnStrEnable", true);
-        clrTurn.size = static_cast<uint8_t>(xml->getBytes("clrTurnStr",
-            &clrTurn.str[0], sizeof(clrTurn.str)));
+        uint_t size = xml->getBytes("clrTurnStr", &buf[0], sizeof(buf));
+        clrTurn.str = StringUtils::toStr(&buf[0], size);
         setHeading2Mag.enable = xml->getBool("setHeading2MagStrEnable", true);
-        setHeading2Mag.size = static_cast<uint8_t>(xml->getBytes("setHeading2MagStr",
-            &setHeading2Mag.str[0], sizeof(setHeading2Mag.str)));
-
+        size = xml->getBytes("setHeading2MagStr", &buf[0], sizeof(buf));
+        setHeading2Mag.str = StringUtils::toStr(&buf[0], size);
         filterPressure = xml->getBool("filterPressure", true);
         depthOffset = xml->getReal("depthOffset", 0.0);
         pressureOffset = xml->getReal("pressureOffset", 0.0);
         latitude = xml->getReal("latitude", 57.1);
         tareStr.enable = xml->getBool("tareStrEnable", true);
-        tareStr.size = static_cast<uint8_t>(xml->getBytes("tareStr",
-            &tareStr.str[0], sizeof(tareStr.str)));
-        unTareStr.enable = xml->getBool("unTareStrEnable", true);
-        unTareStr.size = static_cast<uint8_t>(xml->getBytes("unTareStr",
-            &unTareStr.str[0], sizeof(unTareStr.str)));
+        size = xml->getBytes("tareStr", &buf[0], sizeof(buf));
+        tareStr.str = StringUtils::toStr(&buf[0], size);
+        size = xml->getBytes("unTareStr", &buf[0], sizeof(buf));
+        unTareStr.str = StringUtils::toStr(&buf[0], size);
 
         node = xml->findElement("depthString");
         if (node)
         {
-            strTrigger[0].strId = static_cast<uint8_t>(node->getUint("id", 0));
-            strTrigger[0].intervalEnabled = node->getBool("intervalEnabled", false);
-            strTrigger[0].intervalMs = static_cast<uint32_t>(node->getUint("intervalMs", 500));
-            strTrigger[0].interrogation.enable = node->getBool("interrogationEnabled", false);
-            strTrigger[0].interrogation.size = static_cast<uint8_t>(node->getBytes("interrogationStr",
-                &strTrigger[0].interrogation.str[0], sizeof(strTrigger[0].interrogation.str)));
+            depthStr.strId = static_cast<uint8_t>(node->getUint("id", 0));
+            depthStr.intervalEnabled = node->getBool("intervalEnabled", false);
+            depthStr.intervalMs = static_cast<uint32_t>(node->getUint("intervalMs", 500));
+            depthStr.interrogation.enable = node->getBool("interrogationEnabled", false);
+            depthStr.interrogation.enable = node->getBool("interrogationEnabled", false);
+            size = xml->getBytes("interrogationStr", &buf[0], sizeof(buf));
+            depthStr.interrogation.str = StringUtils::toStr(&buf[0], size);
         }
 
         node = xml->findElement("ahrsString");
         if (node)
         {
-            strTrigger[1].strId = static_cast<uint8_t>(node->getUint("id", 0));
-            strTrigger[1].intervalEnabled = node->getBool("intervalEnabled", false);
-            strTrigger[1].intervalMs = static_cast<uint32_t>(node->getUint("intervalMs", 500));
-            strTrigger[1].interrogation.enable = node->getBool("interrogationEnabled", false);
-            strTrigger[1].interrogation.size = static_cast<uint8_t>(node->getBytes("interrogationStr",
-                &strTrigger[1].interrogation.str[0], sizeof(strTrigger[1].interrogation.str)));
+            ahrsStr.strId = static_cast<uint8_t>(node->getUint("id", 0));
+            ahrsStr.intervalEnabled = node->getBool("intervalEnabled", false);
+            ahrsStr.intervalMs = static_cast<uint32_t>(node->getUint("intervalMs", 500));
+            ahrsStr.interrogation.enable = node->getBool("interrogationEnabled", false);
+            ahrsStr.interrogation.enable = node->getBool("interrogationEnabled", false);
+            size = xml->getBytes("interrogationStr", &buf[0], sizeof(buf));
+            ahrsStr.interrogation.str = StringUtils::toStr(&buf[0], size);
         }
     }
     return ok;
@@ -1406,32 +1407,31 @@ void Isd4000::Settings::save(XmlElementPtr& xml) const
 
         xml->addBool("turnsAboutEarthFrame", turnsAboutEarthFrame);
         xml->addBool("clrTurnStrEnable", clrTurn.enable);
-        xml->addBytes("clrTurnStr", &clrTurn.str[0], clrTurn.size);
+        xml->addBytes("clrTurnStr", reinterpret_cast<const uint8_t*>(clrTurn.str.c_str()), clrTurn.str.size());
         xml->addBool("setHeading2MagStrEnable", setHeading2Mag.enable);
-        xml->addBytes("setHeading2MagStr", &setHeading2Mag.str[0], setHeading2Mag.size);
+        xml->addBytes("setHeading2MagStr", reinterpret_cast<const uint8_t*>(setHeading2Mag.str.c_str()), setHeading2Mag.str.size());
 
         xml->addBool("filterPressure", filterPressure);
         xml->addReal("depthOffset", depthOffset, 6);
         xml->addReal("pressureOffset", pressureOffset, 6);
         xml->addReal("latitude", latitude, 6);
         xml->addBool("tareStrEnable", tareStr.enable);
-        xml->addBytes("tareStr", &tareStr.str[0], tareStr.size);
+        xml->addBytes("tareStr", reinterpret_cast<const uint8_t*>(tareStr.str.c_str()), tareStr.str.size());
         xml->addBool("unTareStrEnable", tareStr.enable);
-        xml->addBytes("unTareStr", &unTareStr.str[0], unTareStr.size);
-
+        xml->addBytes("unTareStr", reinterpret_cast<const uint8_t*>(unTareStr.str.c_str()), unTareStr.str.size());
         node = xml->addElement("pingString");
-        node->addUint("id", strTrigger[0].strId);
-        node->addBool("intervalEnabled", strTrigger[0].intervalEnabled);
-        node->addUint("intervalMs", strTrigger[0].intervalMs);
-        node->addBool("interrogationEnabled", strTrigger[0].interrogation.enable);
-        node->addBytes("interrogationStr", &strTrigger[0].interrogation.str[0], strTrigger[0].interrogation.size);
+        node->addUint("id", depthStr.strId);
+        node->addBool("intervalEnabled", depthStr.intervalEnabled);
+        node->addUint("intervalMs", depthStr.intervalMs);
+        node->addBool("interrogationEnabled", depthStr.interrogation.enable);
+        node->addBytes("interrogationStr", reinterpret_cast<const uint8_t*>(depthStr.interrogation.str.c_str()), depthStr.interrogation.str.size());
 
         node = xml->addElement("ahrsString");
-        node->addUint("id", strTrigger[1].strId);
-        node->addBool("intervalEnabled", strTrigger[1].intervalEnabled);
-        node->addUint("intervalMs", strTrigger[1].intervalMs);
-        node->addBool("interrogationEnabled", strTrigger[1].interrogation.enable);
-        node->addBytes("interrogationStr", &strTrigger[1].interrogation.str[0], strTrigger[1].interrogation.size);
+        node->addUint("id", ahrsStr.strId);
+        node->addBool("intervalEnabled", ahrsStr.intervalEnabled);
+        node->addUint("intervalMs", ahrsStr.intervalMs);
+        node->addBool("interrogationEnabled", ahrsStr.interrogation.enable);
+        node->addBytes("interrogationStr", reinterpret_cast<const uint8_t*>(ahrsStr.interrogation.str.c_str()), ahrsStr.interrogation.str.size());
     }
 }
 //--------------------------------------------------------------------------------------------------

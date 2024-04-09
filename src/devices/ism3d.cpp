@@ -41,7 +41,7 @@ void Ism3d::setSensorRates(const SensorRates& rates)
         if (!accel.onData.hasSubscribers()) toSend.accel = 0;
         if (!mag.onData.hasSubscribers()) toSend.mag = 0;
 
-        uint8_t data[33];
+        uint8_t data[17];
         uint8_t* buf = &data[0];
 
         *buf++ = static_cast<uint8_t>(Commands::SetSensorInterval);
@@ -123,11 +123,12 @@ bool_t Ism3d::getScripts()
 
     return m_scriptVars.state == DataState::Valid && m_onAhrs.state == DataState::Valid;
 }
+
 //--------------------------------------------------------------------------------------------------
-void Ism3d::startLogging()
+bool_t Ism3d::startLogging()
 {
     Device::startLogging();
-    logSettings();
+    return logSettings();
 }
 //--------------------------------------------------------------------------------------------------
 bool_t Ism3d::saveConfig(const std::string& fileName)
@@ -188,8 +189,8 @@ bool_t Ism3d::loadConfig(const std::string& fileName, Device::Info* info, Settin
     XmlFile file;
     if (file.open(fileName))
     {
-        XmlElementPtr baseNode = file.findElementOnRoot("ISA500");
-        if (baseNode)
+        XmlElementPtr baseNode = file.root();
+        if (baseNode && baseNode->name == "ISM3D")
         {
             ok = true;
             if (info)
@@ -522,6 +523,7 @@ bool_t Ism3d::newPacket(uint8_t command, const uint8_t* data, uint_t size)
         }
         break;
     }
+    
     default:
         break;
     }
@@ -537,17 +539,14 @@ void Ism3d::signalSubscribersChanged(uint_t subscriberCount)
     }
 }
 //--------------------------------------------------------------------------------------------------
-void Ism3d::logSettings()
+bool_t Ism3d::logSettings()
 {
-    if (islogging())
-    {
-        uint8_t data[Settings::size + 1];
+    uint8_t data[Settings::size + 1];
 
-        data[0] = static_cast<uint8_t>(Device::Commands::ReplyBit) | static_cast<uint8_t>(Commands::GetSettings);
-        m_settings.serialise(&data[1], sizeof(data) - 1);
+    data[0] = static_cast<uint8_t>(Device::Commands::ReplyBit) | static_cast<uint8_t>(Commands::GetSettings);
+    m_settings.serialise(&data[1], sizeof(data) - 1);
 
-        log(&data[0], sizeof(data), static_cast<uint8_t>(LoggingDataType::packetData), false);
-    }
+    return log(&data[0], sizeof(data), static_cast<uint8_t>(LoggingDataType::packetData), false);
 }
 //--------------------------------------------------------------------------------------------------
 void Ism3d::getData(uint32_t flags)
@@ -614,10 +613,11 @@ void Ism3d::setAccelCal(uint_t sensorNum, const Vector3& bias, const Matrix3x3& 
 //--------------------------------------------------------------------------------------------------
 void Ism3d::setMagCal(uint_t sensorNum, const Vector3& bias, const Matrix3x3& transform)
 {
-    uint8_t data[49];
+    uint8_t data[50];
     uint8_t* buf = &data[0];
 
     *buf++ = static_cast<uint8_t>(Commands::SetMagCal);
+    *buf++ = 0;
     Mem::packFloat32(&buf, bias.x);
     Mem::packFloat32(&buf, bias.y);
     Mem::packFloat32(&buf, bias.z);
@@ -713,9 +713,9 @@ void Ism3d::Settings::defaults()
     headingOffsetRad = 0;
     turnsAbout = { 0,0,1 };
     turnsAboutEarthFrame = false;
-    clrTurn = { false, 3, {reinterpret_cast<const uint8_t*>("#c\r") } };
-    setHeading2Mag = { false, 3, {reinterpret_cast<const uint8_t*>("#m\r")} };
-    strTrigger = { 0, false, 500, { false, 3, reinterpret_cast<const uint8_t*>("#o\r") } };
+    clrTurn = Device::CustomStr(false, "#c\r");
+    setHeading2Mag = Device::CustomStr(false, "#m\r");
+    ahrsStr = { 0, false, 500, Device::CustomStr(false, "#o\r") };
 }
 //--------------------------------------------------------------------------------------------------
 bool_t Ism3d::Settings::check(std::vector<std::string>& errMsgs) const
@@ -729,6 +729,9 @@ bool_t Ism3d::Settings::check(std::vector<std::string>& errMsgs) const
     Utils::checkVar(orientationOffset.magnitude(), 0.99, 1.001, errMsgs, "orientationOffset quaternion is not normalised");
     Utils::checkVar(headingOffsetRad, -Math::pi2, Math::pi2, errMsgs, "headingOffsetRad out of range");
     Utils::checkVar(turnsAbout.magnitude(), 0.99, 1.001, errMsgs, "turnsAbout vector is not normalised");
+    Utils::checkVar<uint_t>(clrTurn.str.size(), 0, Device::CustomStr::size, errMsgs, "clrTurn string too long");
+    Utils::checkVar<uint_t>(setHeading2Mag.str.size(), 0, Device::CustomStr::size, errMsgs, "setHeading2Mag string too long");
+    Utils::checkVar<uint_t>(ahrsStr.interrogation.str.size(), 0, Device::CustomStr::size, errMsgs, "ahrsStr string too long");
 
     return errMsgs.empty();
 }
@@ -736,7 +739,7 @@ bool_t Ism3d::Settings::check(std::vector<std::string>& errMsgs) const
 uint_t Ism3d::Settings::serialise(uint8_t* buf, uint_t size) const
 {
     if (size >= this->size)
-    {
+    {;
         uint8_t* start = buf;
 
         *buf++ = static_cast<uint8_t>(uartMode);
@@ -755,21 +758,18 @@ uint_t Ism3d::Settings::serialise(uint8_t* buf, uint_t size) const
         Mem::packFloat32(&buf, turnsAbout.z);
         *buf++ = turnsAboutEarthFrame;
         *buf++ = clrTurn.enable;
-        *buf++ = clrTurn.size;
-        Mem::memcpy(buf, &clrTurn.str[0], sizeof(clrTurn.str));
-        buf += sizeof(clrTurn.str);
+        *buf++ = static_cast<uint8_t>(clrTurn.str.size());
+        buf += clrTurn.packStr(buf);
         *buf++ = setHeading2Mag.enable;
-        *buf++ = setHeading2Mag.size;
-        Mem::memcpy(buf, &setHeading2Mag.str[0], sizeof(setHeading2Mag.str));
-        buf += sizeof(setHeading2Mag.str);
+        *buf++ = static_cast<uint8_t>(setHeading2Mag.str.size());
+        buf += setHeading2Mag.packStr(buf);
 
-        *buf++ = strTrigger.strId;
-        *buf++ = static_cast<uint8_t>(strTrigger.intervalEnabled);
-        Mem::pack32Bit(&buf, strTrigger.intervalMs);
-        *buf++ = static_cast<uint8_t>(strTrigger.interrogation.enable);
-        *buf++ = strTrigger.interrogation.size;
-        Mem::memcpy(buf, &strTrigger.interrogation.str[0], sizeof(strTrigger.interrogation.str));
-        buf += sizeof(strTrigger.interrogation.str);
+        *buf++ = ahrsStr.strId;
+        *buf++ = static_cast<uint8_t>(ahrsStr.intervalEnabled);
+        Mem::pack32Bit(&buf, ahrsStr.intervalMs);
+        *buf++ = static_cast<uint8_t>(ahrsStr.interrogation.enable);
+        *buf++ = static_cast<uint8_t>(ahrsStr.interrogation.str.size());
+        buf += ahrsStr.interrogation.packStr(buf);
 
         return buf - start;
     }
@@ -799,22 +799,21 @@ uint_t Ism3d::Settings::deserialise(const uint8_t* data, uint_t size)
         turnsAbout.z = Mem::getFloat32(&data);
         turnsAboutEarthFrame = *data++;
         clrTurn.enable = *data++;
-        clrTurn.size = *data++;
-
-        Mem::memcpy(&clrTurn.str[0], data, sizeof(clrTurn.str));
-        data += sizeof(clrTurn.str);
+        uint_t size = *data++;
+        clrTurn.str = StringUtils::toStr(data, size);
+        data += clrTurn.size;
         setHeading2Mag.enable = *data++;
-        setHeading2Mag.size = *data++;
-        Mem::memcpy(&setHeading2Mag.str[0], data, sizeof(setHeading2Mag.str));
-        data += sizeof(setHeading2Mag.str);
+        size = *data++;
+        setHeading2Mag.str = StringUtils::toStr(data, size);
+        data += setHeading2Mag.size;
 
-        strTrigger.strId = *data++;
-        strTrigger.intervalEnabled = (bool_t)*data++;
-        strTrigger.intervalMs = Mem::get32Bit(&data);
-        strTrigger.interrogation.enable = (bool_t)*data++;
-        strTrigger.interrogation.size = *data++;
-        Mem::memcpy(&strTrigger.interrogation.str[0], data, sizeof(strTrigger.interrogation.str));
-        data += sizeof(strTrigger.interrogation.str);
+        ahrsStr.strId = *data++;
+        ahrsStr.intervalEnabled = (bool_t)*data++;
+        ahrsStr.intervalMs = Mem::get32Bit(&data);
+        ahrsStr.interrogation.enable = (bool_t)*data++;
+        size = *data++;
+        ahrsStr.interrogation.str = StringUtils::toStr(data, size);
+        data += ahrsStr.interrogation.size;
 
         return data - start;
     }
@@ -851,22 +850,25 @@ bool_t Ism3d::Settings::load(const XmlElementPtr& xml)
             turnsAbout.y = node->getReal("y", 0.0);
             turnsAbout.z = node->getReal("z", 0.0);
         }
+        uint8_t buf[Device::CustomStr::size];
         turnsAboutEarthFrame = xml->getBool("turnsAboutEarthFrame", true);
         clrTurn.enable = xml->getBool("clrTurnStrEnable", true);
-        clrTurn.size = static_cast<uint8_t>(xml->getBytes("clrTurnStr", &clrTurn.str[0], sizeof(clrTurn.str)));
+        uint_t size = xml->getBytes("clrTurnStr", &buf[0], sizeof(buf));
+        clrTurn.str = StringUtils::toStr(&buf[0], size);
         setHeading2Mag.enable = xml->getBool("setHeading2MagStrEnable", true);
-        setHeading2Mag.size = static_cast<uint8_t>(xml->getBytes("setHeading2MagStr",
-            &setHeading2Mag.str[0], sizeof(setHeading2Mag.str)));
+        size = xml->getBytes("setHeading2MagStr", &buf[0], sizeof(buf));
+        setHeading2Mag.str = StringUtils::toStr(&buf[0], size);
 
         node = xml->findElement("outputString");
         if (node)
         {
-            strTrigger.strId = static_cast<uint8_t>(node->getUint("id", 0));
-            strTrigger.intervalEnabled = node->getBool("intervalEnabled", false);
-            strTrigger.intervalMs = static_cast<uint32_t>(node->getUint("intervalMs", 500));
-            strTrigger.interrogation.enable = node->getBool("interrogationEnabled", false);
-            strTrigger.interrogation.size = static_cast<uint8_t>(node->getBytes("interrogationStr",
-                &strTrigger.interrogation.str[0], sizeof(strTrigger.interrogation.str)));
+            ahrsStr.strId = static_cast<uint8_t>(node->getUint("id", 0));
+            ahrsStr.intervalEnabled = node->getBool("intervalEnabled", false);
+            ahrsStr.intervalMs = static_cast<uint32_t>(node->getUint("intervalMs", 500));
+            ahrsStr.interrogation.enable = node->getBool("interrogationEnabled", false);
+            ahrsStr.interrogation.enable = node->getBool("interrogationEnabled", false);
+            size = xml->getBytes("interrogationStr", &buf[0], sizeof(buf));
+            ahrsStr.interrogation.str = StringUtils::toStr(&buf[0], size);
         }
     }
     return ok;
@@ -897,16 +899,16 @@ void Ism3d::Settings::save(XmlElementPtr& xml) const
 
         xml->addBool("turnsAboutEarthFrame", turnsAboutEarthFrame);
         xml->addBool("clrTurnStrEnable", clrTurn.enable);
-        xml->addBytes("clrTurnStr", &clrTurn.str[0], clrTurn.size);
+        xml->addBytes("clrTurnStr", reinterpret_cast<const uint8_t*>(clrTurn.str.c_str()), clrTurn.str.size());
         xml->addBool("setHeading2MagStrEnable", setHeading2Mag.enable);
-        xml->addBytes("setHeading2MagStr", &setHeading2Mag.str[0], setHeading2Mag.size);
+        xml->addBytes("setHeading2MagStr", reinterpret_cast<const uint8_t*>(setHeading2Mag.str.c_str()), setHeading2Mag.str.size());
 
         node = xml->addElement("outputString");
-        node->addUint("id", strTrigger.strId);
-        node->addBool("intervalEnabled", strTrigger.intervalEnabled);
-        node->addUint("intervalMs", strTrigger.intervalMs);
-        node->addBool("interrogationEnabled", strTrigger.interrogation.enable);
-        node->addBytes("interrogationStr", &strTrigger.interrogation.str[0], strTrigger.interrogation.size);
+        node->addUint("id", ahrsStr.strId);
+        node->addBool("intervalEnabled", ahrsStr.intervalEnabled);
+        node->addUint("intervalMs", ahrsStr.intervalMs);
+        node->addBool("interrogationEnabled", ahrsStr.interrogation.enable);
+        node->addBytes("interrogationStr", reinterpret_cast<const uint8_t*>(ahrsStr.interrogation.str.c_str()), ahrsStr.interrogation.str.size());
     }
 }
 //--------------------------------------------------------------------------------------------------

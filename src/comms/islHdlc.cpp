@@ -64,7 +64,7 @@ bool_t IslHdlcPacket::fromFrame(const uint8_t* frame, uint_t frameSize)
                 header.protocolVersion = 2;
                 header.type = FrameType::U;
                 header.pf = true;
-                header.cr = true;
+                header.cr = false;
                 header.ack = 0;
                 header.uCode = UframeCode::Discover;
                 header.address = 0;

@@ -31,13 +31,13 @@ namespace IslSdk
             bool_t turnsAboutEarthFrame;                ///< If true the "turnsAbout" vector is referenced to the earth frame. False is sensor frame.
             Device::CustomStr clrTurn;                  ///< The turns clearing string.
             Device::CustomStr setHeading2Mag;           ///< A string to set the heading to magnetometer heading.
-            struct CustomStr
+            struct StrOutputSetup
             {
                 uint8_t strId;                          ///< Id of the string 0 = script
                 bool_t intervalEnabled;                 ///< If true then autonomously aquire and output at the defined interval.
                 uint32_t intervalMs;                    ///< Interval in milliseconds to autonomously output.
                 Device::CustomStr interrogation;        ///< Custom interrogation string
-            } strTrigger;
+            } ahrsStr;
 
             static const uint_t size = 150;
 
@@ -93,6 +93,7 @@ namespace IslSdk
         */
         Signal<Ism3d&, bool_t> onSettingsUpdated;
 
+
         Ism3d(const Device::Info& info);
         ~Ism3d();
 
@@ -130,10 +131,11 @@ namespace IslSdk
         */
         bool_t getScripts();
 
+
         /**
         * @brief Starts logging for the device.
         */
-        void startLogging() override;
+        bool_t startLogging() override;
 
         /**
         * @brief Saves the configuration with the provided file name.
@@ -156,7 +158,7 @@ namespace IslSdk
 
     public:
         const Settings& settings = m_settings;                                      ///< The current settings.
-        const SensorRates& sensorsRates = m_requestedRates;                         ///< The sensor rates.
+        const SensorRates& sensorRates = m_requestedRates;                          ///< The sensor rates.
         const std::vector<std::string>& hardCodedAhrsOutputStrings = m_hardCodedAhrsOutputStrings;
         const ScriptVars& scriptVars = m_scriptVars;                                ///< The script variables.
         const DeviceScript& onAhrs = m_onAhrs;                                      ///< The AHRS script.
@@ -198,7 +200,7 @@ namespace IslSdk
         void connectionEvent(bool_t isConnected) override;
         bool_t newPacket(uint8_t command, const uint8_t* data, uint_t size) override;
         void signalSubscribersChanged(uint_t subscriberCount);
-        void logSettings();
+        bool_t logSettings();
         void getData(uint32_t flags);
         void getSettings();
         void getAhrsCal();

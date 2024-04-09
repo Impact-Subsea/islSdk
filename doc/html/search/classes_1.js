@@ -8,6 +8,7 @@ var searchData=
   ['colour_5',['Colour',['../union_isl_sdk_1_1_palette_1_1_colour.html',1,'IslSdk::Palette']]],
   ['connection_6',['Connection',['../struct_isl_sdk_1_1_connection.html',1,'IslSdk']]],
   ['connectionmeta_7',['ConnectionMeta',['../class_isl_sdk_1_1_connection_meta.html',1,'IslSdk']]],
-  ['cpupowertemp_8',['CpuPowerTemp',['../struct_isl_sdk_1_1_sonar_1_1_cpu_power_temp.html',1,'IslSdk::Sonar']]],
-  ['customstr_9',['customstr',['../class_isl_sdk_1_1_device_1_1_custom_str.html',1,'IslSdk::Device::CustomStr'],['../struct_isl_sdk_1_1_isa500_1_1_settings_1_1_custom_str.html',1,'IslSdk::Isa500::Settings::CustomStr'],['../struct_isl_sdk_1_1_isd4000_1_1_settings_1_1_custom_str.html',1,'IslSdk::Isd4000::Settings::CustomStr'],['../struct_isl_sdk_1_1_ism3d_1_1_settings_1_1_custom_str.html',1,'IslSdk::Ism3d::Settings::CustomStr']]]
+  ['constbuffer_8',['ConstBuffer',['../struct_isl_sdk_1_1_const_buffer.html',1,'IslSdk']]],
+  ['cpupowertemp_9',['CpuPowerTemp',['../struct_isl_sdk_1_1_sonar_1_1_cpu_power_temp.html',1,'IslSdk::Sonar']]],
+  ['customstr_10',['CustomStr',['../class_isl_sdk_1_1_device_1_1_custom_str.html',1,'IslSdk::Device']]]
 ];

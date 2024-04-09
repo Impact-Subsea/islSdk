@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.5)
 
 project(islSdk LANGUAGES CXX)
 
@@ -45,6 +45,7 @@ set(HEADERS
     src/comms/connectionMeta.h
     src/comms/islHdlc.h
     src/comms/sysPortMgr.h
+    src/comms/sysPortServices.h
     src/comms/protocolDebugger.h
     src/devices/ahrs.h
     src/devices/device.h
@@ -141,4 +142,4 @@ set(SOURCES
 )
 
 add_library (${PROJECT_NAME} STATIC ${SOURCES} ${HEADERS})
-target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/src)

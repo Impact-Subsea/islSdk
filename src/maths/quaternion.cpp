@@ -193,7 +193,7 @@ real_t Quaternion::getRotationAbout(const Quaternion& q, const Vector3& about) c
 {
     real_t dot = q.x * about.x + q.y * about.y + q.z * about.z;
     Quaternion qr = Quaternion(q.w, about.x * dot, about.y * dot, about.z * dot).normalise();
-    real_t angle = (real_t)2.0 * std::acos(qr.w);
+    real_t angle = (real_t)2.0 * Math::acos(qr.w);
 
     if (dot < (real_t)0.0)
     {
@@ -235,8 +235,8 @@ void Quaternion::getDownAndEulerOffsets(Vector3& down, EulerAngles& euler) const
     real_t m21 = (real_t)2.0 * (qr.y * qr.z + qr.w * qr.x);
 
     euler.heading = -Math::atan2(m10, m00);
-    euler.pitch = std::asin(m20);
-    euler.roll = -std::asin(m21);
+    euler.pitch = Math::asin(m20);
+    euler.roll = -Math::asin(m21);
 }
 //--------------------------------------------------------------------------------------------------
 Matrix3x3 Quaternion::toMatrix() const
@@ -270,7 +270,7 @@ Matrix3x3 Quaternion::toMatrix() const
 //--------------------------------------------------------------------------------------------------
 real_t Quaternion::toAxisAngle(Vector3& axis) const
 {
-    real_t angle = (real_t)2.0 * std::acos(w);
+    real_t angle = (real_t)2.0 * Math::acos(w);
     real_t s = Math::sqrt((real_t)1.0 - w * w);
 
     axis.x = x;
@@ -303,7 +303,7 @@ EulerAngles Quaternion::toEulerAngles(real_t headingOffsetRad) const
     m22 = (real_t)2.0 * (w * w + z * z) - (real_t)1.0;
 
     //Tait-Bryan intrinsic ZYX (HPR) order
-    eulerAngles.pitch = std::asin(-m20);
+    eulerAngles.pitch = Math::asin(-m20);
     eulerAngles.roll = Math::atan2(m21, m22);
 
     if (eulerAngles.pitch < Math::degToRad(-89.0) || eulerAngles.pitch > Math::degToRad(89.0))                        // Gimbal lock pitch = -90 or +90
