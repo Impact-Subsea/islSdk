@@ -14,6 +14,7 @@ var hierarchy =
     [ "IslSdk::Isd4000::CalCert", "struct_isl_sdk_1_1_isd4000_1_1_cal_cert.html", null ],
     [ "IslSdk::Callback< Args >", "class_isl_sdk_1_1_callback.html", null ],
     [ "IslSdk::Callback< IslSdk::SysPort &, const uint8_t *, uint_t, const IslSdk::ConnectionMeta &, Codec::Type >", "class_isl_sdk_1_1_callback.html", null ],
+    [ "IslSdk::Callback< Uart::Events >", "class_isl_sdk_1_1_callback.html", null ],
     [ "IslSdk::Codec", "class_isl_sdk_1_1_codec.html", [
       [ "IslSdk::Cobs", "class_isl_sdk_1_1_cobs.html", null ],
       [ "IslSdk::Nmea", "class_isl_sdk_1_1_nmea.html", null ]
@@ -30,7 +31,7 @@ var hierarchy =
     [ "IslSdk::Isa500::Echo", "struct_isl_sdk_1_1_isa500_1_1_echo.html", null ],
     [ "IslSdk::Sonar::Echos::Echo", "struct_isl_sdk_1_1_sonar_1_1_echos_1_1_echo.html", null ],
     [ "IslSdk::Sonar::Echos", "struct_isl_sdk_1_1_sonar_1_1_echos.html", null ],
-    [ "IslSdk::EulerAngles", "struct_isl_sdk_1_1_euler_angles.html", null ],
+    [ "IslSdk::Math::EulerAngles", "struct_isl_sdk_1_1_math_1_1_euler_angles.html", null ],
     [ "IslSdk::LogFile::FileHeader", "struct_isl_sdk_1_1_log_file_1_1_file_header.html", null ],
     [ "IslSdk::GpsDevice::Gpgga", "struct_isl_sdk_1_1_gps_device_1_1_gpgga.html", null ],
     [ "IslSdk::GpsDevice::Gpgll", "struct_isl_sdk_1_1_gps_device_1_1_gpgll.html", null ],
@@ -43,13 +44,15 @@ var hierarchy =
     [ "IslSdk::GyroSensor", "class_isl_sdk_1_1_gyro_sensor.html", null ],
     [ "IslSdk::IslHdlcPacket::Header", "struct_isl_sdk_1_1_isl_hdlc_packet_1_1_header.html", null ],
     [ "HeaderMasks", "struct_header_masks.html", null ],
-    [ "IslSdk::Sonar::HeadHome", "struct_isl_sdk_1_1_sonar_1_1_head_home.html", null ],
+    [ "IslSdk::Sonar::HeadIndexes", "struct_isl_sdk_1_1_sonar_1_1_head_indexes.html", null ],
+    [ "IslSdk::Sonar::HeadIndexes::Index", "struct_isl_sdk_1_1_sonar_1_1_head_indexes_1_1_index.html", null ],
     [ "IslSdk::Device::Info", "class_isl_sdk_1_1_device_1_1_info.html", null ],
     [ "IslSdk::IslHdlc", "class_isl_sdk_1_1_isl_hdlc.html", [
       [ "IslSdk::Device", "class_isl_sdk_1_1_device.html", [
         [ "IslSdk::Isa500", "class_isl_sdk_1_1_isa500.html", null ],
         [ "IslSdk::Isd4000", "class_isl_sdk_1_1_isd4000.html", null ],
         [ "IslSdk::Ism3d", "class_isl_sdk_1_1_ism3d.html", null ],
+        [ "IslSdk::MultiPcp", "class_isl_sdk_1_1_multi_pcp.html", null ],
         [ "IslSdk::Sonar", "class_isl_sdk_1_1_sonar.html", null ]
       ] ]
     ] ],
@@ -68,17 +71,22 @@ var hierarchy =
       ] ]
     ] ],
     [ "IslSdk::MagSensor", "class_isl_sdk_1_1_mag_sensor.html", null ],
-    [ "IslSdk::Matrix3x3", "class_isl_sdk_1_1_matrix3x3.html", null ],
+    [ "IslSdk::Math::Matrix< Rows, Cols >", "class_isl_sdk_1_1_math_1_1_matrix.html", null ],
+    [ "IslSdk::Math::Matrix< 3, 3 >", "class_isl_sdk_1_1_math_1_1_matrix.html", [
+      [ "IslSdk::Math::Matrix3x3", "class_isl_sdk_1_1_math_1_1_matrix3x3.html", null ]
+    ] ],
     [ "IslSdk::NetSocket", "class_isl_sdk_1_1_net_socket.html", null ],
     [ "IslSdk::NmeaDeviceMgr", "class_isl_sdk_1_1_nmea_device_mgr.html", null ],
     [ "IslSdk::Palette", "class_isl_sdk_1_1_palette.html", null ],
+    [ "IslSdk::PcpServices", "class_isl_sdk_1_1_pcp_services.html", [
+      [ "IslSdk::PcpDevice", "class_isl_sdk_1_1_pcp_device.html", null ]
+    ] ],
     [ "IslSdk::Sonar::Ping", "struct_isl_sdk_1_1_sonar_1_1_ping.html", null ],
     [ "IslSdk::SonarDataStore::PingData", "struct_isl_sdk_1_1_sonar_data_store_1_1_ping_data.html", null ],
     [ "IslSdk::Point", "struct_isl_sdk_1_1_point.html", null ],
     [ "IslSdk::Isd4000::PressureCal", "struct_isl_sdk_1_1_isd4000_1_1_pressure_cal.html", null ],
     [ "IslSdk::Isd4000::PressureSenorInfo", "struct_isl_sdk_1_1_isd4000_1_1_pressure_senor_info.html", null ],
     [ "IslSdk::ProtocolDebugger", "class_isl_sdk_1_1_protocol_debugger.html", null ],
-    [ "IslSdk::Quaternion", "class_isl_sdk_1_1_quaternion.html", null ],
     [ "IslSdk::Queue", "class_isl_sdk_1_1_queue.html", null ],
     [ "IslSdk::LogReader::RecordData", "struct_isl_sdk_1_1_log_reader_1_1_record_data.html", null ],
     [ "IslSdk::LogFile::RecordHeader", "struct_isl_sdk_1_1_log_file_1_1_record_header.html", null ],
@@ -93,6 +101,8 @@ var hierarchy =
     [ "IslSdk::Isa500::Settings", "class_isl_sdk_1_1_isa500_1_1_settings.html", null ],
     [ "IslSdk::Isd4000::Settings", "class_isl_sdk_1_1_isd4000_1_1_settings.html", null ],
     [ "IslSdk::Ism3d::Settings", "struct_isl_sdk_1_1_ism3d_1_1_settings.html", null ],
+    [ "IslSdk::MultiPcp::Settings", "struct_isl_sdk_1_1_multi_pcp_1_1_settings.html", null ],
+    [ "IslSdk::PcpDevice::Settings", "class_isl_sdk_1_1_pcp_device_1_1_settings.html", null ],
     [ "IslSdk::Sonar::Settings", "struct_isl_sdk_1_1_sonar_1_1_settings.html", null ],
     [ "IslSdk::Sonar::Setup", "struct_isl_sdk_1_1_sonar_1_1_setup.html", null ],
     [ "IslSdk::Signal< Args >", "class_isl_sdk_1_1_signal.html", null ],
@@ -101,18 +111,19 @@ var hierarchy =
     [ "IslSdk::Signal< const SysPort::SharedPtr & >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< const uint8_t *, uint_t >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< const uint8_t *, uint_t, uint32_t >", "class_isl_sdk_1_1_signal.html", null ],
-    [ "IslSdk::Signal< IslSdk::AccelSensor &, const IslSdk::Vector3 & >", "class_isl_sdk_1_1_signal.html", null ],
-    [ "IslSdk::Signal< IslSdk::AccelSensor &, const IslSdk::Vector3 &, const IslSdk::Matrix3x3 & >", "class_isl_sdk_1_1_signal.html", null ],
-    [ "IslSdk::Signal< IslSdk::AccelSensor &, Vector3::Axis, const IslSdk::Vector3 &, uint_t >", "class_isl_sdk_1_1_signal.html", null ],
-    [ "IslSdk::Signal< IslSdk::Ahrs &, uint64_t, const IslSdk::Quaternion &, real_t, real_t >", "class_isl_sdk_1_1_signal.html", null ],
+    [ "IslSdk::Signal< IslSdk::AccelSensor &, const IslSdk::Math::Vector3 & >", "class_isl_sdk_1_1_signal.html", null ],
+    [ "IslSdk::Signal< IslSdk::AccelSensor &, const IslSdk::Math::Vector3 &, const IslSdk::Math::Matrix3x3 & >", "class_isl_sdk_1_1_signal.html", null ],
+    [ "IslSdk::Signal< IslSdk::AccelSensor &, const IslSdk::Math::Vector3 &, uint_t >", "class_isl_sdk_1_1_signal.html", null ],
+    [ "IslSdk::Signal< IslSdk::Ahrs &, uint64_t, const IslSdk::Math::Quaternion &, real_t, real_t >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::Device & >", "class_isl_sdk_1_1_signal.html", null ],
+    [ "IslSdk::Signal< IslSdk::Device &, bool_t >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::Device &, const IslSdk::Device::Info & >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::Device &, const std::string & >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::Device &, IslSdk::SysPort & >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::Device &, IslSdk::SysPort &, const IslSdk::ConnectionMeta & >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::Device &, uint_t, uint_t, uint_t, uint_t >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::GpsDevice &, const std::string & >", "class_isl_sdk_1_1_signal.html", null ],
-    [ "IslSdk::Signal< IslSdk::GyroSensor &, const IslSdk::Vector3 & >", "class_isl_sdk_1_1_signal.html", null ],
+    [ "IslSdk::Signal< IslSdk::GyroSensor &, const IslSdk::Math::Vector3 & >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::Isa500 & >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::Isa500 &, bool_t >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::Isa500 &, const std::vector< uint8_t > & >", "class_isl_sdk_1_1_signal.html", null ],
@@ -130,15 +141,20 @@ var hierarchy =
     [ "IslSdk::Signal< IslSdk::LogReader &, const IslSdk::LogReader::RecordData & >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::LogReader &, const std::string & >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::LogWriter & >", "class_isl_sdk_1_1_signal.html", null ],
-    [ "IslSdk::Signal< IslSdk::MagSensor &, const IslSdk::Vector3 & >", "class_isl_sdk_1_1_signal.html", null ],
-    [ "IslSdk::Signal< IslSdk::MagSensor &, const IslSdk::Vector3 &, const IslSdk::Matrix3x3 & >", "class_isl_sdk_1_1_signal.html", null ],
-    [ "IslSdk::Signal< IslSdk::MagSensor &, const IslSdk::Vector3 &, uint_t, real_t >", "class_isl_sdk_1_1_signal.html", null ],
+    [ "IslSdk::Signal< IslSdk::MagSensor &, const IslSdk::Math::Vector3 & >", "class_isl_sdk_1_1_signal.html", null ],
+    [ "IslSdk::Signal< IslSdk::MagSensor &, const IslSdk::Math::Vector3 &, const IslSdk::Math::Matrix3x3 & >", "class_isl_sdk_1_1_signal.html", null ],
+    [ "IslSdk::Signal< IslSdk::MagSensor &, const IslSdk::Math::Vector3 &, uint_t >", "class_isl_sdk_1_1_signal.html", null ],
+    [ "IslSdk::Signal< IslSdk::MultiPcp &, bool_t >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::NmeaDevice & >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::NmeaDevice &, const std::string & >", "class_isl_sdk_1_1_signal.html", null ],
+    [ "IslSdk::Signal< IslSdk::PcpDevice &, bool_t >", "class_isl_sdk_1_1_signal.html", null ],
+    [ "IslSdk::Signal< IslSdk::PcpDevice &, real_t, real_t >", "class_isl_sdk_1_1_signal.html", null ],
+    [ "IslSdk::Signal< IslSdk::Sonar & >", "class_isl_sdk_1_1_signal.html", null ],
+    [ "IslSdk::Signal< IslSdk::Sonar &, bool_t >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::Sonar &, bool_t, Settings::Type >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::Sonar &, const IslSdk::Sonar::CpuPowerTemp & >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::Sonar &, const IslSdk::Sonar::Echos & >", "class_isl_sdk_1_1_signal.html", null ],
-    [ "IslSdk::Signal< IslSdk::Sonar &, const IslSdk::Sonar::HeadHome & >", "class_isl_sdk_1_1_signal.html", null ],
+    [ "IslSdk::Signal< IslSdk::Sonar &, const IslSdk::Sonar::HeadIndexes & >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::Sonar &, const IslSdk::Sonar::Ping & >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::SysPort & >", "class_isl_sdk_1_1_signal.html", null ],
     [ "IslSdk::Signal< IslSdk::SysPort &, AutoDiscovery::Type >", "class_isl_sdk_1_1_signal.html", null ],
@@ -152,9 +168,8 @@ var hierarchy =
     [ "IslSdk::Slot< const SysPort::SharedPtr & >", "class_isl_sdk_1_1_slot.html", null ],
     [ "IslSdk::Slot< const uint8_t *, uint_t >", "class_isl_sdk_1_1_slot.html", null ],
     [ "IslSdk::Slot< const uint8_t *, uint_t, uint32_t >", "class_isl_sdk_1_1_slot.html", null ],
-    [ "IslSdk::Slot< IslSdk::AccelSensor &, const IslSdk::Vector3 & >", "class_isl_sdk_1_1_slot.html", null ],
-    [ "IslSdk::Slot< IslSdk::Device & >", "class_isl_sdk_1_1_slot.html", null ],
-    [ "IslSdk::Slot< IslSdk::MagSensor &, const IslSdk::Vector3 & >", "class_isl_sdk_1_1_slot.html", null ],
+    [ "IslSdk::Slot< IslSdk::AccelSensor &, const IslSdk::Math::Vector3 & >", "class_isl_sdk_1_1_slot.html", null ],
+    [ "IslSdk::Slot< IslSdk::MagSensor &, const IslSdk::Math::Vector3 & >", "class_isl_sdk_1_1_slot.html", null ],
     [ "IslSdk::Slot< IslSdk::SysPort & >", "class_isl_sdk_1_1_slot.html", null ],
     [ "IslSdk::Slot< IslSdk::SysPort &, const IslSdk::ConstBuffer & >", "class_isl_sdk_1_1_slot.html", null ],
     [ "IslSdk::SonarDataStore", "class_isl_sdk_1_1_sonar_data_store.html", null ],
@@ -164,6 +179,7 @@ var hierarchy =
     [ "IslSdk::Ism3d::Settings::StrOutputSetup", "struct_isl_sdk_1_1_ism3d_1_1_settings_1_1_str_output_setup.html", null ],
     [ "IslSdk::SysPort", "class_isl_sdk_1_1_sys_port.html", [
       [ "IslSdk::NetPort", "class_isl_sdk_1_1_net_port.html", null ],
+      [ "IslSdk::PoweredComPort", "class_isl_sdk_1_1_powered_com_port.html", null ],
       [ "IslSdk::SolPort", "class_isl_sdk_1_1_sol_port.html", null ],
       [ "IslSdk::UartPort", "class_isl_sdk_1_1_uart_port.html", null ]
     ] ],
@@ -174,9 +190,26 @@ var hierarchy =
     [ "IslSdk::Isd4000::TemperatureCal", "struct_isl_sdk_1_1_isd4000_1_1_temperature_cal.html", null ],
     [ "IslSdk::LogFile::Track", "struct_isl_sdk_1_1_log_file_1_1_track.html", null ],
     [ "TxItem", "struct_tx_item.html", null ],
-    [ "IslSdk::Uart", "class_isl_sdk_1_1_uart.html", null ],
+    [ "IslSdk::Uart", "class_isl_sdk_1_1_uart.html", [
+      [ "IslSdk::SerialPort", "class_isl_sdk_1_1_serial_port.html", null ],
+      [ "IslSdk::SerialPort", "class_isl_sdk_1_1_serial_port.html", null ]
+    ] ],
     [ "IslSdk::ScriptVars::Var", "class_isl_sdk_1_1_script_vars_1_1_var.html", null ],
-    [ "IslSdk::Vector3", "class_isl_sdk_1_1_vector3.html", null ],
+    [ "IslSdk::Math::VectorStorage< Length, Enable >", "struct_isl_sdk_1_1_math_1_1_vector_storage.html", [
+      [ "IslSdk::Math::Vector< 4 >", "class_isl_sdk_1_1_math_1_1_vector.html", [
+        [ "IslSdk::Math::Quaternion", "class_isl_sdk_1_1_math_1_1_quaternion.html", null ]
+      ] ],
+      [ "IslSdk::Math::Vector< 2 >", "class_isl_sdk_1_1_math_1_1_vector.html", [
+        [ "IslSdk::Math::Vector2", "class_isl_sdk_1_1_math_1_1_vector2.html", null ]
+      ] ],
+      [ "IslSdk::Math::Vector< 3 >", "class_isl_sdk_1_1_math_1_1_vector.html", [
+        [ "IslSdk::Math::Vector3", "class_isl_sdk_1_1_math_1_1_vector3.html", null ]
+      ] ],
+      [ "IslSdk::Math::Vector< Length >", "class_isl_sdk_1_1_math_1_1_vector.html", null ]
+    ] ],
+    [ "IslSdk::Math::VectorStorage< Length, typename std::enable_if< Length==2 >::type >", "struct_isl_sdk_1_1_math_1_1_vector_storage_3_01_length_00_01typename_01std_1_1enable__if_3_01_length_0a_0a2_01_4_1_1type_01_4.html", null ],
+    [ "IslSdk::Math::VectorStorage< Length, typename std::enable_if< Length==3 >::type >", "struct_isl_sdk_1_1_math_1_1_vector_storage_3_01_length_00_01typename_01std_1_1enable__if_3_01_length_0a_0a3_01_4_1_1type_01_4.html", null ],
+    [ "IslSdk::Math::VectorStorage< Length, typename std::enable_if< Length==4 >::type >", "struct_isl_sdk_1_1_math_1_1_vector_storage_3_01_length_00_01typename_01std_1_1enable__if_3_01_length_0a_0a4_01_4_1_1type_01_4.html", null ],
     [ "IslSdk::XmlElement", "class_isl_sdk_1_1_xml_element.html", null ],
     [ "IslSdk::XmlFile", "class_isl_sdk_1_1_xml_file.html", null ]
 ];

@@ -5,6 +5,7 @@
 #include "utils/base64.h"
 #include "maths/maths.h"
 #include "platform/file.h"
+#include <fstream>
 
 using namespace IslSdk;
 
@@ -48,7 +49,7 @@ XmlElement::XmlElementPtr XmlElement::addBytes(const std::string& name, const ui
 //-------------------------------------------------------------------------------------------------
 XmlElement::XmlElementPtr XmlElement::addReal(const std::string& name, real_t val, uint_t precision)
 {
-    std::string content = StringUtils::realToStr(val, 0, precision, 0, false);
+    std::string content = StringUtils::toStr(val, 0, precision, 0, false);
     XmlElementPtr child = std::make_shared<XmlElement>(name, content);
     m_elements.push_back(child);
 
@@ -57,7 +58,7 @@ XmlElement::XmlElementPtr XmlElement::addReal(const std::string& name, real_t va
 //-------------------------------------------------------------------------------------------------
 XmlElement::XmlElementPtr XmlElement::addUint(const std::string& name, uint_t val)
 {
-    std::string content = StringUtils::uintToStr(val, 0);
+    std::string content = StringUtils::toStr(val, 0);
     XmlElementPtr child = std::make_shared<XmlElement>(name, content);
     m_elements.push_back(child);
 
@@ -66,7 +67,7 @@ XmlElement::XmlElementPtr XmlElement::addUint(const std::string& name, uint_t va
 //-------------------------------------------------------------------------------------------------
 XmlElement::XmlElementPtr XmlElement::addInt(const std::string& name, int_t val)
 {
-    std::string content = StringUtils::intToStr(val, 0, false);
+    std::string content = StringUtils::toStr(val, 0, false);
     XmlElementPtr child = std::make_shared<XmlElement>(name, content);
     m_elements.push_back(child);
 
@@ -87,7 +88,17 @@ std::string XmlElement::getString(const std::string& name, const std::string& de
     const XmlElement* element = find(name);
     if (element)
     {
-        return element->content;
+        if (element->getAttribute("encoding") == "base64")
+        {
+            std::string buf = element->content;
+            uint_t len = Base64::decode(element->content, reinterpret_cast<uint8_t*>(buf.data()), buf.size());
+            buf.resize(len);
+            return buf;
+        }
+        else
+        {
+            return element->content;
+        }
     }
 
     return defaultVal;
@@ -233,21 +244,32 @@ bool_t XmlFile::open(const std::string& fileName)
 //-------------------------------------------------------------------------------------------------
 bool_t XmlFile::save(const std::string& fileName)
 {
-    if (!m_root) return false;
-
-    File::createDir(fileName);
-    std::ofstream file;
-    file.open(fileName, std::ofstream::trunc);
-    if (file.is_open())
-    {
-        file << "<?xml version=\"1.0\" encoding=\"utf-8\"?>" << std::endl;
-        saveElement(file, m_root, 0);
-        file.close();
-
-        return true;
-    }
-
+    std::string xml = asString();
+    
+    if (!xml.empty())
+	{
+        File::createDir(fileName);
+		std::ofstream file;
+		file.open(fileName, std::ofstream::trunc);
+		if (file.is_open())
+		{
+			file << xml;
+			file.close();
+			return true;
+		}
+	}
     return false;
+}
+//-------------------------------------------------------------------------------------------------
+std::string XmlFile::asString()
+{
+    std::ostringstream oss;
+    if (m_root)
+    {
+        oss << "<?xml version=\"1.0\" encoding=\"utf-8\"?>" << std::endl;
+        saveElement(oss, m_root, 0);
+    }
+    return oss.str();
 }
 //-------------------------------------------------------------------------------------------------
 XmlElementPtr XmlFile::setRoot(const std::string& name)
@@ -276,7 +298,7 @@ bool_t XmlFile::getValue(const XmlElementPtr& element, const std::string& key, s
     return false;
 }
 //-------------------------------------------------------------------------------------------------
-void XmlFile::saveElement(std::ofstream& file, XmlElementPtr& element, uint_t depth)
+void XmlFile::saveElement(std::ostringstream& file, XmlElementPtr& element, uint_t depth)
 {
     if (element)
     {
@@ -462,7 +484,7 @@ std::string encodeNonAsciiChars(const std::string& content, const std::string& e
         if (c < ' ' || c > '~' || std::string::npos != extraEscChars.find(c))
         {
             encoded += "&#";
-            encoded += StringUtils::uintToStr(static_cast<uint_t>(c));
+            encoded += StringUtils::toStr(static_cast<uint_t>(c));
             encoded += ";";
         }
         else

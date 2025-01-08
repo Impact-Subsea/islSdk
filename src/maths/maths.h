@@ -40,10 +40,13 @@ namespace IslSdk
         using std::modf;
         using std::isnan;
         using std::isinf;
+        using std::copysign;
 
         constexpr real_t pi = static_cast<real_t>(3.1415926535897932384626433832795);
         constexpr real_t pi2 = pi * static_cast<real_t>(2.0);
         constexpr real_t rootHalf = static_cast<real_t>(0.70710678118654752440084436210485);
+        constexpr real_t minReal = FLT_MIN;
+        constexpr real_t maxReal = FLT_MAX;
         constexpr uint_t maxUint = ~0;
         constexpr int_t maxInt = static_cast<int_t>(maxUint >> 1);
         constexpr int_t minInt = ~maxInt;
@@ -60,6 +63,12 @@ namespace IslSdk
             std::mt19937 gen(rd());
             std::uniform_int_distribution<uint_t> distrib(l, h);
             return distrib(gen);
+        }
+
+        template<typename T>
+        T clamp(const T& value, const T& low, const T& high)
+        {
+            return std::max(low, std::min(value, high));
         }
     };
 }

@@ -51,6 +51,82 @@ std::string Device::Info::name() const
 	return StringUtils::pidToStr(pid);
 }
 //--------------------------------------------------------------------------------------------------
+uint8_t Device::CustomStr::packStr(uint8_t* ptr) const
+{
+    bool_t esc = false;
+    uint_t len = 0;
+
+    for (uint_t i = 0; i < str.size() && len < size; i++)
+    {
+        uint8_t c = static_cast<uint8_t>(str[i]);
+        if (esc)
+        {
+            if (c == 'r') c = 13;
+            else if (c == 'n') c = 10;
+            else if (c == 't') c = 9;          
+            else if ((c == 'x' || c == 'X') && (str.size() - i > 2))
+			{
+                bool_t e = false;
+                i++;
+                c = static_cast<uint8_t>(StringUtils::hexToUint(str, i, 2, e));
+                if (!e) i--;
+			}
+            else if (c == '0' && (str.size() - i > 3) && (str[i+1] == 'x' || str[i+1] == 'X'))
+            {
+                bool_t e = false;
+                i += 2;
+                c = static_cast<uint8_t>(StringUtils::hexToUint(str, i, 2, e));
+                if (!e) i--;
+            }
+            esc = false;
+        }
+        else if (c == '\\')
+        {
+            esc = true;
+            continue;
+        }
+   
+        ptr[len++] = c;
+    }
+
+    for (uint_t i = len; i < size; i++)
+    {
+        ptr[i] = 0;
+    }
+    return static_cast<uint8_t>(len);
+}
+//--------------------------------------------------------------------------------------------------
+void Device::CustomStr::unPackStr(const uint8_t* data, uint_t size)
+{
+    str.clear();
+
+    for (uint_t i = 0; i < size; i++)
+    {
+        if (std::isprint(data[i]))
+        {
+            str += data[i];
+        }
+        else
+        {
+            if (data[i] == 10)
+			{
+				str += "\\n";
+			}
+			else if (data[i] == 13)
+			{
+				str += "\\r";
+			}
+			else if (data[i] == 9)
+			{
+				str += "\\t";
+			}
+			else
+			{
+				str += "\\0x" + StringUtils::toHexStr(static_cast<uint_t>(data[i]), 1);
+			}
+        }
+    }
+}
 //--------------------------------------------------------------------------------------------------
 Device::Device(const Device::Info& info) : IslHdlc(), m_info(info)
 {
@@ -61,8 +137,9 @@ Device::Device(const Device::Info& info) : IslHdlc(), m_info(info)
     m_searchCount = 30;
     m_packetResendLimit = 2;
     m_deviceTimeOut = 0;
-    m_deleteTimer = Time::getTimeMs() + 60000;          // Delete this device if not connected within 60 seconds
+    m_deleteTimer = Time::getTimeMs() + deleteAfterTime;          // Delete this device if not connected within deleteAfterTime milliseconds
     m_epochUs = Time::getTimeMs() * 1000;
+    m_waitingForXmlConfig = false;
 }
 //--------------------------------------------------------------------------------------------------
 Device::~Device()
@@ -98,13 +175,18 @@ void Device::reset()
     const uint8_t payload[1] = { static_cast<uint8_t>(Commands::Reset) };
     sendPacket(&payload[0], sizeof(payload));
 }
+//---------------------------------------------------------------------------------------------------
+bool_t Device::isConnected()
+{
+    return m_connected && (m_connectionDataSynced || bootloaderMode());
+}
 
 //---------------------------------------------------------------------------------------------------
 void Device::connectionEvent(bool_t connected)
 {
     if (connected)
     {
-        debugLog("Device", "Device %04u.%04u connected", info.pn, info.sn);
+        debugLog("Device", "Device %s connected", info.pnSnAsStr().c_str());
         m_connectionDataSynced = !bootloaderMode();
         m_info.inUse = false;
         m_resetting = false;
@@ -114,36 +196,39 @@ void Device::connectionEvent(bool_t connected)
     }
     else
     {
-        debugLog("Device", "Device %04u.%04u disconnected", info.pn, info.sn);
+        debugLog("Device", "Device %s disconnected", info.pnSnAsStr().c_str());
         m_connectionDataSynced = false;
         onDisconnect(*this);
     }
 }
 //--------------------------------------------------------------------------------------------------
-void Device::enqueuePacket(const uint8_t* data, uint_t size)
+bool_t Device::enqueuePacket(const uint8_t* data, uint_t size)
 {
     if (m_connected)
     {
         if (!bootloaderMode())
         {
-            sendPacket(data, size);
+            return sendPacket(data, size);
         }
     }
     else
     {
         onError(*this, "Device must be connected before commands are sent");
     }
+    return false;
 }
 //---------------------------------------------------------------------------------------------------
-void Device::sendPacket(const uint8_t* data, uint_t size)
+bool_t Device::sendPacket(const uint8_t* data, uint_t size)
 {
     if (m_connection)
     {
         if (m_connection->sysPort->isOpen)
         {
             send(data, size);
+            return true;
         }
     }
+    return false;
 }
 //---------------------------------------------------------------------------------------------------
 void Device::connectionSettingsUpdated(const ConnectionMeta& meta, bool_t isHalfDuplex)
@@ -243,11 +328,13 @@ void Device::hdlcConnectionEvent(bool_t connected)
 //---------------------------------------------------------------------------------------------------
 bool_t Device::timeoutEvent()
 {
+    bool_t tryAgain = true;
+
     if (m_resetting)
     {
         disconnect();
-        debugLog("Device", "Device %04u.%04u being rediscovered after SDK issuing reset", info.pn, info.sn);
-        reDiscover(m_searchTimeoutMs, 10);
+        debugLog("Device", "Device %s being rediscovered after SDK issuing reset", info.pnSnAsStr().c_str());
+        m_deleteTimer = Time::getTimeMs() + reDiscover(m_searchTimeoutMs, 30);
         m_resetting = false;
     }
 
@@ -255,7 +342,7 @@ bool_t Device::timeoutEvent()
     {
         debugLog("Device", "Comms lost");
         m_deleteTimer = Time::getTimeMs() + reDiscover(m_searchTimeoutMs, m_searchCount);
-        return false;
+        tryAgain = false;
     }
     else
     {
@@ -268,7 +355,9 @@ bool_t Device::timeoutEvent()
             debugLog("Device", "Updating bauadrate/ip address and retrying");
         }
     }
-    return true;
+
+    onCommsTimeout(*this, !tryAgain);
+    return tryAgain;
 }
 //---------------------------------------------------------------------------------------------------
 void Device::newPacketEvent(const uint8_t* data, uint_t size)

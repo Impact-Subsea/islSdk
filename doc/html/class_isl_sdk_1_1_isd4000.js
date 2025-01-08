@@ -8,6 +8,8 @@ var class_isl_sdk_1_1_isd4000 =
     [ "Settings", "class_isl_sdk_1_1_isd4000_1_1_settings.html", "class_isl_sdk_1_1_isd4000_1_1_settings" ],
     [ "TemperatureCal", "struct_isl_sdk_1_1_isd4000_1_1_temperature_cal.html", null ],
     [ "getCal", "class_isl_sdk_1_1_isd4000.html#a678f70750a7f317bc31f67e9bf17996f", null ],
+    [ "getConfigAsString", "class_isl_sdk_1_1_isd4000.html#a566dbbd2942de8d17784790f70a5af61", null ],
+    [ "getHardwareFaults", "class_isl_sdk_1_1_isd4000.html#a9bb4ba946ff06ccd0ae4f09a4621af6b", null ],
     [ "getScripts", "class_isl_sdk_1_1_isd4000.html#a9c56f3d6d89fdd849b6dcddacb07e059", null ],
     [ "hasAhrs", "class_isl_sdk_1_1_isd4000.html#aff687a426b98d5fc172ed10b12519340", null ],
     [ "maxPressureRatingBar", "class_isl_sdk_1_1_isd4000.html#a1a5b7bcd459c11de547a62373ff324ef", null ],

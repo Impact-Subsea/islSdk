@@ -32,7 +32,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.0</span>
+   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.6</span>
    </div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -98,6 +98,7 @@ $(document).ready(function(){initNavTree('struct_isl_sdk_1_1_sonar_1_1_setup.htm
 
 <div class="header">
   <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
@@ -111,6 +112,14 @@ $(document).ready(function(){initNavTree('struct_isl_sdk_1_1_sonar_1_1_setup.htm
 
 <p><code>#include &lt;<a class="el" href="sonar_8h_source.html">sonar.h</a>&gt;</code></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:ae4982f67a8cc1861c9476e8938f7c359" id="r_ae4982f67a8cc1861c9476e8938f7c359"><td class="memItemLeft" align="right" valign="top"><a id="ae4982f67a8cc1861c9476e8938f7c359" name="ae4982f67a8cc1861c9476e8938f7c359"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>EchoMode</b> { <b>First</b>
+, <b>Strongest</b>
+, <b>All</b>
+ }</td></tr>
+<tr class="separator:ae4982f67a8cc1861c9476e8938f7c359"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a5f4fd5fae881bc336b184edb4bb9758a" id="r_a5f4fd5fae881bc336b184edb4bb9758a"><td class="memItemLeft" align="right" valign="top"><a id="a5f4fd5fae881bc336b184edb4bb9758a" name="a5f4fd5fae881bc336b184edb4bb9758a"></a>
@@ -134,22 +143,6 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ab75c092c53bef674e330736229fa7038" id="r_ab75c092c53bef674e330736229fa7038"><td class="memItemLeft" align="right" valign="top"><a id="ab75c092c53bef674e330736229fa7038" name="ab75c092c53bef674e330736229fa7038"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">real_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>digitalGain</b></td></tr>
-<tr class="memdesc:ab75c092c53bef674e330736229fa7038"><td class="mdescLeft">&#160;</td><td class="mdescRight">Digital gain for the image data as a simple multiplier factor. limits 1 to 1000. <br /></td></tr>
-<tr class="separator:ab75c092c53bef674e330736229fa7038"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d2ed4ab2a5b7418f45496a073b06bfd" id="r_a2d2ed4ab2a5b7418f45496a073b06bfd"><td class="memItemLeft" align="right" valign="top"><a id="a2d2ed4ab2a5b7418f45496a073b06bfd" name="a2d2ed4ab2a5b7418f45496a073b06bfd"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">real_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>speedOfSound</b></td></tr>
-<tr class="memdesc:a2d2ed4ab2a5b7418f45496a073b06bfd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Speed of sound in meters per second. limits 1000 to 2500. <br /></td></tr>
-<tr class="separator:a2d2ed4ab2a5b7418f45496a073b06bfd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1189dbed09059a2fc9216e439c2f1b6" id="r_aa1189dbed09059a2fc9216e439c2f1b6"><td class="memItemLeft" align="right" valign="top"><a id="aa1189dbed09059a2fc9216e439c2f1b6" name="aa1189dbed09059a2fc9216e439c2f1b6"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>maxRangeMm</b></td></tr>
-<tr class="memdesc:aa1189dbed09059a2fc9216e439c2f1b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Listen for echos up until this range in millimeters. <br /></td></tr>
-<tr class="separator:aa1189dbed09059a2fc9216e439c2f1b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aca60b43685545222cb51f8658aff1b7d" id="r_aca60b43685545222cb51f8658aff1b7d"><td class="memItemLeft" align="right" valign="top"><a id="aca60b43685545222cb51f8658aff1b7d" name="aca60b43685545222cb51f8658aff1b7d"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>minRangeMm</b></td></tr>
-<tr class="memdesc:aca60b43685545222cb51f8658aff1b7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start listening for echos after this range in millimeters. <br /></td></tr>
-<tr class="separator:aca60b43685545222cb51f8658aff1b7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afe1efe7ec59acdfbad2af61eb42cea61" id="r_afe1efe7ec59acdfbad2af61eb42cea61"><td class="memItemLeft" align="right" valign="top"><a id="afe1efe7ec59acdfbad2af61eb42cea61" name="afe1efe7ec59acdfbad2af61eb42cea61"></a>
 <a class="el" href="class_isl_sdk_1_1_callback.html">int32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>stepSize</b></td></tr>
 <tr class="memdesc:afe1efe7ec59acdfbad2af61eb42cea61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Angle the tranducer head should move between pings in units of 12800th. Positive values turn clockwise, negative anticlockwise. limits -6399 to 6399. <br /></td></tr>
@@ -170,15 +163,48 @@ bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>flybackMode</b></td
 <a class="el" href="class_isl_sdk_1_1_callback.html">uint16_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>imageDataPoint</b></td></tr>
 <tr class="memdesc:acff90c6da0accedcc3c8733c08db10d6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of data points per ping between the range set by minRangeMm and maxRangeMm. limits 20 to 4096. <br /></td></tr>
 <tr class="separator:acff90c6da0accedcc3c8733c08db10d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0613002e7e8f9ecb8705296aaff1e207" id="r_a0613002e7e8f9ecb8705296aaff1e207"><td class="memItemLeft" align="right" valign="top"><a id="a0613002e7e8f9ecb8705296aaff1e207" name="a0613002e7e8f9ecb8705296aaff1e207"></a>
-bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>data8Bit</b></td></tr>
-<tr class="memdesc:a0613002e7e8f9ecb8705296aaff1e207"><td class="mdescLeft">&#160;</td><td class="mdescRight">true = 8-bit data, false = 16-bit data <br /></td></tr>
-<tr class="separator:a0613002e7e8f9ecb8705296aaff1e207"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aca60b43685545222cb51f8658aff1b7d" id="r_aca60b43685545222cb51f8658aff1b7d"><td class="memItemLeft" align="right" valign="top"><a id="aca60b43685545222cb51f8658aff1b7d" name="aca60b43685545222cb51f8658aff1b7d"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>minRangeMm</b></td></tr>
+<tr class="memdesc:aca60b43685545222cb51f8658aff1b7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Start listening for echos after this range in millimeters. <br /></td></tr>
+<tr class="separator:aca60b43685545222cb51f8658aff1b7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa1189dbed09059a2fc9216e439c2f1b6" id="r_aa1189dbed09059a2fc9216e439c2f1b6"><td class="memItemLeft" align="right" valign="top"><a id="aa1189dbed09059a2fc9216e439c2f1b6" name="aa1189dbed09059a2fc9216e439c2f1b6"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>maxRangeMm</b></td></tr>
+<tr class="memdesc:aa1189dbed09059a2fc9216e439c2f1b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Listen for echos up until this range in millimeters. <br /></td></tr>
+<tr class="separator:aa1189dbed09059a2fc9216e439c2f1b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a47bf0d5aad2e4c87c3d4b959a17de92f" id="r_a47bf0d5aad2e4c87c3d4b959a17de92f"><td class="memItemLeft" align="right" valign="top"><a id="a47bf0d5aad2e4c87c3d4b959a17de92f" name="a47bf0d5aad2e4c87c3d4b959a17de92f"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>profilerMinRangeMm</b></td></tr>
+<tr class="memdesc:a47bf0d5aad2e4c87c3d4b959a17de92f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies to profiling mode only. Start listening for echos after this range in millimeters. <br /></td></tr>
+<tr class="separator:a47bf0d5aad2e4c87c3d4b959a17de92f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a96615a5bda00a966ad45226d72cdb507" id="r_a96615a5bda00a966ad45226d72cdb507"><td class="memItemLeft" align="right" valign="top"><a id="a96615a5bda00a966ad45226d72cdb507" name="a96615a5bda00a966ad45226d72cdb507"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>profilerMaxRangeMm</b></td></tr>
+<tr class="memdesc:a96615a5bda00a966ad45226d72cdb507"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies to profiling mode only. Listen for echos up until this range in millimeters. <br /></td></tr>
+<tr class="separator:a96615a5bda00a966ad45226d72cdb507"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab75c092c53bef674e330736229fa7038" id="r_ab75c092c53bef674e330736229fa7038"><td class="memItemLeft" align="right" valign="top"><a id="ab75c092c53bef674e330736229fa7038" name="ab75c092c53bef674e330736229fa7038"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">real_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>digitalGain</b></td></tr>
+<tr class="memdesc:ab75c092c53bef674e330736229fa7038"><td class="mdescLeft">&#160;</td><td class="mdescRight">Digital gain for the image data as a simple multiplier factor. limits 1 to 1000. <br /></td></tr>
+<tr class="separator:ab75c092c53bef674e330736229fa7038"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afe54ce97843ecfa3afb2142da6b39c5a" id="r_afe54ce97843ecfa3afb2142da6b39c5a"><td class="memItemLeft" align="right" valign="top"><a id="afe54ce97843ecfa3afb2142da6b39c5a" name="afe54ce97843ecfa3afb2142da6b39c5a"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">enum</a> IslSdk::Sonar::Setup::EchoMode&#160;</td><td class="memItemRight" valign="bottom"><b>echoMode</b></td></tr>
+<tr class="memdesc:afe54ce97843ecfa3afb2142da6b39c5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies to profiling mode only. Selects which echo to report back as the chosen one when profiling. <br /></td></tr>
+<tr class="separator:afe54ce97843ecfa3afb2142da6b39c5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a343b8c41de3ca1cd644fd4323a6c1e26" id="r_a343b8c41de3ca1cd644fd4323a6c1e26"><td class="memItemLeft" align="right" valign="top"><a id="a343b8c41de3ca1cd644fd4323a6c1e26" name="a343b8c41de3ca1cd644fd4323a6c1e26"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">real_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>xcThreasholdLow</b></td></tr>
+<tr class="memdesc:a343b8c41de3ca1cd644fd4323a6c1e26"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies to profiling mode only. Sets a lower limit on the quality of the return pulse. This ensures resilience to false echos. Value ranges from 0 to 1. <br /></td></tr>
+<tr class="separator:a343b8c41de3ca1cd644fd4323a6c1e26"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abc487be460812e4a9904179ea1ba9948" id="r_abc487be460812e4a9904179ea1ba9948"><td class="memItemLeft" align="right" valign="top"><a id="abc487be460812e4a9904179ea1ba9948" name="abc487be460812e4a9904179ea1ba9948"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">real_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>xcThreasholdHigh</b></td></tr>
+<tr class="memdesc:abc487be460812e4a9904179ea1ba9948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies to profiling mode only. When the return signal level drops bellow this value the end of an echo pulse is realised. Value ranges from 0 to 1. <br /></td></tr>
+<tr class="separator:abc487be460812e4a9904179ea1ba9948"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4e83ffc8ea958ac291e98263026c614e" id="r_a4e83ffc8ea958ac291e98263026c614e"><td class="memItemLeft" align="right" valign="top"><a id="a4e83ffc8ea958ac291e98263026c614e" name="a4e83ffc8ea958ac291e98263026c614e"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">real_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>energyThreashold</b></td></tr>
+<tr class="memdesc:a4e83ffc8ea958ac291e98263026c614e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies to profiling mode only. Minimum enery an echo must have to be reported. Range is 0 to 1 <br  />
+ <br /></td></tr>
+<tr class="separator:a4e83ffc8ea958ac291e98263026c614e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a41ffecb6c23e1ad9cad06cc6b653608b" id="r_a41ffecb6c23e1ad9cad06cc6b653608b"><td class="memItemLeft" align="right" valign="top"><a id="a41ffecb6c23e1ad9cad06cc6b653608b" name="a41ffecb6c23e1ad9cad06cc6b653608b"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">static</a> <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> = 32</td></tr>
+<a class="el" href="class_isl_sdk_1_1_callback.html">static</a> <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> = 48</td></tr>
 <tr class="separator:a41ffecb6c23e1ad9cad06cc6b653608b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>

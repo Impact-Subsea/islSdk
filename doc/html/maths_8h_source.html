@@ -32,7 +32,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.0</span>
+   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.6</span>
    </div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -142,31 +142,40 @@ $(document).ready(function(){initNavTree('maths_8h_source.html',''); initResizab
 <div class="line"><a id="l00040" name="l00040"></a><span class="lineno">   40</span>        <span class="keyword">using </span>std::modf;</div>
 <div class="line"><a id="l00041" name="l00041"></a><span class="lineno">   41</span>        <span class="keyword">using </span>std::isnan;</div>
 <div class="line"><a id="l00042" name="l00042"></a><span class="lineno">   42</span>        <span class="keyword">using </span>std::isinf;</div>
-<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span> </div>
-<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span>        <span class="keyword">constexpr</span> real_t pi = <span class="keyword">static_cast&lt;</span>real_t<span class="keyword">&gt;</span>(3.1415926535897932384626433832795);</div>
-<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        <span class="keyword">constexpr</span> real_t pi2 = pi * <span class="keyword">static_cast&lt;</span>real_t<span class="keyword">&gt;</span>(2.0);</div>
-<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        <span class="keyword">constexpr</span> real_t rootHalf = <span class="keyword">static_cast&lt;</span>real_t<span class="keyword">&gt;</span>(0.70710678118654752440084436210485);</div>
-<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        <span class="keyword">constexpr</span> uint_t maxUint = ~0;</div>
-<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        <span class="keyword">constexpr</span> int_t maxInt = <span class="keyword">static_cast&lt;</span>int_t<span class="keyword">&gt;</span>(maxUint &gt;&gt; 1);</div>
-<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        <span class="keyword">constexpr</span> int_t minInt = ~maxInt;</div>
-<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        <span class="keyword">constexpr</span> uint32_t maxUint32 = <span class="keyword">static_cast&lt;</span>uint32_t<span class="keyword">&gt;</span>(~0);</div>
-<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        <span class="keyword">constexpr</span> int32_t maxInt32 = maxUint32 &gt;&gt; 1;</div>
-<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        <span class="keyword">constexpr</span> int32_t minInt32 = ~maxInt32;</div>
-<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span> </div>
-<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        <span class="keyword">constexpr</span> real_t degToRad(real_t deg) { <span class="keywordflow">return</span> deg * (pi / <span class="keyword">static_cast&lt;</span>real_t<span class="keyword">&gt;</span>(180.0)); }</div>
-<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        <span class="keyword">constexpr</span> real_t radToDeg(real_t rad) { <span class="keywordflow">return</span> rad * (<span class="keyword">static_cast&lt;</span>real_t<span class="keyword">&gt;</span>(180.0) / pi); }</div>
+<div class="line"><a id="l00043" name="l00043"></a><span class="lineno">   43</span>        <span class="keyword">using </span>std::copysign;</div>
+<div class="line"><a id="l00044" name="l00044"></a><span class="lineno">   44</span> </div>
+<div class="line"><a id="l00045" name="l00045"></a><span class="lineno">   45</span>        <span class="keyword">constexpr</span> real_t pi = <span class="keyword">static_cast&lt;</span>real_t<span class="keyword">&gt;</span>(3.1415926535897932384626433832795);</div>
+<div class="line"><a id="l00046" name="l00046"></a><span class="lineno">   46</span>        <span class="keyword">constexpr</span> real_t pi2 = pi * <span class="keyword">static_cast&lt;</span>real_t<span class="keyword">&gt;</span>(2.0);</div>
+<div class="line"><a id="l00047" name="l00047"></a><span class="lineno">   47</span>        <span class="keyword">constexpr</span> real_t rootHalf = <span class="keyword">static_cast&lt;</span>real_t<span class="keyword">&gt;</span>(0.70710678118654752440084436210485);</div>
+<div class="line"><a id="l00048" name="l00048"></a><span class="lineno">   48</span>        <span class="keyword">constexpr</span> real_t minReal = FLT_MIN;</div>
+<div class="line"><a id="l00049" name="l00049"></a><span class="lineno">   49</span>        <span class="keyword">constexpr</span> real_t maxReal = FLT_MAX;</div>
+<div class="line"><a id="l00050" name="l00050"></a><span class="lineno">   50</span>        <span class="keyword">constexpr</span> uint_t maxUint = ~0;</div>
+<div class="line"><a id="l00051" name="l00051"></a><span class="lineno">   51</span>        <span class="keyword">constexpr</span> int_t maxInt = <span class="keyword">static_cast&lt;</span>int_t<span class="keyword">&gt;</span>(maxUint &gt;&gt; 1);</div>
+<div class="line"><a id="l00052" name="l00052"></a><span class="lineno">   52</span>        <span class="keyword">constexpr</span> int_t minInt = ~maxInt;</div>
+<div class="line"><a id="l00053" name="l00053"></a><span class="lineno">   53</span>        <span class="keyword">constexpr</span> uint32_t maxUint32 = <span class="keyword">static_cast&lt;</span>uint32_t<span class="keyword">&gt;</span>(~0);</div>
+<div class="line"><a id="l00054" name="l00054"></a><span class="lineno">   54</span>        <span class="keyword">constexpr</span> int32_t maxInt32 = maxUint32 &gt;&gt; 1;</div>
+<div class="line"><a id="l00055" name="l00055"></a><span class="lineno">   55</span>        <span class="keyword">constexpr</span> int32_t minInt32 = ~maxInt32;</div>
 <div class="line"><a id="l00056" name="l00056"></a><span class="lineno">   56</span> </div>
-<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        <span class="keyword">static</span> uint_t randomNum(uint_t l = 1, uint_t h = Math::maxUint)</div>
-<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        {</div>
-<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span>            std::random_device rd;</div>
-<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>            std::mt19937 gen(rd());</div>
-<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>            std::uniform_int_distribution&lt;uint_t&gt; distrib(l, h);</div>
-<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            <span class="keywordflow">return</span> distrib(gen);</div>
-<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        }</div>
-<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>    };</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>}</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span><span class="comment">//--------------------------------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00057" name="l00057"></a><span class="lineno">   57</span>        <span class="keyword">constexpr</span> real_t degToRad(real_t deg) { <span class="keywordflow">return</span> deg * (pi / <span class="keyword">static_cast&lt;</span>real_t<span class="keyword">&gt;</span>(180.0)); }</div>
+<div class="line"><a id="l00058" name="l00058"></a><span class="lineno">   58</span>        <span class="keyword">constexpr</span> real_t radToDeg(real_t rad) { <span class="keywordflow">return</span> rad * (<span class="keyword">static_cast&lt;</span>real_t<span class="keyword">&gt;</span>(180.0) / pi); }</div>
+<div class="line"><a id="l00059" name="l00059"></a><span class="lineno">   59</span> </div>
+<div class="line"><a id="l00060" name="l00060"></a><span class="lineno">   60</span>        <span class="keyword">static</span> uint_t randomNum(uint_t l = 1, uint_t h = Math::maxUint)</div>
+<div class="line"><a id="l00061" name="l00061"></a><span class="lineno">   61</span>        {</div>
+<div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>            std::random_device rd;</div>
+<div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>            std::mt19937 gen(rd());</div>
+<div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>            std::uniform_int_distribution&lt;uint_t&gt; distrib(l, h);</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>            <span class="keywordflow">return</span> distrib(gen);</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        }</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>        <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        T clamp(<span class="keyword">const</span> T&amp; value, <span class="keyword">const</span> T&amp; low, <span class="keyword">const</span> T&amp; high)</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>        {</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>            <span class="keywordflow">return</span> std::max(low, std::min(value, high));</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        }</div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>    };</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>}</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span><span class="comment">//--------------------------------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span><span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

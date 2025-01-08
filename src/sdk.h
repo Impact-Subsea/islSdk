@@ -20,7 +20,7 @@ namespace IslSdk
     class Sdk
     {
     public:
-        const std::string version = "3.1.1";
+        const std::string version = "3.1.6";
         SysPortMgr ports;
         DeviceMgr devices {ports};
         NmeaDeviceMgr nmeaDevices;
@@ -45,11 +45,9 @@ namespace IslSdk
     private:
         Slot<const SysPort::SharedPtr&> m_slotNewPort{ this, &Sdk::newPort };
         Slot<SysPort&> m_slotPortDeleted{ this, & Sdk::portDeleted };
-        Slot<Device&> m_slotDeviceDeleted{ this, & Sdk::deviceDeleted };
         bool_t m_first;
         void newPort(const SysPort::SharedPtr& sysPort);
         void portDeleted(SysPort& sysPort);
-        void deviceDeleted(Device& device);
         void newFrameEvent(SysPort& sysPort, const uint8_t* data, uint_t size, const ConnectionMeta& meta, Codec::Type codecType);
     };
 }

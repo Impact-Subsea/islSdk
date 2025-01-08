@@ -32,7 +32,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.0</span>
+   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.6</span>
    </div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -98,7 +98,6 @@ $(document).ready(function(){initNavTree('struct_isl_sdk_1_1_sonar_1_1_acoustic.
 
 <div class="header">
   <div class="summary">
-<a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
@@ -112,19 +111,6 @@ $(document).ready(function(){initNavTree('struct_isl_sdk_1_1_sonar_1_1_acoustic.
 
 <p><code>#include &lt;<a class="el" href="sonar_8h_source.html">sonar.h</a>&gt;</code></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
-Public Types</h2></td></tr>
-<tr class="memitem:a7bbe4e1bf23fde2518dc84f8574f6f19" id="r_a7bbe4e1bf23fde2518dc84f8574f6f19"><td class="memItemLeft" align="right" valign="top"><a id="a7bbe4e1bf23fde2518dc84f8574f6f19" name="a7bbe4e1bf23fde2518dc84f8574f6f19"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>PskMode</b> { <br />
-&#160;&#160;<b>Off</b>
-, <b>Code1</b>
-, <b>Code2</b>
-, <b>Code3</b>
-, <br />
-&#160;&#160;<b>Code4</b>
-<br />
- }</td></tr>
-<tr class="separator:a7bbe4e1bf23fde2518dc84f8574f6f19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a581276750a4f643aad03e7076a77a12b" id="r_a581276750a4f643aad03e7076a77a12b"><td class="memItemLeft" align="right" valign="top"><a id="a581276750a4f643aad03e7076a77a12b" name="a581276750a4f643aad03e7076a77a12b"></a>
@@ -168,15 +154,19 @@ Public Attributes</h2></td></tr>
 bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>highSampleRate</b></td></tr>
 <tr class="memdesc:a1be7181995089819e60fa1b252252598"><td class="mdescLeft">&#160;</td><td class="mdescRight">If true the ADC sample rate is 5 MHz else it's 2.5 MHz. <br /></td></tr>
 <tr class="separator:a1be7181995089819e60fa1b252252598"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a901cd438a14ad13298bc0aa06230f853" id="r_a901cd438a14ad13298bc0aa06230f853"><td class="memItemLeft" align="right" valign="top"><a id="a901cd438a14ad13298bc0aa06230f853" name="a901cd438a14ad13298bc0aa06230f853"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">enum</a> IslSdk::Sonar::Acoustic::PskMode&#160;</td><td class="memItemRight" valign="bottom"><b>pskMode</b></td></tr>
-<tr class="memdesc:a901cd438a14ad13298bc0aa06230f853"><td class="mdescLeft">&#160;</td><td class="mdescRight">PSK modulation mode. <br /></td></tr>
-<tr class="separator:a901cd438a14ad13298bc0aa06230f853"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af686287e467f743aa2623e559e5f6fe1" id="r_af686287e467f743aa2623e559e5f6fe1"><td class="memItemLeft" align="right" valign="top"><a id="af686287e467f743aa2623e559e5f6fe1" name="af686287e467f743aa2623e559e5f6fe1"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>pskCode</b></td></tr>
+<tr class="memdesc:af686287e467f743aa2623e559e5f6fe1"><td class="mdescLeft">&#160;</td><td class="mdescRight">PSK code for the transmit pulse. 0 to 31. <br /></td></tr>
+<tr class="separator:af686287e467f743aa2623e559e5f6fe1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a41a10dda6030d9a39939be685a9ef490" id="r_a41a10dda6030d9a39939be685a9ef490"><td class="memItemLeft" align="right" valign="top"><a id="a41a10dda6030d9a39939be685a9ef490" name="a41a10dda6030d9a39939be685a9ef490"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>pskLength</b></td></tr>
+<tr class="memdesc:a41a10dda6030d9a39939be685a9ef490"><td class="mdescLeft">&#160;</td><td class="mdescRight">Length of the PSK code. 0 to 31. <br /></td></tr>
+<tr class="separator:a41a10dda6030d9a39939be685a9ef490"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a6db90ab17b7a30f17a0532f47e8e535f" id="r_a6db90ab17b7a30f17a0532f47e8e535f"><td class="memItemLeft" align="right" valign="top"><a id="a6db90ab17b7a30f17a0532f47e8e535f" name="a6db90ab17b7a30f17a0532f47e8e535f"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">static</a> <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> = 12</td></tr>
+<a class="el" href="class_isl_sdk_1_1_callback.html">static</a> <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> = 17</td></tr>
 <tr class="separator:a6db90ab17b7a30f17a0532f47e8e535f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>

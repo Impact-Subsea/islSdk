@@ -38,9 +38,9 @@ SysPort::SharedPtr SysPortMgr::getSharedPtr(SysPort& sysPort)
     return SysPort::SharedPtr();
 }
 //--------------------------------------------------------------------------------------------------
-const std::shared_ptr<NetPort> SysPortMgr::createNetPort(const std::string& name)
+const std::shared_ptr<NetPort> SysPortMgr::createNetPort(const std::string& name, bool_t isTcp, bool_t isServer, uint32_t ipAddress, uint16_t port)
 {
-    const std::shared_ptr<NetPort> ptr = std::make_shared<NetPort>(name, false, false, 0xffffffff, 0);
+    const std::shared_ptr<NetPort> ptr = std::make_shared<NetPort>(name, isTcp, isServer, ipAddress, port);
     m_sysPortList.push_back(ptr);
     debugLog("SysPort", "New network port %s", name.c_str());
     onNew(m_sysPortList.back());
@@ -54,7 +54,7 @@ const std::shared_ptr<SolPort> SysPortMgr::createSol(const std::string& name, bo
 
     if (name.empty())
     {
-        std::string solName = "SOL: " + StringUtils::ipToStr(ipAddress) + ":" + StringUtils::uintToStr(port);
+        std::string solName = "SOL: " + StringUtils::ipToStr(ipAddress) + ":" + StringUtils::toStr(port);
         ptr = std::make_shared<SolPort>(solName, isTcp, useTelnet, ipAddress, port);
     }
     else
@@ -68,9 +68,16 @@ const std::shared_ptr<SolPort> SysPortMgr::createSol(const std::string& name, bo
     return ptr;
 }
 //--------------------------------------------------------------------------------------------------
+void SysPortMgr::addSysPort(const SysPort::SharedPtr& sysPort)
+{
+	m_sysPortList.push_back(sysPort);
+	debugLog("SysPort", "New Remote serial port %s", sysPort->name.c_str());
+	onNew(m_sysPortList.back());
+}
+//--------------------------------------------------------------------------------------------------
 void SysPortMgr::deleteSolSysPort(const SysPort::SharedPtr& sysPort)
 {
-    if (sysPort->type == SysPort::Type::Sol)
+    if (sysPort && sysPort->classType == SysPort::ClassType::Sol)
     {
         deleteSysPort(sysPort);
     }
@@ -103,13 +110,13 @@ std::list<SysPort::SharedPtr>::iterator SysPortMgr::deleteSysPort(std::list<SysP
 //--------------------------------------------------------------------------------------------------
 void SysPortMgr::updateAttachedSerialPorts()
 {
-    std::vector<std::string> nameList = Uart::getNames();
+    std::vector<std::string> nameList = SerialPort::getNames();
     std::list<SysPort::SharedPtr>::iterator it = m_sysPortList.begin();
 
     while (it != m_sysPortList.end())
     {
         SysPort* sysPort = it->get();
-        if (sysPort->type == SysPort::Type::Serial)
+        if (sysPort->classType == SysPort::ClassType::Serial)
         {
             bool_t inList = false;
             for (size_t i = 0; i < nameList.size(); i++)
@@ -167,7 +174,7 @@ void SysPortMgr::run()
     while (it != m_sysPortList.end())
     {
         SysPort* sysPort = (*it).get();
-        if (sysPort->isOpen)
+        if (sysPort->active)
         {
             if (sysPort->process())
             {
@@ -188,11 +195,6 @@ void SysPortMgr::run()
             {
                 sysPort->close();
             }
-        }
-        else if (sysPort->m_sdkCanClose && (sysPort->deviceCount == 0))
-        {
-            it = deleteSysPort(it);
-            continue;
         }
         it++;
     }

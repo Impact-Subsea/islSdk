@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['parity_0',['parity',['../class_isl_sdk_1_1_isa500_1_1_settings.html#a251fc3f94969171491954d4a063ccd99',1,'IslSdk::Isa500::Settings::parity'],['../class_isl_sdk_1_1_isd4000_1_1_settings.html#a37b3bb7153a6300f5d9af28a4b68a268',1,'IslSdk::Isd4000::Settings::parity'],['../struct_isl_sdk_1_1_ism3d_1_1_settings.html#a9574fbedafdcfa5c9334875296ff0fbd',1,'IslSdk::Ism3d::Settings::parity']]],
+  ['parity_0',['parity',['../class_isl_sdk_1_1_isa500_1_1_settings.html#a5d747f6e5b6436b1f8feb6a28b678f17',1,'IslSdk::Isa500::Settings::parity'],['../class_isl_sdk_1_1_isd4000_1_1_settings.html#a7f926096e3fd9eee85db8ba9e25d9e47',1,'IslSdk::Isd4000::Settings::parity'],['../struct_isl_sdk_1_1_ism3d_1_1_settings.html#a7c3b0518689cf6e3a60ea13f2e8cc1b5',1,'IslSdk::Ism3d::Settings::parity']]],
   ['pdop_1',['pdop',['../struct_isl_sdk_1_1_gps_device_1_1_gpgsa.html#a46a64705fdb0e01f3b33f2cbebd65e2e',1,'IslSdk::GpsDevice::Gpgsa']]],
   ['phymdixmode_2',['phyMdixMode',['../struct_isl_sdk_1_1_sonar_1_1_system.html#acc87a2033060febcac13fb33750fdeca',1,'IslSdk::Sonar::System']]],
   ['phyportmode_3',['phyPortMode',['../struct_isl_sdk_1_1_sonar_1_1_system.html#a5fcfd9bd7e233546b1b3241fdff6930c',1,'IslSdk::Sonar::System']]],
@@ -14,8 +14,8 @@ var searchData=
   ['pressurecal_11',['pressureCal',['../class_isl_sdk_1_1_isd4000.html#af1dd91f031aa3964d2a1768b3af2b92d',1,'IslSdk::Isd4000']]],
   ['pressureoffset_12',['pressureOffset',['../class_isl_sdk_1_1_isd4000_1_1_settings.html#a9bfe1e776ab3123b430f9f7dd0cf3ed6',1,'IslSdk::Isd4000::Settings']]],
   ['prn_13',['prn',['../struct_isl_sdk_1_1_gps_device_1_1_gpgsv_satellite.html#ab8aadf9eb2846fe57c677c3d09681026',1,'IslSdk::GpsDevice::GpgsvSatellite::prn'],['../struct_isl_sdk_1_1_gps_device_1_1_gpgsa.html#a5feea8b70e02c3f267d1759a26984050',1,'IslSdk::GpsDevice::Gpgsa::prn']]],
-  ['profilerdepthgating_14',['profilerDepthGating',['../struct_isl_sdk_1_1_sonar_1_1_system.html#aa1c312f0ce087c9ecfbc86eb1d0661df',1,'IslSdk::Sonar::System']]],
-  ['profilermaxrangemm_15',['profilerMaxRangeMm',['../struct_isl_sdk_1_1_sonar_1_1_system.html#a7b300bd317946d5ec2585f1acd562881',1,'IslSdk::Sonar::System']]],
-  ['profilerminrangemm_16',['profilerMinRangeMm',['../struct_isl_sdk_1_1_sonar_1_1_system.html#a045c79bf472d3ee5937887f575017c66',1,'IslSdk::Sonar::System']]],
-  ['pskmode_17',['pskMode',['../struct_isl_sdk_1_1_sonar_1_1_acoustic.html#a901cd438a14ad13298bc0aa06230f853',1,'IslSdk::Sonar::Acoustic']]]
+  ['profilermaxrangemm_14',['profilerMaxRangeMm',['../struct_isl_sdk_1_1_sonar_1_1_setup.html#a96615a5bda00a966ad45226d72cdb507',1,'IslSdk::Sonar::Setup']]],
+  ['profilerminrangemm_15',['profilerMinRangeMm',['../struct_isl_sdk_1_1_sonar_1_1_setup.html#a47bf0d5aad2e4c87c3d4b959a17de92f',1,'IslSdk::Sonar::Setup']]],
+  ['pskcode_16',['pskCode',['../struct_isl_sdk_1_1_sonar_1_1_acoustic.html#af686287e467f743aa2623e559e5f6fe1',1,'IslSdk::Sonar::Acoustic']]],
+  ['psklength_17',['pskLength',['../struct_isl_sdk_1_1_sonar_1_1_acoustic.html#a41a10dda6030d9a39939be685a9ef490',1,'IslSdk::Sonar::Acoustic']]]
 ];

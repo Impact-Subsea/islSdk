@@ -32,7 +32,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.0</span>
+   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.6</span>
    </div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -102,6 +102,7 @@ $(document).ready(function(){initNavTree('class_isl_sdk_1_1_device.html',''); in
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
+<a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="#pro-types">Protected Types</a> &#124;
 <a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="#pro-attribs">Protected Attributes</a> &#124;
@@ -121,12 +122,13 @@ Inheritance diagram for IslSdk::Device:</div>
  <div class="center">
   <img src="class_isl_sdk_1_1_device.png" usemap="#IslSdk::Device_map" alt=""/>
   <map id="IslSdk::Device_map" name="IslSdk::Device_map">
-<area href="class_isl_sdk_1_1_isl_hdlc.html" alt="IslSdk::IslHdlc" shape="rect" coords="146,0,282,24"/>
-<area href="class_isl_sdk_1_1_logging_device.html" alt="IslSdk::LoggingDevice" shape="rect" coords="292,0,428,24"/>
+<area href="class_isl_sdk_1_1_isl_hdlc.html" alt="IslSdk::IslHdlc" shape="rect" coords="219,0,355,24"/>
+<area href="class_isl_sdk_1_1_logging_device.html" alt="IslSdk::LoggingDevice" shape="rect" coords="365,0,501,24"/>
 <area href="class_isl_sdk_1_1_isa500.html" title="This class is created for every ISA500 device discovered." alt="IslSdk::Isa500" shape="rect" coords="0,112,136,136"/>
 <area href="class_isl_sdk_1_1_isd4000.html" alt="IslSdk::Isd4000" shape="rect" coords="146,112,282,136"/>
 <area href="class_isl_sdk_1_1_ism3d.html" alt="IslSdk::Ism3d" shape="rect" coords="292,112,428,136"/>
-<area href="class_isl_sdk_1_1_sonar.html" alt="IslSdk::Sonar" shape="rect" coords="438,112,574,136"/>
+<area href="class_isl_sdk_1_1_multi_pcp.html" alt="IslSdk::MultiPcp" shape="rect" coords="438,112,574,136"/>
+<area href="class_isl_sdk_1_1_sonar.html" alt="IslSdk::Sonar" shape="rect" coords="584,112,720,136"/>
   </map>
 </div></div>
 <table class="memberdecls">
@@ -152,34 +154,12 @@ Public Types</h2></td></tr>
 , <a class="el" href="class_isl_sdk_1_1_device.html#a9115ab19a796200c99299ca58c8fc51fa61b507945213c88bb4dc59c6702344b5">Ism3d</a> = 1461
 , <br />
 &#160;&#160;<a class="el" href="class_isl_sdk_1_1_device.html#a9115ab19a796200c99299ca58c8fc51fa0ca3d6fbf046a5a156b850809755083c">Sonar</a> = 1791
+, <a class="el" href="class_isl_sdk_1_1_device.html#a9115ab19a796200c99299ca58c8fc51faa3d8a9e8a60f3192a220e9c88069252f">MultiPcp</a> = 1865
 , <b>Any</b> = 0xffff
 <br />
  }</td></tr>
 <tr class="memdesc:a9115ab19a796200c99299ca58c8fc51f"><td class="mdescLeft">&#160;</td><td class="mdescRight">&lt; Product id values.  <a href="class_isl_sdk_1_1_device.html#a9115ab19a796200c99299ca58c8fc51f">More...</a><br /></td></tr>
 <tr class="separator:a9115ab19a796200c99299ca58c8fc51f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a37b69b0ae96f97b33b17085de13fc9f1" id="r_a37b69b0ae96f97b33b17085de13fc9f1"><td class="memItemLeft" align="right" valign="top"><a id="a37b69b0ae96f97b33b17085de13fc9f1" name="a37b69b0ae96f97b33b17085de13fc9f1"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>UartMode</b> : uint8_t { <b>Rs232</b>
-, <b>Rs485</b>
-, <b>Rs485Terminated</b>
-, <b>Unknown</b> = 255
- }</td></tr>
-<tr class="separator:a37b69b0ae96f97b33b17085de13fc9f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a80e5aff8810f6d67ad72a3f3989bec19" id="r_a80e5aff8810f6d67ad72a3f3989bec19"><td class="memItemLeft" align="right" valign="top"><a id="a80e5aff8810f6d67ad72a3f3989bec19" name="a80e5aff8810f6d67ad72a3f3989bec19"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>Parity</b> : uint8_t { <br />
-&#160;&#160;<b>None</b>
-, <b>Odd</b>
-, <b>Even</b>
-, <b>Mark</b>
-, <br />
-&#160;&#160;<b>Space</b>
-, <b>Unknown</b> = 255
-<br />
- }</td></tr>
-<tr class="separator:a80e5aff8810f6d67ad72a3f3989bec19"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a81bfb34afec75d32b0e44629573de2b6" id="r_a81bfb34afec75d32b0e44629573de2b6"><td class="memItemLeft" align="right" valign="top"><a id="a81bfb34afec75d32b0e44629573de2b6" name="a81bfb34afec75d32b0e44629573de2b6"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>StopBits</b> : uint8_t { <b>One</b>
-, <b>OneAndHalf</b>
-, <b>Two</b>
-, <b>Unknown</b> = 255
- }</td></tr>
-<tr class="separator:a81bfb34afec75d32b0e44629573de2b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4618359361d9fedc9c8520f17117d209" id="r_a4618359361d9fedc9c8520f17117d209"><td class="memItemLeft" align="right" valign="top"><a id="a4618359361d9fedc9c8520f17117d209" name="a4618359361d9fedc9c8520f17117d209"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>PhyMdixMode</b> : uint8_t { <b>Normal</b>
 , <b>Swapped</b>
 , <b>Auto</b>
@@ -232,9 +212,18 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a5dc943324a799d7be858dd69ed3d1d77" id="r_a5dc943324a799d7be858dd69ed3d1d77"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_isl_sdk_1_1_device.html#a5dc943324a799d7be858dd69ed3d1d77">reset</a> ()</td></tr>
 <tr class="memdesc:a5dc943324a799d7be858dd69ed3d1d77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reset the device.  <br /></td></tr>
 <tr class="separator:a5dc943324a799d7be858dd69ed3d1d77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1cab9d6cda09cd205e28a5aed5b66732" id="r_a1cab9d6cda09cd205e28a5aed5b66732"><td class="memItemLeft" align="right" valign="top">bool_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_isl_sdk_1_1_device.html#a1cab9d6cda09cd205e28a5aed5b66732">isConnected</a> ()</td></tr>
+<tr class="memdesc:a1cab9d6cda09cd205e28a5aed5b66732"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the device is connected.  <br /></td></tr>
+<tr class="separator:a1cab9d6cda09cd205e28a5aed5b66732"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf4510ab6133db5b55f4c679b669fae7" id="r_aaf4510ab6133db5b55f4c679b669fae7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> bool_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_isl_sdk_1_1_device.html#aaf4510ab6133db5b55f4c679b669fae7">saveConfig</a> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> std::string &amp;<a class="el" href="class_isl_sdk_1_1_callback.html">fileName</a>)</td></tr>
 <tr class="memdesc:aaf4510ab6133db5b55f4c679b669fae7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Save the device configuration to an xml file.  <br /></td></tr>
 <tr class="separator:aaf4510ab6133db5b55f4c679b669fae7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a684b76b69b470342b8c597bce1cf4fbb" id="r_a684b76b69b470342b8c597bce1cf4fbb"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_isl_sdk_1_1_device.html#a684b76b69b470342b8c597bce1cf4fbb">getConfigAsString</a> ()</td></tr>
+<tr class="memdesc:a684b76b69b470342b8c597bce1cf4fbb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Returns the configuration as an xml string.  <br /></td></tr>
+<tr class="separator:a684b76b69b470342b8c597bce1cf4fbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2fd32d2f2eeb19f41de6dfc83ca9312d" id="r_a2fd32d2f2eeb19f41de6dfc83ca9312d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_isl_sdk_1_1_device.html#a2fd32d2f2eeb19f41de6dfc83ca9312d">getHardwareFaults</a> ()</td></tr>
+<tr class="memdesc:a2fd32d2f2eeb19f41de6dfc83ca9312d"><td class="mdescLeft">&#160;</td><td class="mdescRight">checks if the firmware has detected hardware faults.  <br /></td></tr>
+<tr class="separator:a2fd32d2f2eeb19f41de6dfc83ca9312d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad40d87f787d3ecf34678d1b89557d1b1" id="r_ad40d87f787d3ecf34678d1b89557d1b1"><td class="memItemLeft" align="right" valign="top">bool_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_isl_sdk_1_1_device.html#ad40d87f787d3ecf34678d1b89557d1b1">bootloaderMode</a> ()</td></tr>
 <tr class="memdesc:ad40d87f787d3ecf34678d1b89557d1b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check if the devices is in bootloader mode.  <br /></td></tr>
 <tr class="separator:ad40d87f787d3ecf34678d1b89557d1b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -248,6 +237,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:abbfc737181253959317542e0fa3f3670 inherit pub_methods_class_isl_sdk_1_1_isl_hdlc" id="r_abbfc737181253959317542e0fa3f3670"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>processPacket</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_isl_hdlc_packet.html">IslHdlcPacket</a> &amp;<a class="el" href="class_isl_sdk_1_1_callback.html">packet</a>)</td></tr>
 <tr class="separator:abbfc737181253959317542e0fa3f3670 inherit pub_methods_class_isl_sdk_1_1_isl_hdlc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acb3c38edb9a9812ff637dc0401c64e23 inherit pub_methods_class_isl_sdk_1_1_isl_hdlc" id="r_acb3c38edb9a9812ff637dc0401c64e23"><td class="memItemLeft" align="right" valign="top">
+<a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>disconnect</b> ()</td></tr>
+<tr class="separator:acb3c38edb9a9812ff637dc0401c64e23 inherit pub_methods_class_isl_sdk_1_1_isl_hdlc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_class_isl_sdk_1_1_logging_device"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_class_isl_sdk_1_1_logging_device')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="class_isl_sdk_1_1_logging_device.html">IslSdk::LoggingDevice</a></td></tr>
 <tr class="memitem:a555dc1714845d436c0f0fb41adacb300 inherit pub_methods_class_isl_sdk_1_1_logging_device" id="r_a555dc1714845d436c0f0fb41adacb300"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>setLogger</b> (std::shared_ptr&lt; <a class="el" href="class_isl_sdk_1_1_log_writer.html">LogWriter</a> &gt; &amp;<a class="el" href="class_isl_sdk_1_1_callback.html">logger</a>, <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *<a class="el" href="class_isl_sdk_1_1_callback.html">trackData</a>, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size)</td></tr>
@@ -303,13 +295,23 @@ Public Attributes</h2></td></tr>
 <tr class="memitem:a944a6209ff0bff2de780d8e9a0a432ac" id="r_a944a6209ff0bff2de780d8e9a0a432ac"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_isl_sdk_1_1_signal.html">Signal</a>&lt; <a class="el" href="class_isl_sdk_1_1_device.html">Device</a> &amp;, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a>, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a>, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a>, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_isl_sdk_1_1_device.html#a944a6209ff0bff2de780d8e9a0a432ac">onPacketCount</a></td></tr>
 <tr class="memdesc:a944a6209ff0bff2de780d8e9a0a432ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">A subscribable event that fires every second and reports the packet counters for the device The counters are reset to zero when the device connects.  <br /></td></tr>
 <tr class="separator:a944a6209ff0bff2de780d8e9a0a432ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a46eed0e213905b0f4335d6f18f8bab60" id="r_a46eed0e213905b0f4335d6f18f8bab60"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_isl_sdk_1_1_signal.html">Signal</a>&lt; <a class="el" href="class_isl_sdk_1_1_device.html">Device</a> &amp;, bool_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_isl_sdk_1_1_device.html#a46eed0e213905b0f4335d6f18f8bab60">onCommsTimeout</a></td></tr>
+<tr class="memdesc:a46eed0e213905b0f4335d6f18f8bab60"><td class="mdescLeft">&#160;</td><td class="mdescRight">A subscribable event for when a comms timeout occurs.  <br /></td></tr>
+<tr class="separator:a46eed0e213905b0f4335d6f18f8bab60"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81adf3ca5ed058933d979303ac202c59" id="r_a81adf3ca5ed058933d979303ac202c59"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_isl_sdk_1_1_signal.html">Signal</a>&lt; <a class="el" href="class_isl_sdk_1_1_device.html">Device</a> &amp;, <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> std::string &amp; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_isl_sdk_1_1_device.html#a81adf3ca5ed058933d979303ac202c59">onXmlConfig</a></td></tr>
+<tr class="memdesc:a81adf3ca5ed058933d979303ac202c59"><td class="mdescLeft">&#160;</td><td class="mdescRight">A subscribable event for when the device xml configuration is ready to read.  <br /></td></tr>
+<tr class="separator:a81adf3ca5ed058933d979303ac202c59"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_attribs_class_isl_sdk_1_1_isl_hdlc"><td colspan="2" onclick="javascript:toggleInherit('pub_attribs_class_isl_sdk_1_1_isl_hdlc')"><img src="closed.png" alt="-"/>&#160;Public Attributes inherited from <a class="el" href="class_isl_sdk_1_1_isl_hdlc.html">IslSdk::IslHdlc</a></td></tr>
 <tr class="memitem:a4b8865ae482b1444b6bd87a045326e67 inherit pub_attribs_class_isl_sdk_1_1_isl_hdlc" id="r_a4b8865ae482b1444b6bd87a045326e67"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>id</b></td></tr>
 <tr class="separator:a4b8865ae482b1444b6bd87a045326e67 inherit pub_attribs_class_isl_sdk_1_1_isl_hdlc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acd8629ebef40a2306e3d23f5a75598a5 inherit pub_attribs_class_isl_sdk_1_1_isl_hdlc" id="r_acd8629ebef40a2306e3d23f5a75598a5"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> bool_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>isConnected</b> = m_connected</td></tr>
-<tr class="separator:acd8629ebef40a2306e3d23f5a75598a5 inherit pub_attribs_class_isl_sdk_1_1_isl_hdlc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
+Static Public Attributes</h2></td></tr>
+<tr class="memitem:a6b71769f78fc9ab844c3cfe1aecf22cf" id="r_a6b71769f78fc9ab844c3cfe1aecf22cf"><td class="memItemLeft" align="right" valign="top"><a id="a6b71769f78fc9ab844c3cfe1aecf22cf" name="a6b71769f78fc9ab844c3cfe1aecf22cf"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">static</a> <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint64_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>deleteAfterTime</b> = 10000</td></tr>
+<tr class="memdesc:a6b71769f78fc9ab844c3cfe1aecf22cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">The time in milliseconds before the device is deleted when not connected. <br /></td></tr>
+<tr class="separator:a6b71769f78fc9ab844c3cfe1aecf22cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pro-types" name="pro-types"></a>
 Protected Types</h2></td></tr>
@@ -327,12 +329,12 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:ac36166c065c83a4d0e69a61076e40d0b" id="r_ac36166c065c83a4d0e69a61076e40d0b"><td class="memItemLeft" align="right" valign="top"><a id="ac36166c065c83a4d0e69a61076e40d0b" name="ac36166c065c83a4d0e69a61076e40d0b"></a>
 <a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>newPacket</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> <a class="el" href="class_isl_sdk_1_1_callback.html">command</a>, <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *data, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size)</td></tr>
 <tr class="separator:ac36166c065c83a4d0e69a61076e40d0b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4850ab22f122b49964a356e0d8c95222" id="r_a4850ab22f122b49964a356e0d8c95222"><td class="memItemLeft" align="right" valign="top"><a id="a4850ab22f122b49964a356e0d8c95222" name="a4850ab22f122b49964a356e0d8c95222"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>enqueuePacket</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *data, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size)</td></tr>
-<tr class="separator:a4850ab22f122b49964a356e0d8c95222"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96fb4c92e81774b1a4d28a627813b0a7" id="r_a96fb4c92e81774b1a4d28a627813b0a7"><td class="memItemLeft" align="right" valign="top"><a id="a96fb4c92e81774b1a4d28a627813b0a7" name="a96fb4c92e81774b1a4d28a627813b0a7"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>sendPacket</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *data, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size)</td></tr>
-<tr class="separator:a96fb4c92e81774b1a4d28a627813b0a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae049e22fe73f310577819c75169de9ef" id="r_ae049e22fe73f310577819c75169de9ef"><td class="memItemLeft" align="right" valign="top"><a id="ae049e22fe73f310577819c75169de9ef" name="ae049e22fe73f310577819c75169de9ef"></a>
+bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>enqueuePacket</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *data, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size)</td></tr>
+<tr class="separator:ae049e22fe73f310577819c75169de9ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfc5b47fe3acfb8984572df2e8972894" id="r_abfc5b47fe3acfb8984572df2e8972894"><td class="memItemLeft" align="right" valign="top"><a id="abfc5b47fe3acfb8984572df2e8972894" name="abfc5b47fe3acfb8984572df2e8972894"></a>
+bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>sendPacket</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *data, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size)</td></tr>
+<tr class="separator:abfc5b47fe3acfb8984572df2e8972894"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ebfedf733b6aa86400ae49b3d4d3d63" id="r_a7ebfedf733b6aa86400ae49b3d4d3d63"><td class="memItemLeft" align="right" valign="top"><a id="a7ebfedf733b6aa86400ae49b3d4d3d63" name="a7ebfedf733b6aa86400ae49b3d4d3d63"></a>
 <a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>connectionSettingsUpdated</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_connection_meta.html">ConnectionMeta</a> &amp;meta, bool_t <a class="el" href="class_isl_sdk_1_1_callback.html">isHalfDuplex</a>)</td></tr>
 <tr class="separator:a7ebfedf733b6aa86400ae49b3d4d3d63"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -342,9 +344,6 @@ Protected Member Functions</h2></td></tr>
 <tr class="memitem:ab52a1857ec5f135fe8a774572362a596 inherit pro_methods_class_isl_sdk_1_1_isl_hdlc" id="r_ab52a1857ec5f135fe8a774572362a596"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>connect</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">uint16_t</a> pn, <a class="el" href="class_isl_sdk_1_1_callback.html">uint16_t</a> sn, <a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a> <a class="el" href="class_isl_sdk_1_1_callback.html">timeout</a>)</td></tr>
 <tr class="separator:ab52a1857ec5f135fe8a774572362a596 inherit pro_methods_class_isl_sdk_1_1_isl_hdlc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acb3c38edb9a9812ff637dc0401c64e23 inherit pro_methods_class_isl_sdk_1_1_isl_hdlc" id="r_acb3c38edb9a9812ff637dc0401c64e23"><td class="memItemLeft" align="right" valign="top">
-<a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>disconnect</b> ()</td></tr>
-<tr class="separator:acb3c38edb9a9812ff637dc0401c64e23 inherit pro_methods_class_isl_sdk_1_1_isl_hdlc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8549e50e2714f13b5af6823726af7a85 inherit pro_methods_class_isl_sdk_1_1_isl_hdlc" id="r_a8549e50e2714f13b5af6823726af7a85"><td class="memItemLeft" align="right" valign="top">
 <a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>setNrmMode</b> (bool_t <a class="el" href="class_isl_sdk_1_1_callback.html">isNrm</a>)</td></tr>
 <tr class="separator:a8549e50e2714f13b5af6823726af7a85 inherit pro_methods_class_isl_sdk_1_1_isl_hdlc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -363,6 +362,9 @@ bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_connectionDataSyn
 <tr class="memitem:a72b7d5b1e7b88025b35c5d3c30c5739a" id="r_a72b7d5b1e7b88025b35c5d3c30c5739a"><td class="memItemLeft" align="right" valign="top"><a id="a72b7d5b1e7b88025b35c5d3c30c5739a" name="a72b7d5b1e7b88025b35c5d3c30c5739a"></a>
 <a class="el" href="class_isl_sdk_1_1_callback.html">uint64_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>m_epochUs</b></td></tr>
 <tr class="separator:a72b7d5b1e7b88025b35c5d3c30c5739a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae441bd4bed396b214385822dd3fda9b9" id="r_ae441bd4bed396b214385822dd3fda9b9"><td class="memItemLeft" align="right" valign="top"><a id="ae441bd4bed396b214385822dd3fda9b9" name="ae441bd4bed396b214385822dd3fda9b9"></a>
+bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>m_waitingForXmlConfig</b></td></tr>
+<tr class="separator:ae441bd4bed396b214385822dd3fda9b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_class_isl_sdk_1_1_isl_hdlc"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_class_isl_sdk_1_1_isl_hdlc')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="class_isl_sdk_1_1_isl_hdlc.html">IslSdk::IslHdlc</a></td></tr>
 <tr class="memitem:acb3efa8adf0a2ba9eaa3fefb60fd5033 inherit pro_attribs_class_isl_sdk_1_1_isl_hdlc" id="r_acb3efa8adf0a2ba9eaa3fefb60fd5033"><td class="memItemLeft" align="right" valign="top">
 std::unique_ptr&lt; <a class="el" href="struct_isl_sdk_1_1_connection.html">Connection</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>m_connection</b></td></tr>
@@ -408,6 +410,9 @@ Friends</h2></td></tr>
 <tr class="memitem:a566eb41b2866f12fb92bb2118ceb6266" id="r_a566eb41b2866f12fb92bb2118ceb6266"><td class="memItemLeft" align="right" valign="top"><a id="a566eb41b2866f12fb92bb2118ceb6266" name="a566eb41b2866f12fb92bb2118ceb6266"></a>
 <a class="el" href="class_isl_sdk_1_1_callback.html">class</a>&#160;</td><td class="memItemRight" valign="bottom"><b>DeviceMgr</b></td></tr>
 <tr class="separator:a566eb41b2866f12fb92bb2118ceb6266"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40944cc74803425c33869470012d2e75" id="r_a40944cc74803425c33869470012d2e75"><td class="memItemLeft" align="right" valign="top"><a id="a40944cc74803425c33869470012d2e75" name="a40944cc74803425c33869470012d2e75"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">class</a>&#160;</td><td class="memItemRight" valign="bottom"><b>PcpDevice</b></td></tr>
+<tr class="separator:a40944cc74803425c33869470012d2e75"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="inherited" name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
@@ -457,6 +462,8 @@ Additional Inherited Members</h2></td></tr>
 <tr><td class="fieldname"><a id="a9115ab19a796200c99299ca58c8fc51fa61b507945213c88bb4dc59c6702344b5" name="a9115ab19a796200c99299ca58c8fc51fa61b507945213c88bb4dc59c6702344b5"></a>Ism3d&#160;</td><td class="fielddoc"><p>ISM3D with firmware V3.0.0 and above. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a9115ab19a796200c99299ca58c8fc51fa0ca3d6fbf046a5a156b850809755083c" name="a9115ab19a796200c99299ca58c8fc51fa0ca3d6fbf046a5a156b850809755083c"></a>Sonar&#160;</td><td class="fielddoc"><p>ISS360, ISS360HD or ISP360 with firmware V3.0.0 and above. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a9115ab19a796200c99299ca58c8fc51faa3d8a9e8a60f3192a220e9c88069252f" name="a9115ab19a796200c99299ca58c8fc51faa3d8a9e8a60f3192a220e9c88069252f"></a>MultiPcp&#160;</td><td class="fielddoc"><p>A device with multiple Powered Com Ports. </p>
 </td></tr>
 </table>
 
@@ -508,6 +515,86 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Connect to a device. </p>
 <p>This function connects to the device. If the device is already connected it has no effect. This established a connection session between the host and device. </p>
+
+</div>
+</div>
+<a id="a684b76b69b470342b8c597bce1cf4fbb" name="a684b76b69b470342b8c597bce1cf4fbb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a684b76b69b470342b8c597bce1cf4fbb">&#9670;&#160;</a></span>getConfigAsString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> std::string IslSdk::Device::getConfigAsString </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Returns the configuration as an xml string. </p>
+<dl class="section return"><dt>Returns</dt><dd>The boolean value indicating the success of the operation. </dd></dl>
+
+<p>Reimplemented in <a class="el" href="class_isl_sdk_1_1_isa500.html#adbbecc0391484c85226ad169025c9846">IslSdk::Isa500</a>, <a class="el" href="class_isl_sdk_1_1_isd4000.html#a566dbbd2942de8d17784790f70a5af61">IslSdk::Isd4000</a>, <a class="el" href="class_isl_sdk_1_1_ism3d.html#ac1e8fc8382620d5daaee1e797a43bff1">IslSdk::Ism3d</a>, <a class="el" href="class_isl_sdk_1_1_multi_pcp.html#a103b3faaa73d4074c8e3ea023a49c6c9">IslSdk::MultiPcp</a>, and <a class="el" href="class_isl_sdk_1_1_sonar.html#aebfd5f48d94ae9a2abfed607bfe6e6ae">IslSdk::Sonar</a>.</p>
+
+</div>
+</div>
+<a id="a2fd32d2f2eeb19f41de6dfc83ca9312d" name="a2fd32d2f2eeb19f41de6dfc83ca9312d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2fd32d2f2eeb19f41de6dfc83ca9312d">&#9670;&#160;</a></span>getHardwareFaults()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> std::vector&lt; std::string &gt; IslSdk::Device::getHardwareFaults </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>checks if the firmware has detected hardware faults. </p>
+<dl class="section return"><dt>Returns</dt><dd>A vector of the detected hardware faults. </dd></dl>
+
+<p>Reimplemented in <a class="el" href="class_isl_sdk_1_1_isa500.html#a4f0918b0336316b52679f4b5f00c0da6">IslSdk::Isa500</a>, <a class="el" href="class_isl_sdk_1_1_isd4000.html#a9bb4ba946ff06ccd0ae4f09a4621af6b">IslSdk::Isd4000</a>, <a class="el" href="class_isl_sdk_1_1_ism3d.html#a61f58b8fd5a9f146dbefad1d01e0afd9">IslSdk::Ism3d</a>, and <a class="el" href="class_isl_sdk_1_1_sonar.html#a2f91467ef9fb697548ce2bc671b9258f">IslSdk::Sonar</a>.</p>
+
+</div>
+</div>
+<a id="a1cab9d6cda09cd205e28a5aed5b66732" name="a1cab9d6cda09cd205e28a5aed5b66732"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1cab9d6cda09cd205e28a5aed5b66732">&#9670;&#160;</a></span>isConnected()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool_t Device::isConnected </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check if the device is connected. </p>
+<p>This function returns true if the device is connected to the host. </p><dl class="section return"><dt>Returns</dt><dd>True if the device is connected. </dd></dl>
 
 </div>
 </div>
@@ -662,6 +749,29 @@ Additional Inherited Members</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Data Documentation</h2>
+<a id="a46eed0e213905b0f4335d6f18f8bab60" name="a46eed0e213905b0f4335d6f18f8bab60"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a46eed0e213905b0f4335d6f18f8bab60">&#9670;&#160;</a></span>onCommsTimeout</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_isl_sdk_1_1_signal.html">Signal</a>&lt;<a class="el" href="class_isl_sdk_1_1_device.html">Device</a>&amp;, bool_t&gt; IslSdk::Device::onCommsTimeout</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>A subscribable event for when a comms timeout occurs. </p>
+<p>This event is triggered when the device has not responded to a packet within the timeout period. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">device</td><td><a class="el" href="class_isl_sdk_1_1_device.html" title="The base class for all devices.">Device</a>&amp; The device that triggered the event. </td></tr>
+    <tr><td class="paramname">timeoutCount</td><td>bool_t True if the device will be disconnected. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="a87533d7fdd9131e71b989391ab676526" name="a87533d7fdd9131e71b989391ab676526"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a87533d7fdd9131e71b989391ab676526">&#9670;&#160;</a></span>onConnect</h2>
 
@@ -865,6 +975,29 @@ Additional Inherited Members</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">device</td><td><a class="el" href="class_isl_sdk_1_1_device.html" title="The base class for all devices.">Device</a>&amp; The device that triggered the event. </td></tr>
     <tr><td class="paramname">port</td><td><a class="el" href="class_isl_sdk_1_1_sys_port.html" title="Base class for all system ports.">SysPort</a>&amp; The port that was removed and the device was discovered on. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a81adf3ca5ed058933d979303ac202c59" name="a81adf3ca5ed058933d979303ac202c59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a81adf3ca5ed058933d979303ac202c59">&#9670;&#160;</a></span>onXmlConfig</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="class_isl_sdk_1_1_signal.html">Signal</a>&lt;<a class="el" href="class_isl_sdk_1_1_device.html">Device</a>&amp;, <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> std::string&amp;&gt; IslSdk::Device::onXmlConfig</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>A subscribable event for when the device xml configuration is ready to read. </p>
+<p>This event is triggered after a <a class="el" href="class_isl_sdk_1_1_device.html#a684b76b69b470342b8c597bce1cf4fbb" title="Returns the configuration as an xml string.">getConfigAsString()</a> call and the data has been received. </p><dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">device</td><td><a class="el" href="class_isl_sdk_1_1_device.html" title="The base class for all devices.">Device</a>&amp; The device that triggered the event. </td></tr>
+    <tr><td class="paramname">xmlConfig</td><td>std::string The xml configuration. </td></tr>
   </table>
   </dd>
 </dl>

@@ -5,6 +5,5 @@ var searchData=
   ['hasechogram_2',['hasEchoGram',['../class_isl_sdk_1_1_isa500.html#a2a0ed14c201e86986701450c3aca64c5',1,'IslSdk::Isa500']]],
   ['hasfmd_3',['hasFmd',['../class_isl_sdk_1_1_isa500.html#a67fece13f2dec8120318d980149fb0f7',1,'IslSdk::Isa500']]],
   ['hasrightangletransducer_4',['hasRightAngleTransducer',['../class_isl_sdk_1_1_isa500.html#a0be8c18bc7e53cd5ac8b0808c7ade9c7',1,'IslSdk::Isa500']]],
-  ['hassubscribers_5',['hasSubscribers',['../class_isl_sdk_1_1_signal.html#a622f33f3fadf15e93d5cec2aaf69a288',1,'IslSdk::Signal']]],
-  ['homehead_6',['homeHead',['../class_isl_sdk_1_1_sonar.html#a50332ccd6e3143101a5fbc1c29ddb1de',1,'IslSdk::Sonar']]]
+  ['hassubscribers_5',['hasSubscribers',['../class_isl_sdk_1_1_signal.html#a622f33f3fadf15e93d5cec2aaf69a288',1,'IslSdk::Signal']]]
 ];

@@ -7,7 +7,7 @@ using namespace IslSdk;
 //--------------------------------------------------------------------------------------------------
 uint32_t IslSdk::crc32(uint32_t seed, const void* data, uint_t length)
 {
-    const uint32_t lut[] = {
+    constexpr uint32_t lut[] = {
         0x00000000,0x1DB71064,0x3B6E20C8,0x26D930AC,0x76DC4190,0x6B6B51F4,0x4DB26158,0x5005713C,
         0xEDB88320,0xF00F9344,0xD6D6A3E8,0xCB61B38C,0x9B64C2B0,0x86D3D2D4,0xA00AE278,0xBDBDF21C };
     uint32_t crc = seed;
@@ -24,7 +24,7 @@ uint32_t IslSdk::crc32(uint32_t seed, const void* data, uint_t length)
 //--------------------------------------------------------------------------------------------------
 uint16_t IslSdk::crc16(uint16_t seed, const void* data, uint_t length)
 {
-    const uint16_t crcTable[] = {// CRC lookup table polynomial 0xA001
+    constexpr uint16_t crcTable[] = {// CRC lookup table polynomial 0xA001
     0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,
     0xC601, 0x06C0, 0x0780, 0xC741, 0x0500, 0xC5C1, 0xC481, 0x0440,
     0xCC01, 0x0CC0, 0x0D80, 0xCD41, 0x0F00, 0xCFC1, 0xCE81, 0x0E40,

@@ -32,7 +32,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.0</span>
+   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.6</span>
    </div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -106,7 +106,7 @@ $(document).ready(function(){initNavTree('xml_file_8h_source.html',''); initResi
 <div class="line"><a id="l00004" name="l00004"></a><span class="lineno">    4</span><span class="comment">//------------------------------------------ Includes ----------------------------------------------</span></div>
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;types/sdkTypes.h&quot;</span></div>
-<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;fstream&gt;</span></div>
+<div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &lt;sstream&gt;</span></div>
 <div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &lt;map&gt;</span></div>
 <div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &lt;string&gt;</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &lt;vector&gt;</span></div>
@@ -167,24 +167,25 @@ $(document).ready(function(){initNavTree('xml_file_8h_source.html',''); initResi
 <div class="line"><a id="l00062" name="l00062"></a><span class="lineno">   62</span>        <a class="code hl_class" href="class_isl_sdk_1_1_xml_file.html">XmlFile</a>();</div>
 <div class="line"><a id="l00063" name="l00063"></a><span class="lineno">   63</span>        bool_t open(<span class="keyword">const</span> std::string&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">fileName</a>);</div>
 <div class="line"><a id="l00064" name="l00064"></a><span class="lineno">   64</span>        bool_t save(<span class="keyword">const</span> std::string&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">fileName</a>);</div>
-<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        XmlElementPtr setRoot(<span class="keyword">const</span> std::string&amp; name);</div>
-<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        XmlElementPtr root() { <span class="keywordflow">return</span> m_root; }</div>
-<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span> </div>
-<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span>    <span class="keyword">private</span>:</div>
-<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>        <span class="keywordtype">void</span> parseElement(XmlElementPtr <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">parent</a>, std::ifstream&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">file</a>);</div>
-<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>        <span class="keywordtype">void</span> parseAttributes(XmlElementPtr&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">element</a>, <span class="keyword">const</span> std::string&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">line</a>);</div>
-<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span> </div>
-<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span>        std::string parseName(<span class="keyword">const</span> std::string&amp; name);</div>
-<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>        bool_t hasKey(<span class="keyword">const</span> XmlElementPtr&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">element</a>, <span class="keyword">const</span> std::string&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">key</a>);</div>
-<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>        bool_t getValue(<span class="keyword">const</span> XmlElementPtr&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">element</a>, <span class="keyword">const</span> std::string&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">key</a>, std::string&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">value</a>);</div>
-<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span> </div>
-<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span>        <span class="keywordtype">void</span> saveElement(std::ofstream&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">file</a>, XmlElementPtr&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">element</a>, <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint_t</a> <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">depth</a>);</div>
-<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>        XmlElementPtr m_root;</div>
-<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>    };</div>
+<div class="line"><a id="l00065" name="l00065"></a><span class="lineno">   65</span>        std::string asString();</div>
+<div class="line"><a id="l00066" name="l00066"></a><span class="lineno">   66</span>        XmlElementPtr setRoot(<span class="keyword">const</span> std::string&amp; name);</div>
+<div class="line"><a id="l00067" name="l00067"></a><span class="lineno">   67</span>        XmlElementPtr root() { <span class="keywordflow">return</span> m_root; }</div>
+<div class="line"><a id="l00068" name="l00068"></a><span class="lineno">   68</span> </div>
+<div class="line"><a id="l00069" name="l00069"></a><span class="lineno">   69</span>    <span class="keyword">private</span>:</div>
+<div class="line"><a id="l00070" name="l00070"></a><span class="lineno">   70</span>        <span class="keywordtype">void</span> parseElement(XmlElementPtr <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">parent</a>, std::ifstream&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">file</a>);</div>
+<div class="line"><a id="l00071" name="l00071"></a><span class="lineno">   71</span>        <span class="keywordtype">void</span> parseAttributes(XmlElementPtr&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">element</a>, <span class="keyword">const</span> std::string&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">line</a>);</div>
+<div class="line"><a id="l00072" name="l00072"></a><span class="lineno">   72</span> </div>
+<div class="line"><a id="l00073" name="l00073"></a><span class="lineno">   73</span>        std::string parseName(<span class="keyword">const</span> std::string&amp; name);</div>
+<div class="line"><a id="l00074" name="l00074"></a><span class="lineno">   74</span>        bool_t hasKey(<span class="keyword">const</span> XmlElementPtr&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">element</a>, <span class="keyword">const</span> std::string&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">key</a>);</div>
+<div class="line"><a id="l00075" name="l00075"></a><span class="lineno">   75</span>        bool_t getValue(<span class="keyword">const</span> XmlElementPtr&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">element</a>, <span class="keyword">const</span> std::string&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">key</a>, std::string&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">value</a>);</div>
+<div class="line"><a id="l00076" name="l00076"></a><span class="lineno">   76</span> </div>
+<div class="line"><a id="l00077" name="l00077"></a><span class="lineno">   77</span>        <span class="keywordtype">void</span> saveElement(std::ostringstream&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">file</a>, XmlElementPtr&amp; <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">element</a>, <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">uint_t</a> <a class="code hl_class" href="class_isl_sdk_1_1_callback.html">depth</a>);</div>
+<div class="line"><a id="l00078" name="l00078"></a><span class="lineno">   78</span>        XmlElementPtr m_root;</div>
+<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>    };</div>
 </div>
-<div class="line"><a id="l00079" name="l00079"></a><span class="lineno">   79</span>}</div>
-<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span><span class="comment">//--------------------------------------------------------------------------------------------------</span></div>
-<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="preprocessor">#endif</span></div>
+<div class="line"><a id="l00080" name="l00080"></a><span class="lineno">   80</span>}</div>
+<div class="line"><a id="l00081" name="l00081"></a><span class="lineno">   81</span><span class="comment">//--------------------------------------------------------------------------------------------------</span></div>
+<div class="line"><a id="l00082" name="l00082"></a><span class="lineno">   82</span><span class="preprocessor">#endif</span></div>
 <div class="ttc" id="aclass_isl_sdk_1_1_callback_html"><div class="ttname"><a href="class_isl_sdk_1_1_callback.html">IslSdk::Callback</a></div><div class="ttdoc">This class is used to create a callback.</div><div class="ttdef"><b>Definition</b> sigSlot.h:25</div></div>
 <div class="ttc" id="aclass_isl_sdk_1_1_xml_element_html"><div class="ttname"><a href="class_isl_sdk_1_1_xml_element.html">IslSdk::XmlElement</a></div><div class="ttdef"><b>Definition</b> xmlFile.h:18</div></div>
 <div class="ttc" id="aclass_isl_sdk_1_1_xml_file_html"><div class="ttname"><a href="class_isl_sdk_1_1_xml_file.html">IslSdk::XmlFile</a></div><div class="ttdef"><b>Definition</b> xmlFile.h:60</div></div>

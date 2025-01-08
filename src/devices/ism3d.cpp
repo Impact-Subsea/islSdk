@@ -62,16 +62,15 @@ bool_t Ism3d::setSettings(const Settings& newSettings, bool_t save)
 
     if (ok)
     {
-        m_pendingSettings = std::make_unique<Settings>(newSettings);
-
         data[0] = static_cast<uint8_t>(Commands::SetSettings);
         data[1] = static_cast<uint8_t>(save);
         newSettings.serialise(&data[2], sizeof(data) - 2);
 
         if (newSettings.baudrate != m_settings.baudrate || newSettings.uartMode != m_settings.uartMode)
         {
-            connectionSettingsUpdated(ConnectionMeta(newSettings.baudrate), newSettings.uartMode != UartMode::Rs232);
+            connectionSettingsUpdated(ConnectionMeta(newSettings.baudrate), newSettings.uartMode != Uart::Mode::Rs232);
         }
+        m_settings = newSettings;
         enqueuePacket(&data[0], sizeof(data));
     }
     else
@@ -131,6 +130,29 @@ bool_t Ism3d::startLogging()
     return logSettings();
 }
 //--------------------------------------------------------------------------------------------------
+std::vector<std::string> Ism3d::getHardwareFaults()
+{
+    enum FaultFlags : uint16_t { BackupGyro = 1, Mag = 2, GyroAccel = 4 };
+    std::vector<std::string> faults;
+
+    if (info.status)
+    {
+        if (info.status & FaultFlags::BackupGyro)
+        {
+            faults.emplace_back("backup gyro");
+        }
+        if (info.status & FaultFlags::Mag)
+        {
+            faults.emplace_back("mag");
+        }
+        if (info.status & FaultFlags::GyroAccel)
+        {
+            faults.emplace_back("gyro/accel");
+        }
+    }
+	return faults;
+}
+//--------------------------------------------------------------------------------------------------
 bool_t Ism3d::saveConfig(const std::string& fileName)
 {
     bool_t ok = true;
@@ -140,39 +162,12 @@ bool_t Ism3d::saveConfig(const std::string& fileName)
     if (m_onAhrs.state == DataState::Valid)
     {
         XmlFile file;
-
-        XmlElementPtr rootXml = file.setRoot("ISM3D");
-        if (rootXml)
+        ok = makeXmlConfig(file);
+        if (ok)
         {
-            XmlSettings::saveDeviceInfo(info, rootXml);
-
-            XmlElementPtr xml = rootXml->addElement("settings");
-            m_settings.save(xml);
-
-            xml = rootXml->addElement("script0");
-            XmlSettings::saveScript(m_onAhrs, xml);
-
-            xml = rootXml->addElement("cal");
-            if (xml)
-            {
-                XmlElementPtr node = xml->addElement("gyro");
-                XmlSettings::saveBias(gyro.bias, node);
-                node = xml->addElement("accel");
-                XmlSettings::saveBias(accel.bias, node);
-                XmlSettings::saveTransform(accel.transform, node);
-                node = xml->addElement("mag");
-                XmlSettings::saveBias(mag.bias, node);
-                XmlSettings::saveTransform(mag.transform, node);
-
-                node = xml->addElement("gyroBackup");
-                XmlSettings::saveBias(gyroSec.bias, node);
-                node = xml->addElement("accelBackup");
-                XmlSettings::saveBias(accelSec.bias, node);
-                XmlSettings::saveTransform(accelSec.transform, node);
-
-            }
             ok = file.save(fileName);
         }
+        
     }
     else
     {
@@ -180,6 +175,65 @@ bool_t Ism3d::saveConfig(const std::string& fileName)
     }
 
     return ok;
+}
+//--------------------------------------------------------------------------------------------------
+std::string Ism3d::getConfigAsString()
+{
+    std::string xml;
+
+    getScripts();
+
+    if (m_onAhrs.state == DataState::Valid)
+    {
+        m_waitingForXmlConfig = false;
+        XmlFile file;
+        makeXmlConfig(file);
+        xml = file.asString();
+        onXmlConfig(*this, xml);
+    }
+    else
+    {
+        m_waitingForXmlConfig = true;
+    }
+
+    return xml;
+}
+//--------------------------------------------------------------------------------------------------
+bool_t Ism3d::makeXmlConfig(XmlFile& file)
+{
+    XmlElementPtr rootXml = file.setRoot("ISM3D");
+    if (rootXml)
+    {
+        XmlSettings::saveDeviceInfo(info, rootXml);
+
+        XmlElementPtr xml = rootXml->addElement("settings");
+        m_settings.save(xml);
+
+        xml = rootXml->addElement("script0");
+        XmlSettings::saveScript(m_onAhrs, xml);
+
+        xml = rootXml->addElement("cal");
+        if (xml)
+        {
+            XmlElementPtr node = xml->addElement("gyro");
+            XmlSettings::saveBias(gyro.bias, node);
+            node = xml->addElement("accel");
+            XmlSettings::saveBias(accel.bias, node);
+            XmlSettings::saveTransform(accel.transform, node);
+            node = xml->addElement("mag");
+            XmlSettings::saveBias(mag.bias, node);
+            XmlSettings::saveTransform(mag.transform, node);
+
+            node = xml->addElement("gyroBackup");
+            XmlSettings::saveBias(gyroSec.bias, node);
+            node = xml->addElement("accelBackup");
+            XmlSettings::saveBias(accelSec.bias, node);
+            XmlSettings::saveTransform(accelSec.transform, node);
+
+        }
+    }
+
+    return rootXml != nullptr;
 }
 //--------------------------------------------------------------------------------------------------
 bool_t Ism3d::loadConfig(const std::string& fileName, Device::Info* info, Settings* settings, DeviceScript* script, AhrsCal* ahrsCal)
@@ -286,7 +340,7 @@ bool_t Ism3d::newPacket(uint8_t command, const uint8_t* data, uint_t size)
             real_t x = Mem::getFloat32(&data);
             real_t y = Mem::getFloat32(&data);
             real_t z = Mem::getFloat32(&data);
-            Quaternion q = Quaternion(w, x, y, z);
+            Math::Quaternion q = Math::Quaternion(w, x, y, z);
             real_t magHeadingRad = Mem::getFloat32(&data);
             real_t turnsCount = Mem::getFloat32(&data);
             ahrs.onData(ahrs, timeUs, q, magHeadingRad, turnsCount);
@@ -294,7 +348,7 @@ bool_t Ism3d::newPacket(uint8_t command, const uint8_t* data, uint_t size)
 
         if (sensorFlags & DataFlags::gyro)
         {
-            Vector3 gyroVec, gyroVecSec;
+            Math::Vector3 gyroVec, gyroVecSec;
             gyroVec.x = Mem::getFloat32(&data);
             gyroVec.y = Mem::getFloat32(&data);
             gyroVec.z = Mem::getFloat32(&data);
@@ -307,7 +361,7 @@ bool_t Ism3d::newPacket(uint8_t command, const uint8_t* data, uint_t size)
 
         if (sensorFlags & DataFlags::accel)
         {
-            Vector3 accelVec, accelVecSec;
+            Math::Vector3 accelVec, accelVecSec;
             accelVec.x = Mem::getFloat32(&data);
             accelVec.y = Mem::getFloat32(&data);
             accelVec.z = Mem::getFloat32(&data);
@@ -320,7 +374,7 @@ bool_t Ism3d::newPacket(uint8_t command, const uint8_t* data, uint_t size)
 
         if (sensorFlags & DataFlags::mag)
         {
-            Vector3 magVec;
+            Math::Vector3 magVec;
             magVec.x = Mem::getFloat32(&data);
             magVec.y = Mem::getFloat32(&data);
             magVec.z = Mem::getFloat32(&data);
@@ -353,20 +407,15 @@ bool_t Ism3d::newPacket(uint8_t command, const uint8_t* data, uint_t size)
         }
         else
         {
-            if (m_pendingSettings)
-            {
-                m_settings = *m_pendingSettings;
-            }
             logSettings();
         }
-        m_pendingSettings.reset();
         onSettingsUpdated(*this, *data != 0);
         break;
     }
     case Commands::GetAhrsCal:
     {
-        Vector3 gyroVec, accelVec, magVec, gyroVecSec, accelVecSec;
-        Matrix3x3 accelMat, accelMatSec, magMat;
+        Math::Vector3 gyroVec, accelVec, magVec, gyroVecSec, accelVecSec;
+        Math::Matrix3x3 accelMat, accelMatSec, magMat;
 
         gyroVec.x = Mem::getFloat32(&data);
         gyroVec.y = Mem::getFloat32(&data);
@@ -374,15 +423,15 @@ bool_t Ism3d::newPacket(uint8_t command, const uint8_t* data, uint_t size)
         accelVec.x = Mem::getFloat32(&data);
         accelVec.y = Mem::getFloat32(&data);
         accelVec.z = Mem::getFloat32(&data);
-        accelMat.m[0][0] = Mem::getFloat32(&data);
-        accelMat.m[0][1] = Mem::getFloat32(&data);
-        accelMat.m[0][2] = Mem::getFloat32(&data);
-        accelMat.m[1][0] = Mem::getFloat32(&data);
-        accelMat.m[1][1] = Mem::getFloat32(&data);
-        accelMat.m[1][2] = Mem::getFloat32(&data);
-        accelMat.m[2][0] = Mem::getFloat32(&data);
-        accelMat.m[2][1] = Mem::getFloat32(&data);
-        accelMat.m[2][2] = Mem::getFloat32(&data);
+        accelMat[0][0] = Mem::getFloat32(&data);
+        accelMat[0][1] = Mem::getFloat32(&data);
+        accelMat[0][2] = Mem::getFloat32(&data);
+        accelMat[1][0] = Mem::getFloat32(&data);
+        accelMat[1][1] = Mem::getFloat32(&data);
+        accelMat[1][2] = Mem::getFloat32(&data);
+        accelMat[2][0] = Mem::getFloat32(&data);
+        accelMat[2][1] = Mem::getFloat32(&data);
+        accelMat[2][2] = Mem::getFloat32(&data);
         gyroVecSec.x = Mem::getFloat32(&data);
         gyroVecSec.y = Mem::getFloat32(&data);
         gyroVecSec.z = Mem::getFloat32(&data);
@@ -392,24 +441,24 @@ bool_t Ism3d::newPacket(uint8_t command, const uint8_t* data, uint_t size)
         magVec.x = Mem::getFloat32(&data);
         magVec.y = Mem::getFloat32(&data);
         magVec.z = Mem::getFloat32(&data);
-        accelMatSec.m[0][0] = Mem::getFloat32(&data);
-        accelMatSec.m[0][1] = Mem::getFloat32(&data);
-        accelMatSec.m[0][2] = Mem::getFloat32(&data);
-        accelMatSec.m[1][0] = Mem::getFloat32(&data);
-        accelMatSec.m[1][1] = Mem::getFloat32(&data);
-        accelMatSec.m[1][2] = Mem::getFloat32(&data);
-        accelMatSec.m[2][0] = Mem::getFloat32(&data);
-        accelMatSec.m[2][1] = Mem::getFloat32(&data);
-        accelMatSec.m[2][2] = Mem::getFloat32(&data);
-        magMat.m[0][0] = Mem::getFloat32(&data);
-        magMat.m[0][1] = Mem::getFloat32(&data);
-        magMat.m[0][2] = Mem::getFloat32(&data);
-        magMat.m[1][0] = Mem::getFloat32(&data);
-        magMat.m[1][1] = Mem::getFloat32(&data);
-        magMat.m[1][2] = Mem::getFloat32(&data);
-        magMat.m[2][0] = Mem::getFloat32(&data);
-        magMat.m[2][1] = Mem::getFloat32(&data);
-        magMat.m[2][2] = Mem::getFloat32(&data);
+        accelMatSec[0][0] = Mem::getFloat32(&data);
+        accelMatSec[0][1] = Mem::getFloat32(&data);
+        accelMatSec[0][2] = Mem::getFloat32(&data);
+        accelMatSec[1][0] = Mem::getFloat32(&data);
+        accelMatSec[1][1] = Mem::getFloat32(&data);
+        accelMatSec[1][2] = Mem::getFloat32(&data);
+        accelMatSec[2][0] = Mem::getFloat32(&data);
+        accelMatSec[2][1] = Mem::getFloat32(&data);
+        accelMatSec[2][2] = Mem::getFloat32(&data);
+        magMat[0][0] = Mem::getFloat32(&data);
+        magMat[0][1] = Mem::getFloat32(&data);
+        magMat[0][2] = Mem::getFloat32(&data);
+        magMat[1][0] = Mem::getFloat32(&data);
+        magMat[1][1] = Mem::getFloat32(&data);
+        magMat[1][2] = Mem::getFloat32(&data);
+        magMat[2][0] = Mem::getFloat32(&data);
+        magMat[2][1] = Mem::getFloat32(&data);
+        magMat[2][2] = Mem::getFloat32(&data);
         gyro.updateCalValues(gyroVec);
         gyroSec.updateCalValues(gyroVecSec);
         accel.updateCalValues(accelVec, accelMat);
@@ -423,6 +472,10 @@ bool_t Ism3d::newPacket(uint8_t command, const uint8_t* data, uint_t size)
         {
             onError(*this, "Gyro cal failed to save to device");
         }
+        else
+        {
+            getAhrsCal();
+        }
         break;
     }
     case Commands::SetAccelCal:
@@ -435,7 +488,25 @@ bool_t Ism3d::newPacket(uint8_t command, const uint8_t* data, uint_t size)
     }
     case Commands::SetMagCal:
     {
-        if (*data == 0)
+        if (size >= 48)
+        {
+            Math::Vector3 magVec;
+            Math::Matrix3x3 magMat;
+            magVec.x = Mem::getFloat32(&data);
+            magVec.y = Mem::getFloat32(&data);
+            magVec.z = Mem::getFloat32(&data);
+            magMat[0][0] = Mem::getFloat32(&data);
+            magMat[0][1] = Mem::getFloat32(&data);
+            magMat[0][2] = Mem::getFloat32(&data);
+            magMat[1][0] = Mem::getFloat32(&data);
+            magMat[1][1] = Mem::getFloat32(&data);
+            magMat[1][2] = Mem::getFloat32(&data);
+            magMat[2][0] = Mem::getFloat32(&data);
+            magMat[2][1] = Mem::getFloat32(&data);
+            magMat[2][2] = Mem::getFloat32(&data);
+            mag.updateCalValues(magVec, magMat);
+        }
+        else if (*data == 0)
         {
             onError(*this, "Mag cal failed to save to device");
         }
@@ -511,6 +582,10 @@ bool_t Ism3d::newPacket(uint8_t command, const uint8_t* data, uint_t size)
                 saveConfig(m_saveConfigPath);
                 m_saveConfigPath.clear();
             }
+            if (m_waitingForXmlConfig)
+            {
+                getConfigAsString();
+            }
             onScriptDataReceived(*this);
         }
         break;
@@ -519,7 +594,7 @@ bool_t Ism3d::newPacket(uint8_t command, const uint8_t* data, uint_t size)
     {
         if (data[1] == 0)
         {
-            onError(*this, "Script " + StringUtils::uintToStr(data[0]) + " failed to save to device");
+            onError(*this, "Script " + StringUtils::toStr(data[0]) + " failed to save to device");
         }
         break;
     }
@@ -570,7 +645,7 @@ void Ism3d::getAhrsCal()
     enqueuePacket(&data, sizeof(data));
 }
 //--------------------------------------------------------------------------------------------------
-void Ism3d::setGyroCal(uint_t sensorNum, const Vector3* bias)
+void Ism3d::setGyroCal(uint_t sensorNum, const Math::Vector3* bias)
 {
     uint8_t data[14];
     uint8_t* buf = &data[0];
@@ -588,7 +663,7 @@ void Ism3d::setGyroCal(uint_t sensorNum, const Vector3* bias)
     enqueuePacket(&data[0], buf - &data[0]);
 }
 //--------------------------------------------------------------------------------------------------
-void Ism3d::setAccelCal(uint_t sensorNum, const Vector3& bias, const Matrix3x3& transform)
+void Ism3d::setAccelCal(uint_t sensorNum, const Math::Vector3& bias, const Math::Matrix3x3& transform)
 {
     uint8_t data[50];
     uint8_t* buf = &data[0];
@@ -598,22 +673,22 @@ void Ism3d::setAccelCal(uint_t sensorNum, const Vector3& bias, const Matrix3x3& 
     Mem::packFloat32(&buf, bias.x);
     Mem::packFloat32(&buf, bias.y);
     Mem::packFloat32(&buf, bias.z);
-    Mem::packFloat32(&buf, transform.m[0][0]);
-    Mem::packFloat32(&buf, transform.m[0][1]);
-    Mem::packFloat32(&buf, transform.m[0][2]);
-    Mem::packFloat32(&buf, transform.m[1][0]);
-    Mem::packFloat32(&buf, transform.m[1][1]);
-    Mem::packFloat32(&buf, transform.m[1][2]);
-    Mem::packFloat32(&buf, transform.m[2][0]);
-    Mem::packFloat32(&buf, transform.m[2][1]);
-    Mem::packFloat32(&buf, transform.m[2][2]);
+    Mem::packFloat32(&buf, transform[0][0]);
+    Mem::packFloat32(&buf, transform[0][1]);
+    Mem::packFloat32(&buf, transform[0][2]);
+    Mem::packFloat32(&buf, transform[1][0]);
+    Mem::packFloat32(&buf, transform[1][1]);
+    Mem::packFloat32(&buf, transform[1][2]);
+    Mem::packFloat32(&buf, transform[2][0]);
+    Mem::packFloat32(&buf, transform[2][1]);
+    Mem::packFloat32(&buf, transform[2][2]);
 
     enqueuePacket(&data[0], sizeof(data));
 }
 //--------------------------------------------------------------------------------------------------
-void Ism3d::setMagCal(uint_t sensorNum, const Vector3& bias, const Matrix3x3& transform)
+void Ism3d::setMagCal(uint_t sensorNum, const Math::Vector3& bias, const Math::Matrix3x3& transform, bool_t factory)
 {
-    uint8_t data[50];
+    uint8_t data[51];
     uint8_t* buf = &data[0];
 
     *buf++ = static_cast<uint8_t>(Commands::SetMagCal);
@@ -621,17 +696,29 @@ void Ism3d::setMagCal(uint_t sensorNum, const Vector3& bias, const Matrix3x3& tr
     Mem::packFloat32(&buf, bias.x);
     Mem::packFloat32(&buf, bias.y);
     Mem::packFloat32(&buf, bias.z);
-    Mem::packFloat32(&buf, transform.m[0][0]);
-    Mem::packFloat32(&buf, transform.m[0][1]);
-    Mem::packFloat32(&buf, transform.m[0][2]);
-    Mem::packFloat32(&buf, transform.m[1][0]);
-    Mem::packFloat32(&buf, transform.m[1][1]);
-    Mem::packFloat32(&buf, transform.m[1][2]);
-    Mem::packFloat32(&buf, transform.m[2][0]);
-    Mem::packFloat32(&buf, transform.m[2][1]);
-    Mem::packFloat32(&buf, transform.m[2][2]);
+    Mem::packFloat32(&buf, transform[0][0]);
+    Mem::packFloat32(&buf, transform[0][1]);
+    Mem::packFloat32(&buf, transform[0][2]);
+    Mem::packFloat32(&buf, transform[1][0]);
+    Mem::packFloat32(&buf, transform[1][1]);
+    Mem::packFloat32(&buf, transform[1][2]);
+    Mem::packFloat32(&buf, transform[2][0]);
+    Mem::packFloat32(&buf, transform[2][1]);
+    Mem::packFloat32(&buf, transform[2][2]);
 
-    enqueuePacket(&data[0], sizeof(data));
+    if (factory)
+	{
+		*buf++ = 1;
+	}
+
+    enqueuePacket(&data[0], sizeof(data) - !factory);
+}
+//--------------------------------------------------------------------------------------------------
+void Ism3d::loadFactoryMagCal()
+{
+    uint8_t data = static_cast<uint8_t>(Commands::SetMagCal);
+
+    enqueuePacket(&data, sizeof(data));
 }
 //--------------------------------------------------------------------------------------------------
 void Ism3d::setHeading(const real_t* angleInRadians)
@@ -703,28 +790,28 @@ Ism3d::Settings::Settings()
 //--------------------------------------------------------------------------------------------------
 void Ism3d::Settings::defaults()
 {
-    uartMode = Device::UartMode::Rs232;
+    uartMode = Uart::Mode::Rs232;
     baudrate = 9600;
-    parity = Device::Parity::None;
+    parity = Uart::Parity::None;
     dataBits = 8;
-    stopBits = Device::StopBits::One;
+    stopBits = Uart::StopBits::One;
     ahrsMode = 0;
     orientationOffset = { 1,0,0,0 };
     headingOffsetRad = 0;
     turnsAbout = { 0,0,1 };
     turnsAboutEarthFrame = false;
-    clrTurn = Device::CustomStr(false, "#c\r");
-    setHeading2Mag = Device::CustomStr(false, "#m\r");
-    ahrsStr = { 0, false, 500, Device::CustomStr(false, "#o\r") };
+    clrTurn = Device::CustomStr(false, "#c\\r");
+    setHeading2Mag = Device::CustomStr(false, "#m\\r");
+    ahrsStr = { 0, false, 500, Device::CustomStr(false, "#o\\r") };
 }
 //--------------------------------------------------------------------------------------------------
 bool_t Ism3d::Settings::check(std::vector<std::string>& errMsgs) const
 {
-    Utils::checkVar(uartMode, Device::UartMode::Rs232, Device::UartMode::Rs485Terminated, errMsgs, "uartMode out of range");
+    Utils::checkVar(uartMode, Uart::Mode::Rs232, Uart::Mode::Rs485Terminated, errMsgs, "uartMode out of range");
     Utils::checkVar<uint_t>(baudrate, 300, 115200, errMsgs, "baudrate out of range");
-    Utils::checkVar(parity, Device::Parity::None, Device::Parity::Space, errMsgs, "parity out of range");
+    Utils::checkVar(parity, Uart::Parity::None, Uart::Parity::Space, errMsgs, "parity out of range");
     Utils::checkVar<uint_t>(dataBits, 5, 8, errMsgs, "dataBits out of range");
-    Utils::checkVar(stopBits, Device::StopBits::One, Device::StopBits::Two, errMsgs, "stopBits out of range");
+    Utils::checkVar(stopBits, Uart::StopBits::One, Uart::StopBits::Two, errMsgs, "stopBits out of range");
     Utils::checkVar<uint_t>(ahrsMode, 0, 1, errMsgs, "ahrsMode out of range");
     Utils::checkVar(orientationOffset.magnitude(), 0.99, 1.001, errMsgs, "orientationOffset quaternion is not normalised");
     Utils::checkVar(headingOffsetRad, -Math::pi2, Math::pi2, errMsgs, "headingOffsetRad out of range");
@@ -758,18 +845,18 @@ uint_t Ism3d::Settings::serialise(uint8_t* buf, uint_t size) const
         Mem::packFloat32(&buf, turnsAbout.z);
         *buf++ = turnsAboutEarthFrame;
         *buf++ = clrTurn.enable;
-        *buf++ = static_cast<uint8_t>(clrTurn.str.size());
-        buf += clrTurn.packStr(buf);
+        *buf = clrTurn.packStr(buf+1);
+        buf += clrTurn.size + 1;
         *buf++ = setHeading2Mag.enable;
-        *buf++ = static_cast<uint8_t>(setHeading2Mag.str.size());
-        buf += setHeading2Mag.packStr(buf);
+        *buf = setHeading2Mag.packStr(buf+1);
+        buf += setHeading2Mag.size + 1;
 
         *buf++ = ahrsStr.strId;
         *buf++ = static_cast<uint8_t>(ahrsStr.intervalEnabled);
         Mem::pack32Bit(&buf, ahrsStr.intervalMs);
         *buf++ = static_cast<uint8_t>(ahrsStr.interrogation.enable);
-        *buf++ = static_cast<uint8_t>(ahrsStr.interrogation.str.size());
-        buf += ahrsStr.interrogation.packStr(buf);
+        *buf = ahrsStr.interrogation.packStr(buf+1);
+        buf += ahrsStr.interrogation.size + 1;
 
         return buf - start;
     }
@@ -783,11 +870,11 @@ uint_t Ism3d::Settings::deserialise(const uint8_t* data, uint_t size)
     {
         const uint8_t* start = data;
 
-        uartMode = static_cast<Device::UartMode>(*data++);
+        uartMode = static_cast<Uart::Mode>(*data++);
         baudrate = Mem::get32Bit(&data);
-        parity = static_cast<Device::Parity>(*data++);
+        parity = static_cast<Uart::Parity>(*data++);
         dataBits = *data++;
-        stopBits = static_cast<Device::StopBits>(*data++);
+        stopBits = static_cast<Uart::StopBits>(*data++);
         ahrsMode = *data++;
         orientationOffset.w = Mem::getFloat32(&data);
         orientationOffset.x = Mem::getFloat32(&data);
@@ -800,11 +887,11 @@ uint_t Ism3d::Settings::deserialise(const uint8_t* data, uint_t size)
         turnsAboutEarthFrame = *data++;
         clrTurn.enable = *data++;
         uint_t size = *data++;
-        clrTurn.str = StringUtils::toStr(data, size);
+        clrTurn.unPackStr(data, size);
         data += clrTurn.size;
         setHeading2Mag.enable = *data++;
         size = *data++;
-        setHeading2Mag.str = StringUtils::toStr(data, size);
+        setHeading2Mag.unPackStr(data, size);
         data += setHeading2Mag.size;
 
         ahrsStr.strId = *data++;
@@ -812,7 +899,7 @@ uint_t Ism3d::Settings::deserialise(const uint8_t* data, uint_t size)
         ahrsStr.intervalMs = Mem::get32Bit(&data);
         ahrsStr.interrogation.enable = (bool_t)*data++;
         size = *data++;
-        ahrsStr.interrogation.str = StringUtils::toStr(data, size);
+        ahrsStr.interrogation.unPackStr(data, size);
         data += ahrsStr.interrogation.size;
 
         return data - start;
@@ -850,14 +937,12 @@ bool_t Ism3d::Settings::load(const XmlElementPtr& xml)
             turnsAbout.y = node->getReal("y", 0.0);
             turnsAbout.z = node->getReal("z", 0.0);
         }
-        uint8_t buf[Device::CustomStr::size];
+
         turnsAboutEarthFrame = xml->getBool("turnsAboutEarthFrame", true);
         clrTurn.enable = xml->getBool("clrTurnStrEnable", true);
-        uint_t size = xml->getBytes("clrTurnStr", &buf[0], sizeof(buf));
-        clrTurn.str = StringUtils::toStr(&buf[0], size);
+        clrTurn.str = xml->getString("clrTurnStr", "#c\\r");
         setHeading2Mag.enable = xml->getBool("setHeading2MagStrEnable", true);
-        size = xml->getBytes("setHeading2MagStr", &buf[0], sizeof(buf));
-        setHeading2Mag.str = StringUtils::toStr(&buf[0], size);
+        setHeading2Mag.str = xml->getString("setHeading2Mag", "#m\\r");
 
         node = xml->findElement("outputString");
         if (node)
@@ -867,8 +952,7 @@ bool_t Ism3d::Settings::load(const XmlElementPtr& xml)
             ahrsStr.intervalMs = static_cast<uint32_t>(node->getUint("intervalMs", 500));
             ahrsStr.interrogation.enable = node->getBool("interrogationEnabled", false);
             ahrsStr.interrogation.enable = node->getBool("interrogationEnabled", false);
-            size = xml->getBytes("interrogationStr", &buf[0], sizeof(buf));
-            ahrsStr.interrogation.str = StringUtils::toStr(&buf[0], size);
+            ahrsStr.interrogation.str = xml->getString("interrogationStr", "#o\\r");
         }
     }
     return ok;
@@ -899,16 +983,16 @@ void Ism3d::Settings::save(XmlElementPtr& xml) const
 
         xml->addBool("turnsAboutEarthFrame", turnsAboutEarthFrame);
         xml->addBool("clrTurnStrEnable", clrTurn.enable);
-        xml->addBytes("clrTurnStr", reinterpret_cast<const uint8_t*>(clrTurn.str.c_str()), clrTurn.str.size());
+        xml->addString("clrTurnStr", clrTurn.str);
         xml->addBool("setHeading2MagStrEnable", setHeading2Mag.enable);
-        xml->addBytes("setHeading2MagStr", reinterpret_cast<const uint8_t*>(setHeading2Mag.str.c_str()), setHeading2Mag.str.size());
+        xml->addString("setHeading2MagStr", setHeading2Mag.str);
 
         node = xml->addElement("outputString");
         node->addUint("id", ahrsStr.strId);
         node->addBool("intervalEnabled", ahrsStr.intervalEnabled);
         node->addUint("intervalMs", ahrsStr.intervalMs);
         node->addBool("interrogationEnabled", ahrsStr.interrogation.enable);
-        node->addBytes("interrogationStr", reinterpret_cast<const uint8_t*>(ahrsStr.interrogation.str.c_str()), ahrsStr.interrogation.str.size());
+        node->addString("interrogationStr", ahrsStr.interrogation.str);
     }
 }
 //--------------------------------------------------------------------------------------------------

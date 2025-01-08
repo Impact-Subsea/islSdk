@@ -11,12 +11,14 @@
 using namespace IslSdk;
 
 //--------------------------------------------------------------------------------------------------
-SysPort::SysPort(const std::string& name, Type type, uint_t discoveryTimeoutMs) :
+SysPort::SysPort(const std::string& name, ClassType classType, Type type, uint_t discoveryTimeoutMs) :
     name(name),
+    classType(classType),
     type(type),
     discoveryTimeoutMs(discoveryTimeoutMs),
     id(static_cast<uint32_t>(Math::randomNum(1, Math::maxUint32))),
     m_isOpen(false),
+    m_active(false),
     m_portError(false),
     m_lock(0),
     deviceCount(0),
@@ -41,12 +43,14 @@ void SysPort::close()
             m_autoDiscoverer.reset();
         }
         m_isOpen = false;
+        m_active = false;
         m_portError = false;
         m_lock = 0;
         m_txBytesCount = 0;
         m_rxBytesCount = 0;
         m_badRxPacketCount = 0;
         m_sdkCanClose = false;
+        m_codec.reset();
         debugLog("SysPort", "%s closed", name.c_str());
         onClose(*this);
     }
@@ -89,7 +93,7 @@ bool_t SysPort::isDiscovering()
 //--------------------------------------------------------------------------------------------------
 bool_t SysPort::process()
 {
-    if (!m_portError && m_autoDiscoverer)
+    if (m_isOpen && !m_portError && m_autoDiscoverer)
     {
         if (m_autoDiscoverer->run())
         {
@@ -129,10 +133,11 @@ void SysPort::discoverIslDevices(uint16_t pid, uint16_t pn, uint16_t sn, const C
 
     if (!m_isOpen)
     {
-        m_sdkCanClose = open();
+        m_sdkCanClose = true;
+        open();
     }
 
-    if (m_isOpen && m_autoDiscoverer)
+    if (m_autoDiscoverer)
     {
         IslDeviceDiscovery* discovery = reinterpret_cast<IslDeviceDiscovery*>(m_autoDiscoverer.get());
         discovery->addTask(pid, pn, sn, meta, timeoutMs, count);
@@ -153,10 +158,11 @@ void SysPort::nemaDiscovery(const ConnectionMeta& meta, uint_t timeoutMs)
 
     if (!m_isOpen)
     {
-        m_sdkCanClose = open();
+        m_sdkCanClose = true;
+        open();
     }
 
-    if (m_isOpen && m_autoDiscoverer)
+    if (m_autoDiscoverer)
     {
         NmeaDiscovery* discovery = reinterpret_cast<NmeaDiscovery*>(m_autoDiscoverer.get());
         discovery->addTask(meta, timeoutMs, 1);

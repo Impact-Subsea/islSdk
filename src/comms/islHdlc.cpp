@@ -354,7 +354,7 @@ void IslHdlc::processPacket(const IslHdlcPacket& packet)
 
     m_timeout = Time::getTimeMs() + m_timeoutMs;
 
-    if (m_connection->sysPort->type == SysPort::Type::Serial || m_connection->sysPort->type == SysPort::Type::Sol)
+    if (m_connection->sysPort->type == SysPort::Type::Serial)
     {
         m_timeout += static_cast<uint64_t>(static_cast<real_t>(m_mtu) * (static_cast<real_t>(10000.0) / static_cast<real_t>(m_connection->meta.baudrate)));
     }
@@ -503,7 +503,7 @@ void IslHdlc::processIFrame(const IslHdlcPacket& packet)
     {
         debugLog("IslHdlc", "Rx sequence error, received:%u expected:%u. Sending REJ", FMT_U(packet.header.seq), FMT_U(m_nextRxSeq));
         m_blockRej = true;
-        m_packetCount.rxMissed += (packet.header.seq - m_nextRxSeq) & 0xff;
+        m_packetCount.rxMissed += Math::abs(static_cast<int_t>(packet.header.seq) - static_cast<int_t>(m_nextRxSeq));
         sendSFrame(IslHdlcPacket::SframeCode::Rej);
     }
 }
@@ -671,7 +671,7 @@ bool_t IslHdlc::transmitFrame(uint8_t* frame, uint_t size)
                     m_pollFlagTxTime = Time::getTimeMs();
                     m_timeout = m_pollFlagTxTime + (m_timeoutMs * (static_cast<uint_t>(1) << m_timeoutCount));
                     m_waitForFinalFlag = true;
-                    if (m_connection->sysPort->type == SysPort::Type::Serial || m_connection->sysPort->type == SysPort::Type::Sol)
+                    if (m_connection->sysPort->type == SysPort::Type::Serial)
                     {
                         m_timeout += static_cast<uint64_t>(static_cast<real_t>(size + m_mtu) * (static_cast<real_t>(10000.0) / static_cast<real_t>(m_connection->meta.baudrate)));
                     }

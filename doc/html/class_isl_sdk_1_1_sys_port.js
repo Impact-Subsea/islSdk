@@ -2,6 +2,8 @@ var class_isl_sdk_1_1_sys_port =
 [
     [ "isDiscovering", "class_isl_sdk_1_1_sys_port.html#a821acd13d9a5a28b1c877c0e15539ddc", null ],
     [ "stopDiscovery", "class_isl_sdk_1_1_sys_port.html#a1a13e4c9428b885677180c792f507b6e", null ],
+    [ "active", "class_isl_sdk_1_1_sys_port.html#a21e9ba4f0c2dc0c33d4698c528688a59", null ],
+    [ "classType", "class_isl_sdk_1_1_sys_port.html#ab14d04582effe0295a96346fcfb9fcfc", null ],
     [ "deviceCount", "class_isl_sdk_1_1_sys_port.html#a90f17e51cc14909a92e242dfc40ecf33", null ],
     [ "discoveryTimeoutMs", "class_isl_sdk_1_1_sys_port.html#a9645c75116a395c3ff63ac89286465d5", null ],
     [ "isOpen", "class_isl_sdk_1_1_sys_port.html#a542a5e874293e05211312c19935e5754", null ],

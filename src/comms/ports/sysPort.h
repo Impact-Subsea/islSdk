@@ -31,13 +31,16 @@ namespace IslSdk
     public:
         typedef std::shared_ptr<SysPort> SharedPtr;
 
-        enum class Type { Serial, Sol, Net };
+        enum class ClassType { Serial, Sol, Net, Pcp };
+        enum class Type { Serial, Net };
 
         const uint32_t id;
         const uint_t discoveryTimeoutMs;                        ///< The default timeout in milliseconds for discovery.
         const std::string name;                                 ///< The name of the port.
+        const ClassType classType;                              ///< The type of class.
         const Type type;                                        ///< The type of the port.
         const bool_t& isOpen = m_isOpen;                        ///< True if the port is open.
+        const bool_t& active = m_active;                        ///< True if the port is open or in the process on opening / closing.
         uint_t deviceCount;                                     ///< The number of SDK devices using the port.
 
         /**
@@ -117,7 +120,7 @@ namespace IslSdk
         */
         Signal<SysPort&, const ConstBuffer&> onTxData;
 
-        SysPort(const std::string& name, Type type, uint_t discoveryTimeoutMs);
+        SysPort(const std::string& name, ClassType classType, Type type, uint_t discoveryTimeoutMs);
         virtual ~SysPort();
         void block(uint32_t lockId);
         void unblock(uint32_t lockId);
@@ -125,21 +128,22 @@ namespace IslSdk
         const std::unique_ptr<AutoDiscovery>& getDiscoverer();
         void stopDiscovery();                                       ///< Stops auto discovery.
         bool_t isDiscovering();                                     ///< Returns true if auto discovery is running.
-        virtual bool_t open() = 0;
+        virtual void open() = 0;
         virtual void close();
         virtual bool_t write(const uint8_t* data, uint_t size, const ConnectionMeta& meta) = 0;
         virtual void discoverIslDevices(uint16_t pid = 0xffff, uint16_t pn = 0xffff, uint16_t sn = 0xffff) {};
         void discoverIslDevices(uint16_t pid, uint16_t pn, uint16_t sn, const ConnectionMeta& meta, uint_t timeoutMs, uint_t count);
         virtual void discoverNmeaDevices() {};
+        void nemaDiscovery(const ConnectionMeta& meta, uint_t timeoutMs);
 
     protected:
         virtual bool_t process();
         void txComplete(const uint8_t* data, uint_t size);
-        void nemaDiscovery(const ConnectionMeta& meta, uint_t timeoutMs);
         Callback<SysPort&, const uint8_t*, uint_t, const ConnectionMeta&, Codec::Type> newFrameEvent;
         std::unique_ptr<Codec> m_codec;
         bool_t m_portError;
         bool_t m_isOpen;
+        bool_t m_active;
         uint32_t m_lock;
         uint_t m_txBytesCount;
         uint_t m_rxBytesCount;

@@ -32,7 +32,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.0</span>
+   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.6</span>
    </div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -144,8 +144,12 @@ Linux, Windows using cmake</h2>
 </div><!-- fragment --></li>
 <li><p class="startli">Run make on the generated makefile to generate the static library:</p>
 <div class="fragment"><div class="line">$ make</div>
-</div><!-- fragment --><p> If using windows </p><div class="fragment"><div class="line">$ cmake -- build .</div>
-</div><!-- fragment --></li>
+</div><!-- fragment --><p> If using windows </p><div class="fragment"><div class="line">$ cmake --build . --config Debug</div>
+<div class="line">or</div>
+<div class="line">$ cmake --build . --config Release</div>
+</div><!-- fragment --><p> <br  />
+</p>
+</li>
 </ol>
 <ul>
 <li><p class="startli">If on Linux make sure the app has permission to access the serial ports:</p>

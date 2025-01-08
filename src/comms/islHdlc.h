@@ -53,14 +53,13 @@ namespace IslSdk
     class IslHdlc
     {
     public:
-
         const uint32_t id;
-        const bool_t& isConnected = m_connected;
         IslHdlc(uint_t mtu = 1050, uint_t txQueSize = 1024 * 8, uint8_t armWindowSize = 15, uint8_t nrmWindowSize = 8);
         virtual ~IslHdlc();
         void setCommsTimeout(uint32_t timeoutMs);
         void processPacket(const IslHdlcPacket& packet);
         static const std::vector<uint8_t> BuildDiscovery(uint16_t pid, uint16_t pn, uint16_t sn);
+        void disconnect();
 
     protected:
         std::unique_ptr<Connection> m_connection;
@@ -81,7 +80,6 @@ namespace IslSdk
         virtual void newPacketEvent(const uint8_t* data, uint_t size) = 0;
 
         void connect(uint16_t pn, uint16_t sn, uint32_t timeout);
-        void disconnect();
         void setNrmMode(bool_t isNrm);
         bool_t process();
         void send(const uint8_t* data, uint_t size);

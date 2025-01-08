@@ -38,6 +38,7 @@ set(HEADERS
     src/comms/ports/netPort.h
     src/comms/ports/solPort.h
     src/comms/ports/sysPort.h
+    src/comms/ports/poweredComPort.h
     src/comms/ports/uartPort.h
     src/comms/protocols/cobs.h
     src/comms/protocols/codec.h
@@ -54,6 +55,9 @@ set(HEADERS
     src/devices/isd4000.h
     src/devices/ism3d.h
     src/devices/sonar.h
+    src/devices/pcpServices.h
+    src/devices/multiPcp.h
+    src/devices/pcpDevice.h
     src/files/bmpFile.h
     src/files/logFile.h
     src/files/xmlFile.h
@@ -65,9 +69,10 @@ set(HEADERS
     src/logging/logReader.h
     src/logging/logWriter.h
     src/maths/maths.h
-    src/maths/matrix3x3.h
+    src/maths/vector.h
     src/maths/quaternion.h
-    src/maths/vector3.h
+    src/maths/matrix.h
+    src/maths/eigen.h
     src/nmeaDevices/gpsDevice.h
     src/nmeaDevices/nmeaDevice.h
     src/nmeaDevices/nmeaDeviceMgr.h
@@ -77,8 +82,8 @@ set(HEADERS
     src/platform/timeUtils.h
     src/platform/netSocket.h
     src/platform/uart.h
+    src/platform/${PLATFORM_DIR}/serialPort.h
     src/platform/${PLATFORM_DIR}/netSocket.h
-    src/platform/${PLATFORM_DIR}/uart.h
     src/types/queue.h
     src/types/sdkTypes.h
     src/types/sigSlot.h
@@ -97,6 +102,7 @@ set(SOURCES
     src/comms/ports/solPort.cpp
     src/comms/ports/sysPort.cpp
     src/comms/ports/uartPort.cpp
+    src/comms/ports/poweredComPort.cpp
     src/comms/protocols/cobs.cpp
     src/comms/protocols/codec.cpp
     src/comms/protocols/nmea.cpp
@@ -110,6 +116,8 @@ set(SOURCES
     src/devices/isd4000.cpp
     src/devices/ism3d.cpp
     src/devices/sonar.cpp
+	src/devices/multiPcp.cpp
+    src/devices/pcpDevice.cpp
     src/files/bmpFile.cpp
     src/files/logFile.cpp
     src/files/xmlFile.cpp
@@ -120,9 +128,9 @@ set(SOURCES
     src/logging/logPlayer.cpp
     src/logging/logReader.cpp
     src/logging/logWriter.cpp
-    src/maths/matrix3x3.cpp
+    src/maths/vector.cpp
     src/maths/quaternion.cpp
-    src/maths/vector3.cpp
+    src/maths/matrix.cpp
     src/nmeaDevices/gpsDevice.cpp
     src/nmeaDevices/nmeaDevice.cpp
     src/nmeaDevices/nmeaDeviceMgr.cpp
@@ -130,8 +138,8 @@ set(SOURCES
     src/platform/file.cpp
     src/platform/mem.cpp
     src/platform/timeUtils.cpp
+    src/platform/${PLATFORM_DIR}/serialPort.cpp
     src/platform/${PLATFORM_DIR}/netSocket.cpp
-    src/platform/${PLATFORM_DIR}/uart.cpp
     src/types/queue.cpp
     src/utils/base64.cpp
     src/utils/crc.cpp

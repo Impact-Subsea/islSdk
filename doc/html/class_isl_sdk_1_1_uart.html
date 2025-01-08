@@ -32,7 +32,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.0</span>
+   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.6</span>
    </div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -100,15 +100,30 @@ $(document).ready(function(){initNavTree('class_isl_sdk_1_1_uart.html',''); init
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-attribs">Public Attributes</a> &#124;
 <a href="class_isl_sdk_1_1_uart-members.html">List of all members</a>  </div>
-  <div class="headertitle"><div class="title">IslSdk::Uart Class Reference</div></div>
+  <div class="headertitle"><div class="title">IslSdk::Uart Class Reference<span class="mlabels"><span class="mlabel">abstract</span></span></div></div>
 </div><!--header-->
 <div class="contents">
+<div class="dynheader">
+Inheritance diagram for IslSdk::Uart:</div>
+<div class="dyncontent">
+ <div class="center">
+  <img src="class_isl_sdk_1_1_uart.png" usemap="#IslSdk::Uart_map" alt=""/>
+  <map id="IslSdk::Uart_map" name="IslSdk::Uart_map">
+<area href="class_isl_sdk_1_1_serial_port.html" alt="IslSdk::SerialPort" shape="rect" coords="0,56,107,80"/>
+<area href="class_isl_sdk_1_1_serial_port.html" alt="IslSdk::SerialPort" shape="rect" coords="117,56,224,80"/>
+  </map>
+</div></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
+<tr class="memitem:aa989df3c4566c9f609adff963fe4bcdb" id="r_aa989df3c4566c9f609adff963fe4bcdb"><td class="memItemLeft" align="right" valign="top"><a id="aa989df3c4566c9f609adff963fe4bcdb" name="aa989df3c4566c9f609adff963fe4bcdb"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>Mode</b> { <b>Rs232</b>
+, <b>Rs485</b>
+, <b>Rs485Terminated</b>
+, <b>Unknown</b> = 255
+ }</td></tr>
+<tr class="separator:aa989df3c4566c9f609adff963fe4bcdb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a012ad5f4609b7d718f18d91e13e986bf" id="r_a012ad5f4609b7d718f18d91e13e986bf"><td class="memItemLeft" align="right" valign="top"><a id="a012ad5f4609b7d718f18d91e13e986bf" name="a012ad5f4609b7d718f18d91e13e986bf"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>Parity</b> { <br />
 &#160;&#160;<b>None</b>
 , <b>Odd</b>
@@ -116,127 +131,60 @@ Public Types</h2></td></tr>
 , <b>Mark</b>
 , <br />
 &#160;&#160;<b>Space</b>
-, <b>Unknown</b>
-, <b>None</b>
-, <b>Odd</b>
-, <br />
-&#160;&#160;<b>Even</b>
-, <b>Mark</b>
-, <b>Space</b>
-, <b>Unknown</b>
+, <b>Unknown</b> = 255
 <br />
  }</td></tr>
 <tr class="separator:a012ad5f4609b7d718f18d91e13e986bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab11bae094cac35818bd20d41b978bf39" id="r_ab11bae094cac35818bd20d41b978bf39"><td class="memItemLeft" align="right" valign="top"><a id="ab11bae094cac35818bd20d41b978bf39" name="ab11bae094cac35818bd20d41b978bf39"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>StopBits</b> { <br />
-&#160;&#160;<b>One</b>
+<tr class="memitem:ab11bae094cac35818bd20d41b978bf39" id="r_ab11bae094cac35818bd20d41b978bf39"><td class="memItemLeft" align="right" valign="top"><a id="ab11bae094cac35818bd20d41b978bf39" name="ab11bae094cac35818bd20d41b978bf39"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>StopBits</b> { <b>One</b>
 , <b>OneAndHalf</b>
 , <b>Two</b>
-, <b>Unknown</b>
-, <br />
-&#160;&#160;<b>One</b>
-, <b>OneAndHalf</b>
-, <b>Two</b>
-, <b>Unknown</b>
-<br />
+, <b>Unknown</b> = 255
  }</td></tr>
 <tr class="separator:ab11bae094cac35818bd20d41b978bf39"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a012ad5f4609b7d718f18d91e13e986bf" id="r_a012ad5f4609b7d718f18d91e13e986bf"><td class="memItemLeft" align="right" valign="top"><a id="a012ad5f4609b7d718f18d91e13e986bf" name="a012ad5f4609b7d718f18d91e13e986bf"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>Parity</b> { <br />
-&#160;&#160;<b>None</b>
-, <b>Odd</b>
-, <b>Even</b>
-, <b>Mark</b>
-, <br />
-&#160;&#160;<b>Space</b>
-, <b>Unknown</b>
-, <b>None</b>
-, <b>Odd</b>
-, <br />
-&#160;&#160;<b>Even</b>
-, <b>Mark</b>
-, <b>Space</b>
-, <b>Unknown</b>
-<br />
+<tr class="memitem:a5f2f60f6748d37c43601c9d4acfb3d74" id="r_a5f2f60f6748d37c43601c9d4acfb3d74"><td class="memItemLeft" align="right" valign="top"><a id="a5f2f60f6748d37c43601c9d4acfb3d74" name="a5f2f60f6748d37c43601c9d4acfb3d74"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>Events</b> { <b>Open</b>
+, <b>Close</b>
+, <b>Error</b>
  }</td></tr>
-<tr class="separator:a012ad5f4609b7d718f18d91e13e986bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab11bae094cac35818bd20d41b978bf39" id="r_ab11bae094cac35818bd20d41b978bf39"><td class="memItemLeft" align="right" valign="top"><a id="ab11bae094cac35818bd20d41b978bf39" name="ab11bae094cac35818bd20d41b978bf39"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>StopBits</b> { <br />
-&#160;&#160;<b>One</b>
-, <b>OneAndHalf</b>
-, <b>Two</b>
-, <b>Unknown</b>
-, <br />
-&#160;&#160;<b>One</b>
-, <b>OneAndHalf</b>
-, <b>Two</b>
-, <b>Unknown</b>
-<br />
- }</td></tr>
-<tr class="separator:ab11bae094cac35818bd20d41b978bf39"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a5f2f60f6748d37c43601c9d4acfb3d74"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a364e8f84ba04e7a113f5b24c3edcd3f2" id="r_a364e8f84ba04e7a113f5b24c3edcd3f2"><td class="memItemLeft" align="right" valign="top"><a id="a364e8f84ba04e7a113f5b24c3edcd3f2" name="a364e8f84ba04e7a113f5b24c3edcd3f2"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>Uart</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> std::string &amp;name)</td></tr>
-<tr class="separator:a364e8f84ba04e7a113f5b24c3edcd3f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ad1129495170334fbc0ed2b3b783193" id="r_a2ad1129495170334fbc0ed2b3b783193"><td class="memItemLeft" align="right" valign="top"><a id="a2ad1129495170334fbc0ed2b3b783193" name="a2ad1129495170334fbc0ed2b3b783193"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">bool_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>open</b> ()</td></tr>
-<tr class="separator:a2ad1129495170334fbc0ed2b3b783193"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa68d42eb0486b56b37fd3617ba173ac9" id="r_aa68d42eb0486b56b37fd3617ba173ac9"><td class="memItemLeft" align="right" valign="top"><a id="aa68d42eb0486b56b37fd3617ba173ac9" name="aa68d42eb0486b56b37fd3617ba173ac9"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</td></tr>
-<tr class="separator:aa68d42eb0486b56b37fd3617ba173ac9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac45c872a288ba1c931296638442c0167" id="r_ac45c872a288ba1c931296638442c0167"><td class="memItemLeft" align="right" valign="top"><a id="ac45c872a288ba1c931296638442c0167" name="ac45c872a288ba1c931296638442c0167"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">bool_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>config</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a> baudrate, <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> dataBits, Uart::Parity parity, Uart::StopBits stopBits)</td></tr>
-<tr class="separator:ac45c872a288ba1c931296638442c0167"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2aba03817bff41019096d47aecedd5fe" id="r_a2aba03817bff41019096d47aecedd5fe"><td class="memItemLeft" align="right" valign="top"><a id="a2aba03817bff41019096d47aecedd5fe" name="a2aba03817bff41019096d47aecedd5fe"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">bool_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *data, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size, <a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a> baudrate)</td></tr>
-<tr class="separator:a2aba03817bff41019096d47aecedd5fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2ba2e74fee28bfec8c00f264a6cbdf9b" id="r_a2ba2e74fee28bfec8c00f264a6cbdf9b"><td class="memItemLeft" align="right" valign="top"><a id="a2ba2e74fee28bfec8c00f264a6cbdf9b" name="a2ba2e74fee28bfec8c00f264a6cbdf9b"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>setRxBuffer</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *buf, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size)</td></tr>
-<tr class="separator:a2ba2e74fee28bfec8c00f264a6cbdf9b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa6dbd3668c2232dad8848b9fec362e4f" id="r_aa6dbd3668c2232dad8848b9fec362e4f"><td class="memItemLeft" align="right" valign="top"><a id="aa6dbd3668c2232dad8848b9fec362e4f" name="aa6dbd3668c2232dad8848b9fec362e4f"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>Uart</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> std::string &amp;name)</td></tr>
 <tr class="separator:aa6dbd3668c2232dad8848b9fec362e4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd0aad9ce9c9e6675f98b2957627643d" id="r_abd0aad9ce9c9e6675f98b2957627643d"><td class="memItemLeft" align="right" valign="top"><a id="abd0aad9ce9c9e6675f98b2957627643d" name="abd0aad9ce9c9e6675f98b2957627643d"></a>
-bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>open</b> ()</td></tr>
-<tr class="separator:abd0aad9ce9c9e6675f98b2957627643d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab93393967670347cd7f874bd585c3c4f" id="r_ab93393967670347cd7f874bd585c3c4f"><td class="memItemLeft" align="right" valign="top"><a id="ab93393967670347cd7f874bd585c3c4f" name="ab93393967670347cd7f874bd585c3c4f"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()</td></tr>
-<tr class="separator:ab93393967670347cd7f874bd585c3c4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a374b66999d9db27e4e49c56acbb83f6b" id="r_a374b66999d9db27e4e49c56acbb83f6b"><td class="memItemLeft" align="right" valign="top"><a id="a374b66999d9db27e4e49c56acbb83f6b" name="a374b66999d9db27e4e49c56acbb83f6b"></a>
-bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>config</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a> baudrate, <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> dataBits, Uart::Parity parity, Uart::StopBits stopBits)</td></tr>
-<tr class="separator:a374b66999d9db27e4e49c56acbb83f6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a970bf08aa9da7e19f288eaffd496f94d" id="r_a970bf08aa9da7e19f288eaffd496f94d"><td class="memItemLeft" align="right" valign="top"><a id="a970bf08aa9da7e19f288eaffd496f94d" name="a970bf08aa9da7e19f288eaffd496f94d"></a>
-bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *data, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size, <a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a> baudrate)</td></tr>
-<tr class="separator:a970bf08aa9da7e19f288eaffd496f94d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2497a29d7d69244b0fe40e89f4b007c8" id="r_a2497a29d7d69244b0fe40e89f4b007c8"><td class="memItemLeft" align="right" valign="top"><a id="a2497a29d7d69244b0fe40e89f4b007c8" name="a2497a29d7d69244b0fe40e89f4b007c8"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>setRxBuffer</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *buf, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size)</td></tr>
-<tr class="separator:a2497a29d7d69244b0fe40e89f4b007c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-methods" name="pub-static-methods"></a>
-Static Public Member Functions</h2></td></tr>
-<tr class="memitem:ae3fbe4a3da374b50f1152fc94bd1ac81" id="r_ae3fbe4a3da374b50f1152fc94bd1ac81"><td class="memItemLeft" align="right" valign="top"><a id="ae3fbe4a3da374b50f1152fc94bd1ac81" name="ae3fbe4a3da374b50f1152fc94bd1ac81"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">static</a> std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getNames</b> ()</td></tr>
-<tr class="separator:ae3fbe4a3da374b50f1152fc94bd1ac81"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a879afe1859b64d84db536e1da4d99353" id="r_a879afe1859b64d84db536e1da4d99353"><td class="memItemLeft" align="right" valign="top"><a id="a879afe1859b64d84db536e1da4d99353" name="a879afe1859b64d84db536e1da4d99353"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">static</a> std::vector&lt; std::string &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>getNames</b> ()</td></tr>
-<tr class="separator:a879afe1859b64d84db536e1da4d99353"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a38a7ee796406ea2e994848fd6715eb56" id="r_a38a7ee796406ea2e994848fd6715eb56"><td class="memItemLeft" align="right" valign="top"><a id="a38a7ee796406ea2e994848fd6715eb56" name="a38a7ee796406ea2e994848fd6715eb56"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>open</b> ()=0</td></tr>
+<tr class="separator:a38a7ee796406ea2e994848fd6715eb56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa244fd221581a166277560015d4d0964" id="r_aa244fd221581a166277560015d4d0964"><td class="memItemLeft" align="right" valign="top"><a id="aa244fd221581a166277560015d4d0964" name="aa244fd221581a166277560015d4d0964"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> <a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>close</b> ()=0</td></tr>
+<tr class="separator:aa244fd221581a166277560015d4d0964"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae6e82fb461eef47306265b488998bf5" id="r_aae6e82fb461eef47306265b488998bf5"><td class="memItemLeft" align="right" valign="top"><a id="aae6e82fb461eef47306265b488998bf5" name="aae6e82fb461eef47306265b488998bf5"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>isOpen</b> () <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> =0</td></tr>
+<tr class="separator:aae6e82fb461eef47306265b488998bf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a98e54a7794bfe39014c0500cb64f57b8" id="r_a98e54a7794bfe39014c0500cb64f57b8"><td class="memItemLeft" align="right" valign="top"><a id="a98e54a7794bfe39014c0500cb64f57b8" name="a98e54a7794bfe39014c0500cb64f57b8"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>config</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a> baudrate, <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> dataBits, Uart::Parity parity, Uart::StopBits stopBits)=0</td></tr>
+<tr class="separator:a98e54a7794bfe39014c0500cb64f57b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab967e159f2b28abfe2342c839702bd52" id="r_ab967e159f2b28abfe2342c839702bd52"><td class="memItemLeft" align="right" valign="top"><a id="ab967e159f2b28abfe2342c839702bd52" name="ab967e159f2b28abfe2342c839702bd52"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>write</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *data, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size, <a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a> baudrate=0)=0</td></tr>
+<tr class="separator:ab967e159f2b28abfe2342c839702bd52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afeb560507c88f23f4e10d206668c9f3a" id="r_afeb560507c88f23f4e10d206668c9f3a"><td class="memItemLeft" align="right" valign="top"><a id="afeb560507c88f23f4e10d206668c9f3a" name="afeb560507c88f23f4e10d206668c9f3a"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> <a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>setRxBuffer</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *buf, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> size)=0</td></tr>
+<tr class="separator:afeb560507c88f23f4e10d206668c9f3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
 <tr class="memitem:ad17cce6df615bbeea345ba6d77d80a5f" id="r_ad17cce6df615bbeea345ba6d77d80a5f"><td class="memItemLeft" align="right" valign="top"><a id="ad17cce6df615bbeea345ba6d77d80a5f" name="ad17cce6df615bbeea345ba6d77d80a5f"></a>
 <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> std::string&#160;</td><td class="memItemRight" valign="bottom"><b>name</b></td></tr>
 <tr class="separator:ad17cce6df615bbeea345ba6d77d80a5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af85c15625aeecfcf7f9fd6c71c8c2710" id="r_af85c15625aeecfcf7f9fd6c71c8c2710"><td class="memItemLeft" align="right" valign="top"><a id="af85c15625aeecfcf7f9fd6c71c8c2710" name="af85c15625aeecfcf7f9fd6c71c8c2710"></a>
+<tr class="memitem:a2673da8a24344d9428deac209ce55073" id="r_a2673da8a24344d9428deac209ce55073"><td class="memItemLeft" align="right" valign="top"><a id="a2673da8a24344d9428deac209ce55073" name="a2673da8a24344d9428deac209ce55073"></a>
 <a class="el" href="class_isl_sdk_1_1_signal.html">Signal</a>&lt; <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a>, <a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>rxDataEvent</b></td></tr>
-<tr class="separator:af85c15625aeecfcf7f9fd6c71c8c2710"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b49e66f0a3c2ad912c473067793da18" id="r_a8b49e66f0a3c2ad912c473067793da18"><td class="memItemLeft" align="right" valign="top"><a id="a8b49e66f0a3c2ad912c473067793da18" name="a8b49e66f0a3c2ad912c473067793da18"></a>
+<tr class="separator:a2673da8a24344d9428deac209ce55073"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4b336454d453f4e0d9981573e960401a" id="r_a4b336454d453f4e0d9981573e960401a"><td class="memItemLeft" align="right" valign="top"><a id="a4b336454d453f4e0d9981573e960401a" name="a4b336454d453f4e0d9981573e960401a"></a>
 <a class="el" href="class_isl_sdk_1_1_signal.html">Signal</a>&lt; <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a> *, <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>txCompleteEvent</b></td></tr>
-<tr class="separator:a8b49e66f0a3c2ad912c473067793da18"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aba1b2d4042d4536f4efd7044f5239374" id="r_aba1b2d4042d4536f4efd7044f5239374"><td class="memItemLeft" align="right" valign="top"><a id="aba1b2d4042d4536f4efd7044f5239374" name="aba1b2d4042d4536f4efd7044f5239374"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">Callback</a>&#160;</td><td class="memItemRight" valign="bottom"><b>errorEvent</b></td></tr>
-<tr class="separator:aba1b2d4042d4536f4efd7044f5239374"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a463de1959e7e217e85194c07821f9f66" id="r_a463de1959e7e217e85194c07821f9f66"><td class="memItemLeft" align="right" valign="top"><a id="a463de1959e7e217e85194c07821f9f66" name="a463de1959e7e217e85194c07821f9f66"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> bool_t &amp;&#160;</td><td class="memItemRight" valign="bottom"><b>isSending</b> = m_isSending</td></tr>
-<tr class="separator:a463de1959e7e217e85194c07821f9f66"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a4b336454d453f4e0d9981573e960401a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a759140d65b51fdc02b0ea0af71324a1c" id="r_a759140d65b51fdc02b0ea0af71324a1c"><td class="memItemLeft" align="right" valign="top"><a id="a759140d65b51fdc02b0ea0af71324a1c" name="a759140d65b51fdc02b0ea0af71324a1c"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">Callback</a>&lt; Uart::Events &gt;&#160;</td><td class="memItemRight" valign="bottom"><b>uartEvent</b></td></tr>
+<tr class="separator:a759140d65b51fdc02b0ea0af71324a1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 </div><!-- doc-content -->

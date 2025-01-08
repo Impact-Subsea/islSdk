@@ -32,7 +32,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.0</span>
+   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.6</span>
    </div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -107,8 +107,8 @@ $(document).ready(function(){initNavTree('xml_settings_8h_source.html',''); init
 <div class="line"><a id="l00005" name="l00005"></a><span class="lineno">    5</span> </div>
 <div class="line"><a id="l00006" name="l00006"></a><span class="lineno">    6</span><span class="preprocessor">#include &quot;types/sdkTypes.h&quot;</span></div>
 <div class="line"><a id="l00007" name="l00007"></a><span class="lineno">    7</span><span class="preprocessor">#include &quot;files/xmlFile.h&quot;</span></div>
-<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;maths/vector3.h&quot;</span></div>
-<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &quot;maths/matrix3x3.h&quot;</span></div>
+<div class="line"><a id="l00008" name="l00008"></a><span class="lineno">    8</span><span class="preprocessor">#include &quot;maths/vector.h&quot;</span></div>
+<div class="line"><a id="l00009" name="l00009"></a><span class="lineno">    9</span><span class="preprocessor">#include &quot;maths/matrix.h&quot;</span></div>
 <div class="line"><a id="l00010" name="l00010"></a><span class="lineno">   10</span><span class="preprocessor">#include &quot;devices/device.h&quot;</span></div>
 <div class="line"><a id="l00011" name="l00011"></a><span class="lineno">   11</span> </div>
 <div class="line"><a id="l00012" name="l00012"></a><span class="lineno">   12</span><span class="comment">//--------------------------------------- Class Definition -----------------------------------------</span></div>
@@ -119,10 +119,10 @@ $(document).ready(function(){initNavTree('xml_settings_8h_source.html',''); init
 <div class="line"><a id="l00017" name="l00017"></a><span class="lineno">   17</span>    {</div>
 <div class="line"><a id="l00018" name="l00018"></a><span class="lineno">   18</span>        <span class="keywordtype">void</span> saveDeviceInfo(<span class="keyword">const</span> Device::Info&amp; info, XmlElementPtr&amp; xml);</div>
 <div class="line"><a id="l00019" name="l00019"></a><span class="lineno">   19</span>        bool_t loadDeviceInfo(Device::Info&amp; info, <span class="keyword">const</span> XmlElementPtr&amp; xml);</div>
-<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        <span class="keywordtype">void</span> saveBias(<span class="keyword">const</span> Vector3&amp; bias, XmlElementPtr&amp; xml);</div>
-<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        bool_t loadBias(Vector3&amp; bias, <span class="keyword">const</span> XmlElementPtr&amp; xml);</div>
-<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>        <span class="keywordtype">void</span> saveTransform(<span class="keyword">const</span> Matrix3x3&amp; transform, XmlElementPtr&amp; xml);</div>
-<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        bool_t loadTransform(Matrix3x3&amp; transform, <span class="keyword">const</span> XmlElementPtr&amp; xml);</div>
+<div class="line"><a id="l00020" name="l00020"></a><span class="lineno">   20</span>        <span class="keywordtype">void</span> saveBias(<span class="keyword">const</span> Math::Vector3&amp; bias, XmlElementPtr&amp; xml);</div>
+<div class="line"><a id="l00021" name="l00021"></a><span class="lineno">   21</span>        bool_t loadBias(Math::Vector3&amp; bias, <span class="keyword">const</span> XmlElementPtr&amp; xml);</div>
+<div class="line"><a id="l00022" name="l00022"></a><span class="lineno">   22</span>        <span class="keywordtype">void</span> saveTransform(<span class="keyword">const</span> Math::Matrix3x3&amp; transform, XmlElementPtr&amp; xml);</div>
+<div class="line"><a id="l00023" name="l00023"></a><span class="lineno">   23</span>        bool_t loadTransform(Math::Matrix3x3&amp; transform, <span class="keyword">const</span> XmlElementPtr&amp; xml);</div>
 <div class="line"><a id="l00024" name="l00024"></a><span class="lineno">   24</span>        <span class="keywordtype">void</span> saveScript(<span class="keyword">const</span> DeviceScript&amp; script, XmlElementPtr&amp; xml);</div>
 <div class="line"><a id="l00025" name="l00025"></a><span class="lineno">   25</span>        bool_t loadScript(DeviceScript&amp; script, <span class="keyword">const</span> XmlElementPtr&amp; xml);</div>
 <div class="line"><a id="l00026" name="l00026"></a><span class="lineno">   26</span>    }</div>

@@ -5,11 +5,12 @@
 
 #include "device.h"
 #include "maths/quaternion.h"
-#include "maths/vector3.h"
+#include "maths/vector.h"
 #include "files/xmlFile.h"
 #include "ahrs.h"
 #include <string>
 #include <vector>
+#include <array>
 
 //--------------------------------------- Class Definition -----------------------------------------
 
@@ -18,7 +19,6 @@ namespace IslSdk
     class Isd4000 : public Device
     {
     public:
-
         class Settings                                  /// Isd4000 Settings information.
         {
         public:
@@ -30,15 +30,15 @@ namespace IslSdk
                 Device::CustomStr interrogation;        ///< Custom interrogation string
             };
 
-            Device::UartMode uartMode;                  ///< Serial port mode.
+            Uart::Mode uartMode;                  ///< Serial port mode.
             uint32_t baudrate;                          ///< Serial port baudrate. Limits are standard bauds between 300 and 115200.
-            Device::Parity parity;                      ///< Serial parity.
+            Uart::Parity parity;                      ///< Serial parity.
             uint8_t dataBits;                           ///< Serial word length 5 to 8 bits.
-            Device::StopBits stopBits;                  ///< Serial stop bits.
+            Uart::StopBits stopBits;                  ///< Serial stop bits.
             uint8_t ahrsMode;                           ///< If bit zero is 1 use inertial mode. 0 is mag slave mode.
-            Quaternion orientationOffset;               ///< Heading, pitch and roll offsets (or down and forward vectors) expressed as a quaternion.
+            Math::Quaternion orientationOffset;         ///< Heading, pitch and roll offsets (or down and forward vectors) expressed as a quaternion.
             real_t headingOffsetRad;                    ///< Offset in radians to add to the heading. Typically use for magnetic declination.
-            Vector3 turnsAbout;                         ///< A vector representing the axis which turn are measured about.
+            Math::Vector3 turnsAbout;                   ///< A vector representing the axis which turn are measured about.
             bool_t turnsAboutEarthFrame;                ///< If true the "turnsAbout" vector is referenced to the earth frame. False is sensor frame.
             Device::CustomStr clrTurn;                  ///< The turns clearing string.
             Device::CustomStr setHeading2Mag;           ///< A string to set the heading to magnetometer heading.
@@ -107,11 +107,11 @@ namespace IslSdk
 
         struct AhrsCal
         {
-            Vector3 gyroBias;                           ///< Gyro bias corrections in degress per second.
-            Vector3 accelBias;                          ///< Accel bias corrections in G.
-            Vector3 magBias;                            ///< Mag bias corrections in uT.
-            Matrix3x3 accelTransform;                   ///< Transformation matrix for accelerometer.
-            Matrix3x3 magTransform;                     ///< Transformation matrix for magnetometer.
+            Math::Vector3 gyroBias;                           ///< Gyro bias corrections in degress per second.
+            Math::Vector3 accelBias;                          ///< Accel bias corrections in G.
+            Math::Vector3 magBias;                            ///< Mag bias corrections in uT.
+            Math::Matrix3x3 accelTransform;                   ///< Transformation matrix for accelerometer.
+            Math::Matrix3x3 magTransform;                     ///< Transformation matrix for magnetometer.
         };
 
         struct PressureCal
@@ -135,13 +135,15 @@ namespace IslSdk
             
             real_t minPressure;
             real_t maxPressure;
+
+            PressureSenorInfo() : minPressure(0), maxPressure(0) {}
         };
 
 
-        Ahrs ahrs{ Device::id, this, &Isd4000::setHeading, &Isd4000::clearTurnsCount };     ///< Class to manage AHRS data.
-        GyroSensor gyro{ Device::id, 0, this, &Isd4000::setGyroCal };                       ///< Class to manage gyro data.
-        AccelSensor accel{ Device::id, 0, this, &Isd4000::setAccelCal };                    ///< Class to manage accelerometer data.
-        MagSensor mag{ Device::id, 0, this, &Isd4000::setMagCal };                          ///< Class to manage magnetometer data.
+        Ahrs ahrs{ Device::id, this, &Isd4000::setHeading, &Isd4000::clearTurnsCount };             ///< Class to manage AHRS data.
+        GyroSensor gyro{ Device::id, 0, this, &Isd4000::setGyroCal };                               ///< Class to manage gyro data.
+        AccelSensor accel{ Device::id, 0, this, &Isd4000::setAccelCal };                            ///< Class to manage accelerometer data.
+        MagSensor mag{ Device::id, 0, this, &Isd4000::setMagCal, &Isd4000::loadFactoryMagCal };     ///< Class to manage magnetometer data.
 
         /**
         * @brief A subscribable event for pressure sensor data.
@@ -277,11 +279,23 @@ namespace IslSdk
         bool_t startLogging() override;
 
         /**
+        * @brief checks if the firmware has detected hardware faults.
+        * @return A vector of the detected hardware faults.
+        */
+        std::vector<std::string> getHardwareFaults() override;
+
+        /**
         * @brief Saves the configuration with the provided file name.
         * @param fileName The name of the file to save the configuration.
         * @return The boolean value indicating the success of the operation.
         */
         bool_t saveConfig(const std::string& fileName) override;
+
+        /**
+        * @brief Returns the configuration as an xml string.
+        * @return The boolean value indicating the success of the operation.
+        */
+        std::string getConfigAsString() override;
 
         /**
         * @brief Loads the configuration from the provided file name.
@@ -338,7 +352,6 @@ namespace IslSdk
         };
 
         Settings m_settings;
-        std::unique_ptr<Settings> m_pendingSettings;
         SensorRates m_requestedRates;
         PressureCal m_pressureCal;
         TemperatureCal m_temperatureCal;
@@ -366,9 +379,10 @@ namespace IslSdk
         void getData(uint32_t flags);
         void getSettings();
         void getAhrsCal();
-        void setGyroCal(uint_t sensorNum, const Vector3* bias);
-        void setAccelCal(uint_t sensorNum, const Vector3& bias, const Matrix3x3& transform);
-        void setMagCal(uint_t sensorNum, const Vector3& bias, const Matrix3x3& transform);
+        void setGyroCal(uint_t sensorNum, const Math::Vector3* bias);
+        void setAccelCal(uint_t sensorNum, const Math::Vector3& bias, const Math::Matrix3x3& transform);
+        void setMagCal(uint_t sensorNum, const Math::Vector3& bias, const Math::Matrix3x3& transform, bool_t factory);
+        void loadFactoryMagCal();
         void setHeading(const real_t* angleInRadians);
         void clearTurnsCount();
         void getStringNames(uint_t listId);
@@ -377,6 +391,7 @@ namespace IslSdk
         bool_t setScript(uint_t number, const std::string& name, const std::string& code);
         void setCalCert(Commands command, const CalCert& cert);
         void getPressureSensorInfo();
+        bool_t makeXmlConfig(XmlFile& file);
     };
 }
 

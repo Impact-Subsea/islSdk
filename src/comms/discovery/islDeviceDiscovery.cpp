@@ -43,7 +43,7 @@ bool_t IslDeviceDiscovery::run()
             {
                 m_timeoutMs = timeMs + param.timeoutMs;
                 param.count--;
-                debugLog("IslDeviceDiscovery", "%s discovering at %s", m_sysPort.name.c_str(), m_sysPort.type == SysPort::Type::Net ? (StringUtils::ipToStr(param.meta.ipAddress) + ":" + StringUtils::uintToStr(param.meta.port)).c_str() : StringUtils::uintToStr(param.meta.baudrate).c_str());
+                debugLog("IslDeviceDiscovery", "%s discovering at %s", m_sysPort.name.c_str(), m_sysPort.type == SysPort::Type::Net ? (StringUtils::ipToStr(param.meta.ipAddress) + ":" + StringUtils::toStr(param.meta.port)).c_str() : StringUtils::toStr(param.meta.baudrate).c_str());
                 m_sysPort.onDiscoveryEvent(m_sysPort, param.meta, AutoDiscovery::Type::Isl, discoveryCount);
 
                 if (param.count == 0)

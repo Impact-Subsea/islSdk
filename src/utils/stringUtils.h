@@ -14,17 +14,21 @@ namespace IslSdk
     namespace StringUtils
     {
         std::string toStr(const uint8_t* str, uint_t maxSize);
-        std::string uintToStr(uint_t number, uint_t leadingZeros = 0);
-        std::string intToStr(int_t number, uint_t leadingZeros = 0, bool_t forceSign = false);
-        std::string realToStr(real_t number, uint_t leadingZeros = 0, uint_t precision = 2, uint8_t format = 0, bool_t forceSign = false);
-        std::string uintToHexStr(uint_t value, uint_t leadingZeros = 0, bool_t useCaps = false);
+        std::string toStr(uint16_t number, uint_t leadingZeros = 0);
+        std::string toStr(uint32_t number, uint_t leadingZeros = 0);
+        std::string toStr(uint_t number, uint_t leadingZeros = 0);
+        std::string toStr(int16_t number, uint_t leadingZeros = 0, bool_t forceSign = false);
+        std::string toStr(int32_t number, uint_t leadingZeros = 0, bool_t forceSign = false);
+        std::string toStr(int_t number, uint_t leadingZeros = 0, bool_t forceSign = false);
+        std::string toStr(real_t number, uint_t leadingZeros = 0, uint_t precision = 2, uint8_t format = 0, bool_t forceSign = false);
+        std::string toHexStr(uint_t value, uint_t leadingZeros = 0, bool_t useCaps = false);
 
         std::string pidToStr(Device::Pid pid);
         std::string pnSnToStr(uint16_t pn, uint16_t sn);
         std::string bcdVersionToStr(uint16_t bcdVersion);
-        std::string uartModeToStr(Device::UartMode mode);
-        std::string uartParityToStr(Device::Parity parity);
-        std::string uartStopBitsToStr(Device::StopBits stopBits);
+        std::string uartModeToStr(Uart::Mode mode);
+        std::string uartParityToStr(Uart::Parity parity);
+        std::string uartStopBitsToStr(Uart::StopBits stopBits);
         std::string phyPortModeToStr(Device::PhyPortMode portMode);
         std::string phyMdixModeToStr(Device::PhyMdixMode mode);
         std::string macAddressToStr(const uint8_t(&macAddress)[6]);
@@ -42,9 +46,9 @@ namespace IslSdk
         Device::Pid toPid(const std::string& str);
         uint32_t toPnSn(const std::string& str, bool_t& error);
         uint16_t toBcdVersion(const std::string& str, bool_t& error);
-        Device::UartMode toUartMode(const std::string& str);
-        Device::Parity toUartParity(const std::string& str);
-        Device::StopBits toUartStopBits(const std::string& str);
+        Uart::Mode toUartMode(const std::string& str);
+        Uart::Parity toUartParity(const std::string& str);
+        Uart::StopBits toUartStopBits(const std::string& str);
         Device::PhyPortMode toPhyPortMode(const std::string& str);
         Device::PhyMdixMode toPhyMdixMode(const std::string& str);
         bool_t toMacAddress(const std::string& str, uint8_t(&macAddress)[6]);

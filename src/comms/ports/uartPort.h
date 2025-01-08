@@ -8,6 +8,15 @@
 #include "comms/ports/sysPort.h"
 #include "types/queue.h"
 #include <array>
+#include <thread>
+
+#ifdef OS_WINDOWS
+#include "platform/windows/serialPort.h"
+#elif OS_UNIX
+#include "platform/unix/serialPort.h"
+#else
+#error "Unsupported platform. Define OS_WINDOWS or OS_UNIX"
+#endif
 
 //--------------------------------------- Class Definition -----------------------------------------
 
@@ -17,13 +26,23 @@ namespace IslSdk
     {
     public:
         static std::vector<uint32_t> defaultBaudrates;
-        Uart& uart = m_uart;
+        SerialPort& serialPort = m_serialPort;
 
         UartPort(const std::string& name);
         ~UartPort();
-        bool_t open() override;         ///< Open the port.
+        void open() override;           ///< Open the port.
         void close() override;          ///< Close the port.
         bool_t process() override;
+
+        /**
+        * @brief Configure the port.
+        * @param baudrate The baudrate to configure the port to.
+        * @param dataBits The number of data bits.
+        * @param parity The parity to use.
+        * @param stopBits The number of stop bits.
+        * @return True if the port was configured successfully.
+        */
+        bool_t setSerial(uint32_t baudrate, uint8_t dataBits, Uart::Parity parity, Uart::StopBits stopBits);
 
         /**
         * @brief Write data to the port.
@@ -72,15 +91,19 @@ namespace IslSdk
             uint8_t* data;
         };
 
-        Uart m_uart{ name };
+        SerialPort m_serialPort{ name };
         const uint_t m_rxBufSize = 2048;
         Queue m_tx{ 1024 * 8 };
         Queue m_rx{ 1024 * 32 };
         TxRxBuf* m_rxBuf;
+        bool_t m_eventOpen;
+        bool_t m_eventClose;
+        std::thread m_threadOpen;
+        std::thread m_threadClose;
 
         void rxDataCallback(const uint8_t* data, uint_t size, uint32_t baudrate);
         void txCompeteCallback(const uint8_t* data, uint_t bytesWritten);
-        void errorCallback();
+        void uartEvent(Uart::Events event);
 
         Slot<const uint8_t*, uint_t, uint32_t> m_slotRxData {this, & UartPort::rxDataCallback};
         Slot<const uint8_t*, uint_t> m_slotTxCompete {this, & UartPort::txCompeteCallback};

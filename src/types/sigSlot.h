@@ -324,13 +324,13 @@ namespace IslSdk
         template <typename T>
         py::object convertArg(const T& arg)
         {
-            return py::cast(arg, py::return_value_policy::reference);
+            return py::cast(arg, py::return_value_policy::automatic_reference);
         }
 
         template <typename T>
         py::object convertArg(T& arg)
         {
-            return py::cast(arg, py::return_value_policy::reference);
+            return py::cast(arg, py::return_value_policy::automatic_reference);
         }
 
         py::object convertArg(const ConstBuffer& arg)

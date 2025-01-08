@@ -54,8 +54,10 @@ The SDK is written in C++17 and cmake is used for compiling the project. It has 
     $ make
     ```
     If using windows
-    ```bash
-    $ cmake --build .
+    ```bash 
+    $ cmake --build . --config Debug
+    or
+    $ cmake --build . --config Release
     ```
 
 - If on Linux make sure the app has permission to access the serial ports:

@@ -11,7 +11,7 @@ std::string Base64::encode(const uint8_t* buf, uint_t size)
 {
     std::string str;
 
-    static const uint8_t lut[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    constexpr uint8_t lut[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     const uint8_t* in = buf;
     const uint8_t* end = buf + size;
 
@@ -45,7 +45,7 @@ std::string Base64::encode(const uint8_t* buf, uint_t size)
 //--------------------------------------------------------------------------------------------------
 uint_t Base64::decode(const std::string& str, uint8_t* data, uint_t size)
 {
-    static const uint8_t lut[256] = { 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,
+    constexpr uint8_t lut[256] = { 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 0,
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
     0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0, 62, 63, 62, 62, 63, 52, 53, 54, 55,
     56, 57, 58, 59, 60, 61,  0,  0,  0,  0,  0,  0,  0,  0,  1,  2,  3,  4,  5,  6,

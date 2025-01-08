@@ -13,16 +13,12 @@ using namespace IslSdk;
 //--------------------------------------------------------------------------------------------------
 Isd4000::Isd4000(const Device::Info& info) : Device(info)
 {
-    m_requestedRates.pressure = 100;
-    m_requestedRates.ahrs = 100;
-    m_requestedRates.gyro = 100;
-    m_requestedRates.accel = 100;
-    m_requestedRates.mag = 100;
-    m_requestedRates.temperature = 200;
-
-    Mem::memset(&m_pressureCal, 0, sizeof(PressureCal));
-    Mem::memset(&m_temperatureCal, 0, sizeof(TemperatureCal));
-    Mem::memset(&m_pressureSensorInfo, 0, sizeof(PressureSenorInfo));
+    m_requestedRates.pressure = 0;
+    m_requestedRates.ahrs = 0;
+    m_requestedRates.gyro = 0;
+    m_requestedRates.accel = 0;
+    m_requestedRates.mag = 0;
+    m_requestedRates.temperature = 0;
 
     ahrs.onData.setSubscribersChangedCallback(this, &Isd4000::signalSubscribersChanged);
     gyro.onData.setSubscribersChangedCallback(this, &Isd4000::signalSubscribersChanged);
@@ -72,16 +68,15 @@ bool_t Isd4000::setSettings(const Settings& newSettings, bool_t save)
 
     if (ok)
     {
-        m_pendingSettings = std::make_unique<Settings>(newSettings);
-
         data[0] = static_cast<uint8_t>(Commands::SetSettings);
         data[1] = static_cast<uint8_t>(save);
         newSettings.serialise(&data[2], sizeof(data) - 2);
 
         if (newSettings.baudrate != m_settings.baudrate || newSettings.uartMode != m_settings.uartMode)
         {
-            connectionSettingsUpdated(ConnectionMeta(newSettings.baudrate), newSettings.uartMode != UartMode::Rs232);
+            connectionSettingsUpdated(ConnectionMeta(newSettings.baudrate), newSettings.uartMode != Uart::Mode::Rs232);
         }
+        m_settings = newSettings;
         enqueuePacket(&data[0], sizeof(data));
     }
     else
@@ -186,6 +181,33 @@ bool_t Isd4000::startLogging()
     return logSettings();
 }
 //--------------------------------------------------------------------------------------------------
+std::vector<std::string> Isd4000::getHardwareFaults()
+{
+    enum FaultFlags : uint16_t { Temperature = 1, Pressure = 2, GyroAccel = 4, Mag = 8 };
+    std::vector<std::string> faults;
+
+    if (info.status)
+    {
+        if (info.status & FaultFlags::Temperature)
+        {
+            faults.emplace_back("temperature sensor");
+        }
+        if (info.status & FaultFlags::Pressure)
+        {
+            faults.emplace_back("pressure sensor");
+        }
+        if (info.status & FaultFlags::GyroAccel)
+        {
+            faults.emplace_back("gyro/accel");
+        }
+        if (info.status & FaultFlags::Mag)
+        {
+            faults.emplace_back("mag");
+        }
+    }
+    return faults;
+}
+//--------------------------------------------------------------------------------------------------
 bool_t Isd4000::saveConfig(const std::string& fileName)
 {
     bool_t ok = true;
@@ -195,99 +217,12 @@ bool_t Isd4000::saveConfig(const std::string& fileName)
     if (m_onDepth.state == DataState::Valid && m_onAhrs.state == DataState::Valid && getCal())
     {
         XmlFile file;
-
-        XmlElementPtr rootXml = file.setRoot("ISD4000");
-        if (rootXml)
+        ok = makeXmlConfig(file);
+        if (ok)
         {
-            XmlSettings::saveDeviceInfo(info, rootXml);
-
-            XmlElementPtr xml = rootXml->addElement("settings");
-            m_settings.save(xml);
-
-            xml = rootXml->addElement("script0");
-            XmlSettings::saveScript(m_onDepth, xml);
-
-            xml = rootXml->addElement("script1");
-            XmlSettings::saveScript(m_onAhrs, xml);
-
-            xml = rootXml->addElement("cal");
-            if (xml)
-            {
-                XmlElementPtr node = xml->addElement("gyro");
-                XmlSettings::saveBias(gyro.bias, node);
-                node = xml->addElement("accel");
-                XmlSettings::saveBias(accel.bias, node);
-                XmlSettings::saveTransform(accel.transform, node);
-                node = xml->addElement("mag");
-                XmlSettings::saveBias(mag.bias, node);
-                XmlSettings::saveTransform(mag.transform, node);
-            }
-
-            xml = rootXml->addElement("pressureCal");
-            if (xml)
-            {
-                xml->addUint("year", m_pressureCal.cal.year);
-                xml->addUint("month", m_pressureCal.cal.month);
-                xml->addUint("day", m_pressureCal.cal.day);
-                xml->addString("number", m_pressureCal.cal.number);
-                xml->addString("organisation", m_pressureCal.cal.organisation);
-                xml->addString("person", m_pressureCal.cal.person);
-                xml->addString("equipment", m_pressureCal.cal.equipment);
-                xml->addString("equipmentSn", m_pressureCal.cal.equipmentSn);
-                xml->addString("notes", m_pressureCal.cal.notes);
-
-                XmlElementPtr node = xml->addElement("calPoints");
-                for (uint_t i = 0; i < m_pressureCal.cal.calPointsLength; i++)
-                {
-                    XmlElementPtr node2 = node->addElement("point");
-                    node2->addAttribute("id", StringUtils::uintToStr(i + 1));
-                    node2->addReal("measured", m_pressureCal.cal.calPoints[i].x, 6);
-                    node2->addReal("actual", m_pressureCal.cal.calPoints[i].y, 6);
-                }
-
-                node = xml->addElement("verifyPoints");
-                for (uint_t i = 0; i < m_pressureCal.cal.verifyPointsLength; i++)
-                {
-                    XmlElementPtr node2 = node->addElement("point");
-                    node2->addAttribute("id", StringUtils::uintToStr(i + 1));
-                    node2->addReal("measured", m_pressureCal.cal.verifyPoints[i].x, 6);
-                    node2->addReal("actual", m_pressureCal.cal.verifyPoints[i].y, 6);
-                }
-            }
-
-            xml = rootXml->addElement("temperatureCal");
-            if (xml)
-            {
-                xml->addUint("year", m_temperatureCal.cal.year);
-                xml->addUint("month", m_temperatureCal.cal.month);
-                xml->addUint("day", m_temperatureCal.cal.day);
-                xml->addString("number", m_temperatureCal.cal.number);
-                xml->addString("organisation", m_temperatureCal.cal.organisation);
-                xml->addString("person", m_temperatureCal.cal.person);
-                xml->addString("equipment", m_temperatureCal.cal.equipment);
-                xml->addString("equipmentSn", m_temperatureCal.cal.equipmentSn);
-                xml->addString("notes", m_temperatureCal.cal.notes);
-
-                XmlElementPtr node = xml->addElement("calPoints");
-                for (uint_t i = 0; i < m_temperatureCal.cal.calPointsLength; i++)
-                {
-                    XmlElementPtr node2 = node->addElement("point");
-                    node2->addAttribute("id", StringUtils::uintToStr(i + 1));
-                    node2->addReal("measured", m_temperatureCal.cal.calPoints[i].x, 6);
-                    node2->addReal("actual", m_temperatureCal.cal.calPoints[i].y, 6);
-                }
-
-                node = xml->addElement("verifyPoints");
-                for (uint_t i = 0; i < m_temperatureCal.cal.verifyPointsLength; i++)
-                {
-                    XmlElementPtr node2 = node->addElement("point");
-                    node2->addAttribute("id", StringUtils::uintToStr(i + 1));
-                    node2->addReal("measured", m_temperatureCal.cal.verifyPoints[i].x, 6);
-                    node2->addReal("actual", m_temperatureCal.cal.verifyPoints[i].y, 6);
-                }
-            }
             ok = file.save(fileName);
         }
+        
     }
     else
     {
@@ -295,6 +230,125 @@ bool_t Isd4000::saveConfig(const std::string& fileName)
     }
 
     return ok;
+}
+//--------------------------------------------------------------------------------------------------
+std::string Isd4000::getConfigAsString()
+{
+    std::string xml;
+
+    getScripts();
+
+    if (m_onDepth.state == DataState::Valid && m_onAhrs.state == DataState::Valid && getCal())
+    {
+        m_waitingForXmlConfig = false;
+        XmlFile file;
+        makeXmlConfig(file);
+        xml = file.asString();
+        onXmlConfig(*this, xml);
+    }
+    else
+    {
+        m_waitingForXmlConfig = true;
+	}
+
+    return xml;
+}
+//--------------------------------------------------------------------------------------------------
+bool_t Isd4000::makeXmlConfig(XmlFile& file)
+{
+    XmlElementPtr rootXml = file.setRoot("ISD4000");
+    if (rootXml)
+    {
+        XmlSettings::saveDeviceInfo(info, rootXml);
+
+        XmlElementPtr xml = rootXml->addElement("settings");
+        m_settings.save(xml);
+
+        xml = rootXml->addElement("script0");
+        XmlSettings::saveScript(m_onDepth, xml);
+
+        xml = rootXml->addElement("script1");
+        XmlSettings::saveScript(m_onAhrs, xml);
+
+        xml = rootXml->addElement("cal");
+        if (xml)
+        {
+            XmlElementPtr node = xml->addElement("gyro");
+            XmlSettings::saveBias(gyro.bias, node);
+            node = xml->addElement("accel");
+            XmlSettings::saveBias(accel.bias, node);
+            XmlSettings::saveTransform(accel.transform, node);
+            node = xml->addElement("mag");
+            XmlSettings::saveBias(mag.bias, node);
+            XmlSettings::saveTransform(mag.transform, node);
+        }
+
+        xml = rootXml->addElement("pressureCal");
+        if (xml)
+        {
+            xml->addUint("year", m_pressureCal.cal.year);
+            xml->addUint("month", m_pressureCal.cal.month);
+            xml->addUint("day", m_pressureCal.cal.day);
+            xml->addString("number", m_pressureCal.cal.number);
+            xml->addString("organisation", m_pressureCal.cal.organisation);
+            xml->addString("person", m_pressureCal.cal.person);
+            xml->addString("equipment", m_pressureCal.cal.equipment);
+            xml->addString("equipmentSn", m_pressureCal.cal.equipmentSn);
+            xml->addString("notes", m_pressureCal.cal.notes);
+
+            XmlElementPtr node = xml->addElement("calPoints");
+            for (uint_t i = 0; i < m_pressureCal.cal.calPointsLength; i++)
+            {
+                XmlElementPtr node2 = node->addElement("point");
+                node2->addAttribute("id", StringUtils::toStr(i + 1));
+                node2->addReal("measured", m_pressureCal.cal.calPoints[i].x, 6);
+                node2->addReal("actual", m_pressureCal.cal.calPoints[i].y, 6);
+            }
+
+            node = xml->addElement("verifyPoints");
+            for (uint_t i = 0; i < m_pressureCal.cal.verifyPointsLength; i++)
+            {
+                XmlElementPtr node2 = node->addElement("point");
+                node2->addAttribute("id", StringUtils::toStr(i + 1));
+                node2->addReal("measured", m_pressureCal.cal.verifyPoints[i].x, 6);
+                node2->addReal("actual", m_pressureCal.cal.verifyPoints[i].y, 6);
+            }
+        }
+
+        xml = rootXml->addElement("temperatureCal");
+        if (xml)
+        {
+            xml->addUint("year", m_temperatureCal.cal.year);
+            xml->addUint("month", m_temperatureCal.cal.month);
+            xml->addUint("day", m_temperatureCal.cal.day);
+            xml->addString("number", m_temperatureCal.cal.number);
+            xml->addString("organisation", m_temperatureCal.cal.organisation);
+            xml->addString("person", m_temperatureCal.cal.person);
+            xml->addString("equipment", m_temperatureCal.cal.equipment);
+            xml->addString("equipmentSn", m_temperatureCal.cal.equipmentSn);
+            xml->addString("notes", m_temperatureCal.cal.notes);
+
+            XmlElementPtr node = xml->addElement("calPoints");
+            for (uint_t i = 0; i < m_temperatureCal.cal.calPointsLength; i++)
+            {
+                XmlElementPtr node2 = node->addElement("point");
+                node2->addAttribute("id", StringUtils::toStr(i + 1));
+                node2->addReal("measured", m_temperatureCal.cal.calPoints[i].x, 6);
+                node2->addReal("actual", m_temperatureCal.cal.calPoints[i].y, 6);
+            }
+
+            node = xml->addElement("verifyPoints");
+            for (uint_t i = 0; i < m_temperatureCal.cal.verifyPointsLength; i++)
+            {
+                XmlElementPtr node2 = node->addElement("point");
+                node2->addAttribute("id", StringUtils::toStr(i + 1));
+                node2->addReal("measured", m_temperatureCal.cal.verifyPoints[i].x, 6);
+                node2->addReal("actual", m_temperatureCal.cal.verifyPoints[i].y, 6);
+            }
+        }
+    }
+
+    return rootXml != nullptr;
 }
 //--------------------------------------------------------------------------------------------------
 bool_t Isd4000::loadConfig(const std::string& fileName, Device::Info* info, Settings* settings, DeviceScript* script0, DeviceScript* script1, AhrsCal* ahrsCal, PressureCal* pCal, TemperatureCal* tCal)
@@ -559,7 +613,7 @@ bool_t Isd4000::newPacket(uint8_t command, const uint8_t* data, uint_t size)
             real_t x = Mem::getFloat32(&data);
             real_t y = Mem::getFloat32(&data);
             real_t z = Mem::getFloat32(&data);
-            Quaternion q = Quaternion(w, x, y, z);
+            Math::Quaternion q = Math::Quaternion(w, x, y, z);
             real_t magHeadingRad = Mem::getFloat32(&data);
             real_t turnsCount = Mem::getFloat32(&data);
             ahrs.onData(ahrs, timeUs, q, magHeadingRad, turnsCount);
@@ -567,7 +621,7 @@ bool_t Isd4000::newPacket(uint8_t command, const uint8_t* data, uint_t size)
 
         if (sensorFlags & DataFlags::gyro)
         {
-            Vector3 gyroVec;
+            Math::Vector3 gyroVec;
             gyroVec.x = Mem::getFloat32(&data);
             gyroVec.y = Mem::getFloat32(&data);
             gyroVec.z = Mem::getFloat32(&data);
@@ -576,7 +630,7 @@ bool_t Isd4000::newPacket(uint8_t command, const uint8_t* data, uint_t size)
 
         if (sensorFlags & DataFlags::accel)
         {
-            Vector3 accelVec;
+            Math::Vector3 accelVec;
             accelVec.x = Mem::getFloat32(&data);
             accelVec.y = Mem::getFloat32(&data);
             accelVec.z = Mem::getFloat32(&data);
@@ -585,7 +639,7 @@ bool_t Isd4000::newPacket(uint8_t command, const uint8_t* data, uint_t size)
 
         if (sensorFlags & DataFlags::mag)
         {
-            Vector3 magVec;
+            Math::Vector3 magVec;
             magVec.x = Mem::getFloat32(&data);
             magVec.y = Mem::getFloat32(&data);
             magVec.z = Mem::getFloat32(&data);
@@ -625,20 +679,15 @@ bool_t Isd4000::newPacket(uint8_t command, const uint8_t* data, uint_t size)
         }
         else
         {
-            if (m_pendingSettings)
-            {
-                m_settings = *m_pendingSettings;
-            }
             logSettings();
         }
-        m_pendingSettings.reset();
         onSettingsUpdated(*this, *data != 0);
         break;
     }
     case Commands::GetAhrsCal:
     {
-        Vector3 gyroVec, accelVec, magVec;
-        Matrix3x3 accelMat, magMat;
+        Math::Vector3 gyroVec, accelVec, magVec;
+        Math::Matrix3x3 accelMat, magMat;
         gyroVec.x = Mem::getFloat32(&data);
         gyroVec.y = Mem::getFloat32(&data);
         gyroVec.z = Mem::getFloat32(&data);
@@ -648,24 +697,24 @@ bool_t Isd4000::newPacket(uint8_t command, const uint8_t* data, uint_t size)
         magVec.x = Mem::getFloat32(&data);
         magVec.y = Mem::getFloat32(&data);
         magVec.z = Mem::getFloat32(&data);
-        accelMat.m[0][0] = Mem::getFloat32(&data);
-        accelMat.m[0][1] = Mem::getFloat32(&data);
-        accelMat.m[0][2] = Mem::getFloat32(&data);
-        accelMat.m[1][0] = Mem::getFloat32(&data);
-        accelMat.m[1][1] = Mem::getFloat32(&data);
-        accelMat.m[1][2] = Mem::getFloat32(&data);
-        accelMat.m[2][0] = Mem::getFloat32(&data);
-        accelMat.m[2][1] = Mem::getFloat32(&data);
-        accelMat.m[2][2] = Mem::getFloat32(&data);
-        magMat.m[0][0] = Mem::getFloat32(&data);
-        magMat.m[0][1] = Mem::getFloat32(&data);
-        magMat.m[0][2] = Mem::getFloat32(&data);
-        magMat.m[1][0] = Mem::getFloat32(&data);
-        magMat.m[1][1] = Mem::getFloat32(&data);
-        magMat.m[1][2] = Mem::getFloat32(&data);
-        magMat.m[2][0] = Mem::getFloat32(&data);
-        magMat.m[2][1] = Mem::getFloat32(&data);
-        magMat.m[2][2] = Mem::getFloat32(&data);
+        accelMat[0][0] = Mem::getFloat32(&data);
+        accelMat[0][1] = Mem::getFloat32(&data);
+        accelMat[0][2] = Mem::getFloat32(&data);
+        accelMat[1][0] = Mem::getFloat32(&data);
+        accelMat[1][1] = Mem::getFloat32(&data);
+        accelMat[1][2] = Mem::getFloat32(&data);
+        accelMat[2][0] = Mem::getFloat32(&data);
+        accelMat[2][1] = Mem::getFloat32(&data);
+        accelMat[2][2] = Mem::getFloat32(&data);
+        magMat[0][0] = Mem::getFloat32(&data);
+        magMat[0][1] = Mem::getFloat32(&data);
+        magMat[0][2] = Mem::getFloat32(&data);
+        magMat[1][0] = Mem::getFloat32(&data);
+        magMat[1][1] = Mem::getFloat32(&data);
+        magMat[1][2] = Mem::getFloat32(&data);
+        magMat[2][0] = Mem::getFloat32(&data);
+        magMat[2][1] = Mem::getFloat32(&data);
+        magMat[2][2] = Mem::getFloat32(&data);
         gyro.updateCalValues(gyroVec);
         accel.updateCalValues(accelVec, accelMat);
         mag.updateCalValues(magVec, magMat);
@@ -704,11 +753,19 @@ bool_t Isd4000::newPacket(uint8_t command, const uint8_t* data, uint_t size)
 
         m_pressureCal.state = DataState::Valid;
 
-        if (!m_saveConfigPath.empty() && m_scriptVars.state == DataState::Valid && m_onDepth.state == DataState::Valid && m_onAhrs.state == DataState::Valid && m_temperatureCal.state == DataState::Valid)
+        if (m_scriptVars.state == DataState::Valid && m_onDepth.state == DataState::Valid && m_onAhrs.state == DataState::Valid && m_temperatureCal.state == DataState::Valid)
         {
-            saveConfig(m_saveConfigPath);
-            m_saveConfigPath.clear();
+            if (!m_saveConfigPath.empty())
+            {
+                saveConfig(m_saveConfigPath);
+                m_saveConfigPath.clear();
+            }
+            if (m_waitingForXmlConfig)
+            {
+                getConfigAsString();
+            }
         }
+
         onPressureCalCert(*this, m_pressureCal);
         break;
     }
@@ -746,11 +803,19 @@ bool_t Isd4000::newPacket(uint8_t command, const uint8_t* data, uint_t size)
         m_temperatureCal.adcOffset = (int32_t)Mem::get32Bit(&data);
         m_temperatureCal.state = DataState::Valid;
 
-        if (!m_saveConfigPath.empty() && m_scriptVars.state == DataState::Valid && m_onDepth.state == DataState::Valid && m_onAhrs.state == DataState::Valid && m_pressureCal.state == DataState::Valid)
+        if (m_scriptVars.state == DataState::Valid && m_onDepth.state == DataState::Valid && m_onAhrs.state == DataState::Valid && m_pressureCal.state == DataState::Valid)
         {
-            saveConfig(m_saveConfigPath);
-            m_saveConfigPath.clear();
+            if (!m_saveConfigPath.empty())
+            {
+                saveConfig(m_saveConfigPath);
+                m_saveConfigPath.clear();
+            }
+            if (m_waitingForXmlConfig)
+            {
+                getConfigAsString();
+            }
         }
+
         onTemperatureCalCert(*this, m_temperatureCal);
         break;
     }
@@ -759,6 +824,10 @@ bool_t Isd4000::newPacket(uint8_t command, const uint8_t* data, uint_t size)
         if (*data == 0)
         {
             onError(*this, "Gyro cal failed to save to device");
+        }
+        else
+        {
+            getAhrsCal();
         }
         break;
     }
@@ -772,7 +841,25 @@ bool_t Isd4000::newPacket(uint8_t command, const uint8_t* data, uint_t size)
     }
     case Commands::SetMagCal:
     {
-        if (*data == 0)
+        if (size >= 48)
+        {
+            Math::Vector3 magVec;
+            Math::Matrix3x3 magMat;
+            magVec.x = Mem::getFloat32(&data);
+            magVec.y = Mem::getFloat32(&data);
+            magVec.z = Mem::getFloat32(&data);
+            magMat[0][0] = Mem::getFloat32(&data);
+            magMat[0][1] = Mem::getFloat32(&data);
+            magMat[0][2] = Mem::getFloat32(&data);
+            magMat[1][0] = Mem::getFloat32(&data);
+            magMat[1][1] = Mem::getFloat32(&data);
+            magMat[1][2] = Mem::getFloat32(&data);
+            magMat[2][0] = Mem::getFloat32(&data);
+            magMat[2][1] = Mem::getFloat32(&data);
+            magMat[2][2] = Mem::getFloat32(&data);
+            mag.updateCalValues(magVec, magMat);
+        }
+        else if (*data == 0)
         {
             onError(*this, "Mag cal failed to save to device");
         }
@@ -862,10 +949,17 @@ bool_t Isd4000::newPacket(uint8_t command, const uint8_t* data, uint_t size)
 
         if (m_scriptVars.state == DataState::Valid && m_onDepth.state == DataState::Valid && m_onAhrs.state == DataState::Valid)
         {
-            if (!m_saveConfigPath.empty() && m_temperatureCal.state == DataState::Valid && m_pressureCal.state == DataState::Valid)
+            if (m_temperatureCal.state == DataState::Valid && m_pressureCal.state == DataState::Valid)
             {
-                saveConfig(m_saveConfigPath);
-                m_saveConfigPath.clear();
+                if (!m_saveConfigPath.empty())
+                {
+                    saveConfig(m_saveConfigPath);
+                    m_saveConfigPath.clear();
+                }
+                if (m_waitingForXmlConfig)
+                {
+                    getConfigAsString();
+                }
             }
             onScriptDataReceived(*this);
         }
@@ -875,7 +969,7 @@ bool_t Isd4000::newPacket(uint8_t command, const uint8_t* data, uint_t size)
     {
         if (data[1] == 0)
         {
-            onError(*this, "Script " + StringUtils::uintToStr(data[0]) + " failed to save to device");
+            onError(*this, "Script " + StringUtils::toStr(data[0]) + " failed to save to device");
         }
         break;
     }
@@ -909,7 +1003,9 @@ bool_t Isd4000::newPacket(uint8_t command, const uint8_t* data, uint_t size)
         }
         else
         {
-            Mem::memset(&m_pressureSensorInfo, 0, sizeof(m_pressureSensorInfo));
+            
+            m_pressureSensorInfo.minPressure = 0.0;
+            m_pressureSensorInfo.maxPressure = 0.0;
         }
         break;
     }
@@ -959,7 +1055,7 @@ void Isd4000::getAhrsCal()
     enqueuePacket(&data, sizeof(data));
 }
 //--------------------------------------------------------------------------------------------------
-void Isd4000::setGyroCal(uint_t sensorNum, const Vector3* bias)
+void Isd4000::setGyroCal(uint_t sensorNum, const Math::Vector3* bias)
 {
     uint8_t data[13];
     uint8_t* buf = &data[0];
@@ -976,7 +1072,7 @@ void Isd4000::setGyroCal(uint_t sensorNum, const Vector3* bias)
     enqueuePacket(&data[0], buf - &data[0]);
 }
 //--------------------------------------------------------------------------------------------------
-void Isd4000::setAccelCal(uint_t sensorNum, const Vector3& bias, const Matrix3x3& transform)
+void Isd4000::setAccelCal(uint_t sensorNum, const Math::Vector3& bias, const Math::Matrix3x3& transform)
 {
     uint8_t data[49];
     uint8_t* buf = &data[0];
@@ -985,39 +1081,51 @@ void Isd4000::setAccelCal(uint_t sensorNum, const Vector3& bias, const Matrix3x3
     Mem::packFloat32(&buf, bias.x);
     Mem::packFloat32(&buf, bias.y);
     Mem::packFloat32(&buf, bias.z);
-    Mem::packFloat32(&buf, transform.m[0][0]);
-    Mem::packFloat32(&buf, transform.m[0][1]);
-    Mem::packFloat32(&buf, transform.m[0][2]);
-    Mem::packFloat32(&buf, transform.m[1][0]);
-    Mem::packFloat32(&buf, transform.m[1][1]);
-    Mem::packFloat32(&buf, transform.m[1][2]);
-    Mem::packFloat32(&buf, transform.m[2][0]);
-    Mem::packFloat32(&buf, transform.m[2][1]);
-    Mem::packFloat32(&buf, transform.m[2][2]);
+    Mem::packFloat32(&buf, transform[0][0]);
+    Mem::packFloat32(&buf, transform[0][1]);
+    Mem::packFloat32(&buf, transform[0][2]);
+    Mem::packFloat32(&buf, transform[1][0]);
+    Mem::packFloat32(&buf, transform[1][1]);
+    Mem::packFloat32(&buf, transform[1][2]);
+    Mem::packFloat32(&buf, transform[2][0]);
+    Mem::packFloat32(&buf, transform[2][1]);
+    Mem::packFloat32(&buf, transform[2][2]);
 
     enqueuePacket(&data[0], sizeof(data));
 }
 //--------------------------------------------------------------------------------------------------
-void Isd4000::setMagCal(uint_t sensorNum, const Vector3& bias, const Matrix3x3& transform)
+void Isd4000::setMagCal(uint_t sensorNum, const Math::Vector3& bias, const Math::Matrix3x3& transform, bool_t factory)
 {
-    uint8_t data[49];
+    uint8_t data[50];
     uint8_t* buf = &data[0];
 
     *buf++ = static_cast<uint8_t>(Commands::SetMagCal);
     Mem::packFloat32(&buf, bias.x);
     Mem::packFloat32(&buf, bias.y);
     Mem::packFloat32(&buf, bias.z);
-    Mem::packFloat32(&buf, transform.m[0][0]);
-    Mem::packFloat32(&buf, transform.m[0][1]);
-    Mem::packFloat32(&buf, transform.m[0][2]);
-    Mem::packFloat32(&buf, transform.m[1][0]);
-    Mem::packFloat32(&buf, transform.m[1][1]);
-    Mem::packFloat32(&buf, transform.m[1][2]);
-    Mem::packFloat32(&buf, transform.m[2][0]);
-    Mem::packFloat32(&buf, transform.m[2][1]);
-    Mem::packFloat32(&buf, transform.m[2][2]);
+    Mem::packFloat32(&buf, transform[0][0]);
+    Mem::packFloat32(&buf, transform[0][1]);
+    Mem::packFloat32(&buf, transform[0][2]);
+    Mem::packFloat32(&buf, transform[1][0]);
+    Mem::packFloat32(&buf, transform[1][1]);
+    Mem::packFloat32(&buf, transform[1][2]);
+    Mem::packFloat32(&buf, transform[2][0]);
+    Mem::packFloat32(&buf, transform[2][1]);
+    Mem::packFloat32(&buf, transform[2][2]);
 
-    enqueuePacket(&data[0], sizeof(data));
+    if (factory)
+	{
+		*buf++ = 1;
+	}
+
+    enqueuePacket(&data[0], sizeof(data) - !factory);
+}
+//--------------------------------------------------------------------------------------------------
+void Isd4000::loadFactoryMagCal()
+{
+    uint8_t data = static_cast<uint8_t>(Commands::SetMagCal);
+
+    enqueuePacket(&data, sizeof(data));
 }
 //--------------------------------------------------------------------------------------------------
 void Isd4000::setHeading(const real_t* angleInRadians)
@@ -1142,35 +1250,35 @@ Isd4000::Settings::Settings()
 //--------------------------------------------------------------------------------------------------
 void Isd4000::Settings::defaults()
 {
-    uartMode = Device::UartMode::Rs232;
+    uartMode = Uart::Mode::Rs232;
     baudrate = 9600;
-    parity = Device::Parity::None;
+    parity = Uart::Parity::None;
     dataBits = 8;
-    stopBits = Device::StopBits::One;
+    stopBits = Uart::StopBits::One;
     ahrsMode = 0;
     orientationOffset = { 1,0,0,0 };
     headingOffsetRad = 0;
     turnsAbout = { 0,0,1 };
     turnsAboutEarthFrame = false;
-    clrTurn = Device::CustomStr(false, "#c\r");
-    setHeading2Mag = Device::CustomStr(false, "#m\r");
+    clrTurn = Device::CustomStr(false, "#c\\r");
+    setHeading2Mag = Device::CustomStr(false, "#m\\r");
     filterPressure = false;
     depthOffset = 0.0;
     pressureOffset = 0.0;
     latitude = 57.1;
-    tareStr = Device::CustomStr(false, "#t\r");
-    unTareStr = Device::CustomStr(false, "#u\r");
-    depthStr = { 0, false, 500, Device::CustomStr(false, "#d\r") };
-    ahrsStr = { 0, false, 500, Device::CustomStr(false, "#o\r") };
+    tareStr = Device::CustomStr(false, "#t\\r");
+    unTareStr = Device::CustomStr(false, "#u\\r");
+    depthStr = { 0, false, 500, Device::CustomStr(false, "#d\\r") };
+    ahrsStr = { 0, false, 500, Device::CustomStr(false, "#o\\r") };
 }
 //--------------------------------------------------------------------------------------------------
 bool_t Isd4000::Settings::check(std::vector<std::string>& errMsgs) const
 {
-    Utils::checkVar(uartMode, Device::UartMode::Rs232, Device::UartMode::Rs485Terminated, errMsgs, "uartMode out of range");
+    Utils::checkVar(uartMode, Uart::Mode::Rs232, Uart::Mode::Rs485Terminated, errMsgs, "uartMode out of range");
     Utils::checkVar<uint_t>(baudrate, 300, 115200, errMsgs, "baudrate out of range");
-    Utils::checkVar(parity, Device::Parity::None, Device::Parity::Space, errMsgs, "parity out of range");
+    Utils::checkVar(parity, Uart::Parity::None, Uart::Parity::Space, errMsgs, "parity out of range");
     Utils::checkVar<uint_t>(dataBits, 5, 8, errMsgs, "dataBits out of range");
-    Utils::checkVar(stopBits, Device::StopBits::One, Device::StopBits::Two, errMsgs, "stopBits out of range");
+    Utils::checkVar(stopBits, Uart::StopBits::One, Uart::StopBits::Two, errMsgs, "stopBits out of range");
     Utils::checkVar<uint_t>(ahrsMode, 0, 1, errMsgs, "ahrsMode out of range");
     Utils::checkVar(orientationOffset.magnitude(), 0.99, 1.001, errMsgs, "orientationOffset quaternion is not normalised");
     Utils::checkVar(headingOffsetRad, -Math::pi2, Math::pi2, errMsgs, "headingOffsetRad out of range");
@@ -1207,35 +1315,35 @@ uint_t Isd4000::Settings::serialise(uint8_t* buf, uint_t size) const
         Mem::packFloat32(&buf, turnsAbout.z);
         *buf++ = turnsAboutEarthFrame;
         *buf++ = clrTurn.enable;
-        *buf++ = static_cast<uint8_t>(clrTurn.str.size());
-        buf += clrTurn.packStr(buf);
+        *buf = clrTurn.packStr(buf+1);
+        buf += clrTurn.size + 1;
         *buf++ = setHeading2Mag.enable;
-        *buf++ = static_cast<uint8_t>(setHeading2Mag.str.size());
-        buf += setHeading2Mag.packStr(buf);
+        *buf = setHeading2Mag.packStr(buf+1);
+        buf += setHeading2Mag.size + 1;
         *buf++ = filterPressure;
         Mem::packFloat32(&buf, depthOffset);
         Mem::packFloat32(&buf, pressureOffset);
         Mem::packFloat32(&buf, latitude);
         *buf++ = tareStr.enable;
-        *buf++ = static_cast<uint8_t>(tareStr.str.size());
-        buf += tareStr.packStr(buf);
+        *buf = tareStr.packStr(buf + 1);
+        buf += tareStr.size + 1;
         *buf++ = unTareStr.enable;
-        *buf++ = static_cast<uint8_t>(unTareStr.str.size());
-        buf += unTareStr.packStr(buf);
-
+        *buf = unTareStr.packStr(buf + 1);
+        buf += unTareStr.size + 1;
+ 
         *buf++ = depthStr.strId;
         *buf++ = static_cast<uint8_t>(depthStr.intervalEnabled);
         Mem::pack32Bit(&buf, depthStr.intervalMs);
         *buf++ = static_cast<uint8_t>(depthStr.interrogation.enable);
-        *buf++ = static_cast<uint8_t>(depthStr.interrogation.str.size());
-        buf += depthStr.interrogation.packStr(buf);
+        *buf = depthStr.interrogation.packStr(buf+1);
+        buf += depthStr.interrogation.size + 1;
 
         *buf++ = ahrsStr.strId;
         *buf++ = static_cast<uint8_t>(ahrsStr.intervalEnabled);
         Mem::pack32Bit(&buf, ahrsStr.intervalMs);
         *buf++ = static_cast<uint8_t>(ahrsStr.interrogation.enable);
-        *buf++ = static_cast<uint8_t>(ahrsStr.interrogation.str.size());
-        buf += ahrsStr.interrogation.packStr(buf);
+        *buf = ahrsStr.interrogation.packStr(buf+1);
+        buf += ahrsStr.interrogation.size + 1;
 
         return buf - start;
     }
@@ -1249,11 +1357,11 @@ uint_t Isd4000::Settings::deserialise(const uint8_t* data, uint_t size)
     {
         const uint8_t* start = data;
 
-        uartMode = static_cast<Device::UartMode>(*data++);
+        uartMode = static_cast<Uart::Mode>(*data++);
         baudrate = Mem::get32Bit(&data);
-        parity = static_cast<Device::Parity>(*data++);
+        parity = static_cast<Uart::Parity>(*data++);
         dataBits = *data++;
-        stopBits = static_cast<Device::StopBits>(*data++);
+        stopBits = static_cast<Uart::StopBits>(*data++);
         ahrsMode = *data++;
         orientationOffset.w = Mem::getFloat32(&data);
         orientationOffset.x = Mem::getFloat32(&data);
@@ -1266,11 +1374,11 @@ uint_t Isd4000::Settings::deserialise(const uint8_t* data, uint_t size)
         turnsAboutEarthFrame = *data++;
         clrTurn.enable = *data++;
         uint_t size = *data++;
-        clrTurn.str = StringUtils::toStr(data, size);
+        clrTurn.unPackStr(data, size);
         data += clrTurn.size;
         setHeading2Mag.enable = *data++;
         size = *data++;
-        setHeading2Mag.str = StringUtils::toStr(data, size);
+        setHeading2Mag.unPackStr(data, size);
         data += setHeading2Mag.size;
         filterPressure = *data & 0x01;
         data++;
@@ -1279,11 +1387,11 @@ uint_t Isd4000::Settings::deserialise(const uint8_t* data, uint_t size)
         latitude = Mem::getFloat32(&data);
         tareStr.enable = *data++;
         size = *data++;
-        tareStr.str = StringUtils::toStr(data, size);
+        tareStr.unPackStr(data, size);
         data += tareStr.size;
         unTareStr.enable = *data++;
         size = *data++;
-        unTareStr.str = StringUtils::toStr(data, size);
+        unTareStr.unPackStr(data, size);
         data += unTareStr.size;
 
         depthStr.strId = *data++;
@@ -1291,7 +1399,7 @@ uint_t Isd4000::Settings::deserialise(const uint8_t* data, uint_t size)
         depthStr.intervalMs = Mem::get32Bit(&data);
         depthStr.interrogation.enable = static_cast<bool_t>(*data++);
         size = *data++;
-        depthStr.interrogation.str = StringUtils::toStr(data, size);
+        depthStr.interrogation.unPackStr(data, size);
         data += depthStr.interrogation.size;
 
         ahrsStr.strId = *data++;
@@ -1299,7 +1407,7 @@ uint_t Isd4000::Settings::deserialise(const uint8_t* data, uint_t size)
         ahrsStr.intervalMs = Mem::get32Bit(&data);
         ahrsStr.interrogation.enable = static_cast<bool_t>(*data++);
         size = *data++;
-        ahrsStr.interrogation.str = StringUtils::toStr(data, size);
+        ahrsStr.interrogation.unPackStr(data, size);
         data += ahrsStr.interrogation.size;
 
         return data - start;
@@ -1337,23 +1445,19 @@ bool_t Isd4000::Settings::load(const XmlElementPtr& xml)
             turnsAbout.y = node->getReal("y", 0.0);
             turnsAbout.z = node->getReal("z", 0.0);
         }
-        uint8_t buf[Device::CustomStr::size];
+
         turnsAboutEarthFrame = xml->getBool("turnsAboutEarthFrame", true);
         clrTurn.enable = xml->getBool("clrTurnStrEnable", true);
-        uint_t size = xml->getBytes("clrTurnStr", &buf[0], sizeof(buf));
-        clrTurn.str = StringUtils::toStr(&buf[0], size);
+        clrTurn.str = xml->getString("clrTurnStr", "#c\\r");
         setHeading2Mag.enable = xml->getBool("setHeading2MagStrEnable", true);
-        size = xml->getBytes("setHeading2MagStr", &buf[0], sizeof(buf));
-        setHeading2Mag.str = StringUtils::toStr(&buf[0], size);
+        setHeading2Mag.str = xml->getString("setHeading2Mag", "#m\\r");
         filterPressure = xml->getBool("filterPressure", true);
         depthOffset = xml->getReal("depthOffset", 0.0);
         pressureOffset = xml->getReal("pressureOffset", 0.0);
         latitude = xml->getReal("latitude", 57.1);
         tareStr.enable = xml->getBool("tareStrEnable", true);
-        size = xml->getBytes("tareStr", &buf[0], sizeof(buf));
-        tareStr.str = StringUtils::toStr(&buf[0], size);
-        size = xml->getBytes("unTareStr", &buf[0], sizeof(buf));
-        unTareStr.str = StringUtils::toStr(&buf[0], size);
+        tareStr.str = xml->getString("tareStr", "#t\\r");
+        unTareStr.str = xml->getString("unTareStr", "#u\\r");
 
         node = xml->findElement("depthString");
         if (node)
@@ -1363,8 +1467,7 @@ bool_t Isd4000::Settings::load(const XmlElementPtr& xml)
             depthStr.intervalMs = static_cast<uint32_t>(node->getUint("intervalMs", 500));
             depthStr.interrogation.enable = node->getBool("interrogationEnabled", false);
             depthStr.interrogation.enable = node->getBool("interrogationEnabled", false);
-            size = xml->getBytes("interrogationStr", &buf[0], sizeof(buf));
-            depthStr.interrogation.str = StringUtils::toStr(&buf[0], size);
+            depthStr.interrogation.str = xml->getString("interrogationStr", "#d\\r");
         }
 
         node = xml->findElement("ahrsString");
@@ -1375,8 +1478,7 @@ bool_t Isd4000::Settings::load(const XmlElementPtr& xml)
             ahrsStr.intervalMs = static_cast<uint32_t>(node->getUint("intervalMs", 500));
             ahrsStr.interrogation.enable = node->getBool("interrogationEnabled", false);
             ahrsStr.interrogation.enable = node->getBool("interrogationEnabled", false);
-            size = xml->getBytes("interrogationStr", &buf[0], sizeof(buf));
-            ahrsStr.interrogation.str = StringUtils::toStr(&buf[0], size);
+            ahrsStr.interrogation.str = xml->getString("interrogationStr", "#o\\r");
         }
     }
     return ok;
@@ -1407,31 +1509,31 @@ void Isd4000::Settings::save(XmlElementPtr& xml) const
 
         xml->addBool("turnsAboutEarthFrame", turnsAboutEarthFrame);
         xml->addBool("clrTurnStrEnable", clrTurn.enable);
-        xml->addBytes("clrTurnStr", reinterpret_cast<const uint8_t*>(clrTurn.str.c_str()), clrTurn.str.size());
+        xml->addString("clrTurnStr", clrTurn.str);
         xml->addBool("setHeading2MagStrEnable", setHeading2Mag.enable);
-        xml->addBytes("setHeading2MagStr", reinterpret_cast<const uint8_t*>(setHeading2Mag.str.c_str()), setHeading2Mag.str.size());
+        xml->addString("setHeading2MagStr", setHeading2Mag.str);
 
         xml->addBool("filterPressure", filterPressure);
         xml->addReal("depthOffset", depthOffset, 6);
         xml->addReal("pressureOffset", pressureOffset, 6);
         xml->addReal("latitude", latitude, 6);
         xml->addBool("tareStrEnable", tareStr.enable);
-        xml->addBytes("tareStr", reinterpret_cast<const uint8_t*>(tareStr.str.c_str()), tareStr.str.size());
+        xml->addString("tareStr", tareStr.str);
         xml->addBool("unTareStrEnable", tareStr.enable);
-        xml->addBytes("unTareStr", reinterpret_cast<const uint8_t*>(unTareStr.str.c_str()), unTareStr.str.size());
+        xml->addString("unTareStr", unTareStr.str);
         node = xml->addElement("pingString");
         node->addUint("id", depthStr.strId);
         node->addBool("intervalEnabled", depthStr.intervalEnabled);
         node->addUint("intervalMs", depthStr.intervalMs);
         node->addBool("interrogationEnabled", depthStr.interrogation.enable);
-        node->addBytes("interrogationStr", reinterpret_cast<const uint8_t*>(depthStr.interrogation.str.c_str()), depthStr.interrogation.str.size());
+        node->addString("interrogationStr", depthStr.interrogation.str);
 
         node = xml->addElement("ahrsString");
         node->addUint("id", ahrsStr.strId);
         node->addBool("intervalEnabled", ahrsStr.intervalEnabled);
         node->addUint("intervalMs", ahrsStr.intervalMs);
         node->addBool("interrogationEnabled", ahrsStr.interrogation.enable);
-        node->addBytes("interrogationStr", reinterpret_cast<const uint8_t*>(ahrsStr.interrogation.str.c_str()), ahrsStr.interrogation.str.size());
+        node->addString("interrogationStr", ahrsStr.interrogation.str);
     }
 }
 //--------------------------------------------------------------------------------------------------

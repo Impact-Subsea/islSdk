@@ -1,6 +1,7 @@
 //------------------------------------------ Includes ----------------------------------------------
 
 #include "uartPort.h"
+#include "platform/mem.h"
 #include "platform/debug.h"
 
 using namespace IslSdk;
@@ -8,42 +9,54 @@ using namespace IslSdk;
 std::vector<uint32_t> UartPort::defaultBaudrates = { 115200, 9600, 57600, 38400, 19200, 4800 };
 
 //--------------------------------------------------------------------------------------------------
-UartPort::UartPort(const std::string& name) : SysPort(name, Type::Serial, 250)
+UartPort::UartPort(const std::string& name) : SysPort(name, ClassType::Serial, Type::Serial, 250)
 {
     m_rxBuf = nullptr;
-    m_uart.rxDataEvent.connect(m_slotRxData);
-    m_uart.txCompleteEvent.connect(m_slotTxCompete);
-    m_uart.errorEvent.connect(this, &UartPort::errorCallback);
+    m_eventOpen = false;
+    m_eventClose = false;
+    m_serialPort.rxDataEvent.connect(m_slotRxData);
+    m_serialPort.txCompleteEvent.connect(m_slotTxCompete);
+    m_serialPort.uartEvent.connect(this, &UartPort::uartEvent);
 }
 //--------------------------------------------------------------------------------------------------
 UartPort::~UartPort()
 {
+    if (m_threadOpen.joinable())
+	{
+		m_threadOpen.join();
+	}
+
     close();
+
+    if (m_threadClose.joinable())
+    {
+        m_threadClose.join();
+    }
 }
 //--------------------------------------------------------------------------------------------------
-bool_t UartPort::open()
+void UartPort::open()
 {
-    if (!m_isOpen)
+    if (!m_isOpen && !m_threadOpen.joinable())
     {
         m_rx.reset();
         m_tx.reset();
         m_rxBuf = nullptr;
-        m_isOpen = m_uart.open();
-        rxDataCallback(nullptr, 0, 0);
-        debugLog("SysPort", "%s opening", name.c_str());
-        onOpen(*this, !m_isOpen);
+        m_active = true;
+        m_threadOpen = std::thread(&SerialPort::open, &m_serialPort);
     }
-    return m_isOpen;
 }
 //--------------------------------------------------------------------------------------------------
 void UartPort::close()
 {
-    if (m_isOpen)
+    if (m_isOpen && !m_threadClose.joinable())
     {
-        m_uart.close();
-        m_rx.reset();
-        SysPort::close();
+        m_threadClose = std::thread(&SerialPort::close, &m_serialPort);
     }
+}
+//--------------------------------------------------------------------------------------------------
+bool_t UartPort::setSerial(uint32_t baudrate, uint8_t dataBits, Uart::Parity parity, Uart::StopBits stopBits)
+{
+	return m_serialPort.config(baudrate, dataBits, parity, stopBits);
 }
 //--------------------------------------------------------------------------------------------------
 bool_t UartPort::write(const uint8_t* data, uint_t size, const ConnectionMeta& meta)
@@ -54,29 +67,41 @@ bool_t UartPort::write(const uint8_t* data, uint_t size, const ConnectionMeta& m
     {
         if (data && size)
         {
-            uint_t maxEncodedSize = size + (size / 254) + 8;
-            TxRxBuf* buf = (TxRxBuf*)m_tx.newItem(sizeof(TxRxBuf) + maxEncodedSize);
+            uint_t bufSize = size;
+
+            if (m_codec)
+            {
+                bufSize += (size / 254) + 8;
+            }
+
+            TxRxBuf* buf = (TxRxBuf*)m_tx.newItem(sizeof(TxRxBuf) + bufSize);
             if (buf)
             {
                 buf->data = reinterpret_cast<uint8_t*>(buf) + sizeof(TxRxBuf);
-                size = m_codec->encode(data, size, buf->data, maxEncodedSize);
+                if (m_codec)
+                {
+                    size = m_codec->encode(data, size, buf->data, bufSize);
+                    m_tx.reduceSize(sizeof(TxRxBuf) + size);
+                }
+                else
+                {
+				    Mem::memcpy(buf->data, data, size);
+                }
                 buf->size = size;
                 buf->baudrate = meta.baudrate;
-                m_tx.reduceSize(sizeof(TxRxBuf) + size);
                 m_tx.push();
-                data = buf->data;
                 written = true;
-                m_uart.write(data, size, meta.baudrate);
+                m_serialPort.write(buf->data, buf->size, meta.baudrate);
             }
-            else
-            {
-                debugLog("UartPort", "%s tx buffer full. Discarding packet", name.c_str());
-                return false;
-            }
+			else
+			{
+				debugLog("UartPort", "%s tx buffer full. Discarding packet", name.c_str());
+				return false;
+			}
         }
         else
         {
-            written = m_uart.write(data, size, meta.baudrate);
+            written = m_serialPort.write(data, size, meta.baudrate);
         }
     }
 
@@ -114,6 +139,29 @@ bool_t UartPort::process()
     TxRxBuf* buf;
     uint_t bytesToProcess;
     uint_t frameSize;
+    
+    if (m_eventOpen)
+    {
+        m_eventOpen = false;
+        if (m_threadOpen.joinable())
+        {
+            m_threadOpen.join();
+        }
+        rxDataCallback(nullptr, 0, 0);
+        debugLog("SysPort", "%s opening", name.c_str());
+        onOpen(*this, m_isOpen);
+    }
+    
+    if (m_eventClose)
+    {
+        if (m_threadClose.joinable())
+        {
+            m_threadClose.join();
+        }
+        m_eventClose = false;
+        m_rx.reset();
+        SysPort::close();
+    }
 
     while (buf = reinterpret_cast<TxRxBuf*>(m_rx.peekNextItem()))
     {
@@ -125,7 +173,7 @@ bool_t UartPort::process()
         {
             bytesToProcess = buf->size;
 
-            while (bytesToProcess)
+            while (bytesToProcess && m_codec)
             {
                 frameSize = m_codec->decode(&buf->data[buf->size - bytesToProcess], &bytesToProcess);
 
@@ -168,7 +216,7 @@ void UartPort::rxDataCallback(const uint8_t* data, uint_t size, uint32_t baudrat
         buf->size = m_rxBufSize;
         buf->baudrate = 0;
         m_rxBuf = buf;
-        m_uart.setRxBuffer(buf->data, buf->size);
+        m_serialPort.setRxBuffer(buf->data, buf->size);
     }
 }
 //--------------------------------------------------------------------------------------------------
@@ -179,12 +227,24 @@ void UartPort::txCompeteCallback(const uint8_t* data, uint_t bytesWritten)
     TxRxBuf* buf = reinterpret_cast<TxRxBuf*>(m_tx.peekNextItem());
     if (buf)
     {
-        m_uart.write(buf->data, buf->size, buf->baudrate);
+        m_serialPort.write(buf->data, buf->size, buf->baudrate);
     }
 }
 //--------------------------------------------------------------------------------------------------
-void UartPort::errorCallback()
+void UartPort::uartEvent(Uart::Events event)
 {
-    m_portError = true;
+    if (event == Uart::Events::Error)
+	{
+        m_portError = true;
+	}
+    else if (event == Uart::Events::Open)
+	{
+        m_isOpen = m_serialPort.isOpen();
+		m_eventOpen = true;
+	}
+	else if (event == Uart::Events::Close)
+	{
+        m_eventClose = true;
+	}
 }
 //--------------------------------------------------------------------------------------------------

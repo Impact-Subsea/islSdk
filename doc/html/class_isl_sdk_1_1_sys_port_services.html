@@ -32,7 +32,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.0</span>
+   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.6</span>
    </div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -115,96 +115,13 @@ Inheritance diagram for IslSdk::SysPortServices:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a04064afa154138cd80ec3544d2d02ecd" id="r_a04064afa154138cd80ec3544d2d02ecd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> std::shared_ptr&lt; <a class="el" href="class_isl_sdk_1_1_sol_port.html">SolPort</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_isl_sdk_1_1_sys_port_services.html#a04064afa154138cd80ec3544d2d02ecd">createSol</a> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> std::string &amp;name, bool_t <a class="el" href="class_isl_sdk_1_1_callback.html">isTcp</a>, bool_t <a class="el" href="class_isl_sdk_1_1_callback.html">useTelnet</a>, <a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a> ipAddress, <a class="el" href="class_isl_sdk_1_1_callback.html">uint16_t</a> port)=0</td></tr>
-<tr class="separator:a04064afa154138cd80ec3544d2d02ecd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab317dc41a74108eb55c16dabfade3acf" id="r_ab317dc41a74108eb55c16dabfade3acf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> <a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="class_isl_sdk_1_1_sys_port_services.html#ab317dc41a74108eb55c16dabfade3acf">deleteSolSysPort</a> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> SysPort::SharedPtr &amp;sysPort)=0</td></tr>
-<tr class="separator:ab317dc41a74108eb55c16dabfade3acf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad39ea3b74d301ab716852e1caf23ab68" id="r_ad39ea3b74d301ab716852e1caf23ab68"><td class="memItemLeft" align="right" valign="top"><a id="ad39ea3b74d301ab716852e1caf23ab68" name="ad39ea3b74d301ab716852e1caf23ab68"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> <a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>addSysPort</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> SysPort::SharedPtr &amp;sysPort)=0</td></tr>
+<tr class="separator:ad39ea3b74d301ab716852e1caf23ab68"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab75e75cebd56e1fe35e0912921f2cc81" id="r_ab75e75cebd56e1fe35e0912921f2cc81"><td class="memItemLeft" align="right" valign="top"><a id="ab75e75cebd56e1fe35e0912921f2cc81" name="ab75e75cebd56e1fe35e0912921f2cc81"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> <a class="el" href="class_isl_sdk_1_1_callback.html">void</a>&#160;</td><td class="memItemRight" valign="bottom"><b>deleteSysPort</b> (<a class="el" href="class_isl_sdk_1_1_callback.html">const</a> SysPort::SharedPtr &amp;sysPort)=0</td></tr>
+<tr class="separator:ab75e75cebd56e1fe35e0912921f2cc81"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
-<h2 class="groupheader">Member Function Documentation</h2>
-<a id="a04064afa154138cd80ec3544d2d02ecd" name="a04064afa154138cd80ec3544d2d02ecd"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a04064afa154138cd80ec3544d2d02ecd">&#9670;&#160;</a></span>createSol()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> std::shared_ptr&lt; <a class="el" href="class_isl_sdk_1_1_sol_port.html">SolPort</a> &gt; IslSdk::SysPortServices::createSol </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="class_isl_sdk_1_1_callback.html">const</a> std::string &amp;&#160;</td>
-          <td class="paramname"><em>name</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool_t&#160;</td>
-          <td class="paramname"><em>isTcp</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool_t&#160;</td>
-          <td class="paramname"><em>useTelnet</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a>&#160;</td>
-          <td class="paramname"><em>ipAddress</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="class_isl_sdk_1_1_callback.html">uint16_t</a>&#160;</td>
-          <td class="paramname"><em>port</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implemented in <a class="el" href="class_isl_sdk_1_1_sys_port_mgr.html#add996e5ce968e6353e732d4271fc8a62">IslSdk::SysPortMgr</a>.</p>
-
-</div>
-</div>
-<a id="ab317dc41a74108eb55c16dabfade3acf" name="ab317dc41a74108eb55c16dabfade3acf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab317dc41a74108eb55c16dabfade3acf">&#9670;&#160;</a></span>deleteSolSysPort()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="class_isl_sdk_1_1_callback.html">virtual</a> <a class="el" href="class_isl_sdk_1_1_callback.html">void</a> IslSdk::SysPortServices::deleteSolSysPort </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="class_isl_sdk_1_1_callback.html">const</a> SysPort::SharedPtr &amp;&#160;</td>
-          <td class="paramname"><em>sysPort</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Implemented in <a class="el" href="class_isl_sdk_1_1_sys_port_mgr.html#ad62ec4cae5359a323a910685bc3231e0">IslSdk::SysPortMgr</a>.</p>
-
-</div>
-</div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->

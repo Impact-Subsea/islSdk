@@ -6,8 +6,8 @@
 #include "device.h"
 #include "ahrs.h"
 #include "maths/quaternion.h"
-#include "maths/vector3.h"
-#include "maths/matrix3x3.h"
+#include "maths/vector.h"
+#include "maths/matrix.h"
 #include "files/xmlFile.h"
 #include <string>
 #include <array>
@@ -21,6 +21,17 @@ namespace IslSdk
     {
     public:
         static const uint_t maxAngle = 12800;
+        static real_t countToDegrees(int_t count)
+        { 
+            return count * (360.0 / static_cast<real_t>(maxAngle));
+        }
+
+        static int_t degreesToCount(real_t angle)
+        {
+            return static_cast<int_t>((angle * (static_cast<real_t>(maxAngle) / 360.0)) + 0.5);
+        }
+
+        enum class Type { Iss360HD, Iss360, Isp360Profiler, Unknown = 255};
 
         struct Sector
         {
@@ -31,12 +42,8 @@ namespace IslSdk
 
         struct System                           ///< System Settings for the device.
         {
-        private:
-            static const uint_t baseSize = 57;
-            static const uint_t profilerSize = 22;
-
         public:
-            Device::UartMode uartMode;          ///< Serial port mode.
+            Uart::Mode uartMode;                ///< Serial port mode.
             uint32_t baudrate;                  ///< Serial port baudrate. Limits are standard bauds between 9600 and 921600
             uint32_t ipAddress;                 ///< IPv4 address. 192.168.1.200 = 0xc801A8c0
             uint32_t netmask;                   ///< IPv4 netmask. 255.255.255.0 = 0x00ffffff
@@ -47,19 +54,15 @@ namespace IslSdk
             bool_t useDhcp;                     ///< If true device will request an IP address from the DHCP server
             bool_t invertHeadDirection;         ///< If true the head direction is swapped
             uint8_t ahrsMode;                   ///< If bit zero is 1 use inertial mode. 0 is mag slave mode
-            Quaternion orientationOffset;       ///< Heading, pitch and roll offsets (or down and forward vectors) expressed as a quaternion.
+            Math::Quaternion orientationOffset; ///< Heading, pitch and roll offsets (or down and forward vectors) expressed as a quaternion.
             real_t headingOffsetRad;            ///< Offset in radians to add to the heading. Typically use for magnetic declination.
-            Vector3 turnsAbout;                 ///< A vector representing the axis which turn are measured about.
+            Math::Vector3 turnsAbout;           ///< A vector representing the axis which turn are measured about.
             bool_t turnsAboutEarthFrame;        ///< If true the "turnAbout" vector is referenced to the earth frame. False is sensor frame.
             bool_t useXcNorm;                   ///< Output normalised cross correlation data instead of unnormalised. Normalised data represents the quality of the echo rather than the strength of the echo.
-            enum class EchoMode { First, Strongest, All } echoMode;        ///< Applies to profiling mode only. Selects which echo to report back as the chosen one when profiling.
-            real_t xcThreasholdLow;             ///< Applies to profiling mode only. Sets a lower limit on the quality of the return pulse. This ensures resilience to false echos. Value ranges from 0 to 1.
-            real_t xcThreasholdHigh;            ///< Applies to profiling mode only. When the return signal level drops bellow this value the end of an echo pulse is realised. Value ranges from 0 to 1.
-            real_t energyThreashold;            ///< Applies to profiling mode only. Minimum enery an echo must have to be reported. Range is 0 to 1
-            bool_t useTiltCorrection;           ///< Applies to profiling mode only. Not implemented yet.
-            bool_t profilerDepthGating;         ///< Applies to profiling mode only. Not implemented yet.
-            uint32_t profilerMinRangeMm;        ///< Applies to profiling mode only. Start listening for echos after this range in millimeters.
-            uint32_t profilerMaxRangeMm;        ///< Applies to profiling mode only. Listen for echos up until this range in millimeters
+            bool_t data8Bit;                    ///< true = 8-bit data, false = 16-bit data
+            enum class GatingMode { Off, On, RollComp } gatingMode;    ///< Gating mode for the sonar. Off = no gating, On = gating at an angle to the sector center, RollComp = gating at an angle to the sector center and compensating for roll.
+            int16_t gatingAngle;                ///< The gating angle to a line perpendicular to the sector center in units of 12800th. 360 degrees = a value of 12800.
+            real_t speedOfSound;                ///< Speed of sound in meters per second. limits 1000 to 2500
 
             System();
             void defaults();
@@ -69,7 +72,7 @@ namespace IslSdk
             bool_t load(const XmlElementPtr& node);
             void save(XmlElementPtr& node) const;
 
-            static const uint_t size = baseSize + profilerSize;
+            static const uint_t size = 63;
         };
 
         struct Acoustic                         ///< Acoustic Settings for the device.
@@ -79,9 +82,10 @@ namespace IslSdk
             uint16_t txPulseWidthUs;            ///< Transmit pulse length in micro seconds.
             uint8_t txPulseAmplitude;           ///< Transmit pulse amplitude as a percent 0% to 100%
             bool_t highSampleRate;              ///< If true the ADC sample rate is 5 MHz else it's 2.5 MHz
-            enum class PskMode { Off, Code1, Code2, Code3, Code4 } pskMode; ///< PSK modulation mode
+            uint32_t pskCode;                   ///< PSK code for the transmit pulse. 0 to 31
+            uint8_t pskLength;                  ///< Length of the PSK code. 0 to 31
 
-            static const uint_t size = 12;
+            static const uint_t size = 17;
 
             Acoustic();
             void defaults();
@@ -94,18 +98,22 @@ namespace IslSdk
 
         struct Setup                            ///< Setup Settings for the device.
         {
-            real_t digitalGain;                 ///< Digital gain for the image data as a simple multiplier factor. limits 1 to 1000
-            real_t speedOfSound;                ///< Speed of sound in meters per second. limits 1000 to 2500
-            uint32_t maxRangeMm;                ///< Listen for echos up until this range in millimeters.
-            uint32_t minRangeMm;                ///< Start listening for echos after this range in millimeters.
             int32_t stepSize;                   ///< Angle the tranducer head should move between pings in units of 12800th. Positive values turn clockwise, negative anticlockwise. limits -6399 to 6399
             uint32_t sectorStart;               ///< Start angle of the sector. limmts 0 to 12799
             uint32_t sectorSize;                ///< Size of the sector. limits 0 to 12800
             bool_t flybackMode;                 ///< If true the transducer head returns back to either the \p sectorStart position when \p stepSize is positive, or s\p sectorStart + \p sectorSize when \p stepSize is negative
             uint16_t imageDataPoint;            ///< Number of data points per ping between the range set by minRangeMm and maxRangeMm. limits 20 to 4096
-            bool_t data8Bit;                    ///< true = 8-bit data, false = 16-bit data
-
-            static const uint_t size = 32;
+            uint32_t minRangeMm;                ///< Start listening for echos after this range in millimeters.
+            uint32_t maxRangeMm;                ///< Listen for echos up until this range in millimeters.
+            uint32_t profilerMinRangeMm;        ///< Applies to profiling mode only. Start listening for echos after this range in millimeters.
+            uint32_t profilerMaxRangeMm;        ///< Applies to profiling mode only. Listen for echos up until this range in millimeters
+            real_t digitalGain;                 ///< Digital gain for the image data as a simple multiplier factor. limits 1 to 1000
+            enum class EchoMode { First, Strongest, All } echoMode;        ///< Applies to profiling mode only. Selects which echo to report back as the chosen one when profiling.
+            real_t xcThreasholdLow;             ///< Applies to profiling mode only. Sets a lower limit on the quality of the return pulse. This ensures resilience to false echos. Value ranges from 0 to 1.
+            real_t xcThreasholdHigh;            ///< Applies to profiling mode only. When the return signal level drops bellow this value the end of an echo pulse is realised. Value ranges from 0 to 1.
+            real_t energyThreashold;            ///< Applies to profiling mode only. Minimum enery an echo must have to be reported. Range is 0 to 1    
+            
+            static const uint_t size = 48;
 
             Setup();
             void defaults();
@@ -144,17 +152,28 @@ namespace IslSdk
 
         struct AhrsCal
         {
-            Vector3 gyroBias;                   ///< Gyro bias corrections in degress per second.
-            Vector3 accelBias;                  ///< Accel bias corrections in G.
-            Vector3 magBias;                    ///< Mag bias corrections in uT.
-            Matrix3x3 accelTransform;           ///< Transformation matrix for accelerometer.
-            Matrix3x3 magTransform;             ///< Transformation matrix for magnetometer.
+            Math::Vector3 gyroBias;                   ///< Gyro bias corrections in degress per second.
+            Math::Vector3 accelBias;                  ///< Accel bias corrections in G.
+            Math::Vector3 magBias;                    ///< Mag bias corrections in uT.
+            Math::Matrix3x3 accelTransform;           ///< Transformation matrix for accelerometer.
+            Math::Matrix3x3 magTransform;             ///< Transformation matrix for magnetometer.
         };
 
-        struct HeadHome
+        struct HeadIndexes					    /// Information about the positions of the optical head marker. These are used to referance the stepper motor home position.
         {
-            enum class HeadHomeState { OK, Error_E1_E2, Error_E2, Error_E1, Error } state;
-            
+            struct Index
+			{
+				uint_t idx;					    ///< The position of the index. (Units of 12800th)   
+				bool_t level;				    ///< The level of the index. True = low to high transition, false = high to low transition.
+                bool_t dir;					    ///< The direction the head was traveling when the index was aquired. True = clockwise, false = anticlockwise.
+			};
+
+            enum class State { Ok, ErrRotaion, ErrIdxCount, ErrNoMatch } state;	///< The state of the index acquisition.
+            int_t slippage;					    ///< The amount of slippage since the last acquisition or bootup in units of 12800th. 360 degrees = a value of 12800.
+            real_t stdDeviation;			    ///< The standard deviation of the indexes in units of 12800th. 360 degrees = a value of 12800.
+            int_t hysteresisCorrection;		    ///< The hysterisis correction applied.
+            int_t widthCorrection;			    ///< The width correction applied.
+            std::vector<Index> indexes;		    ///< A list of the indexes found.
         };
 
         struct Ping                             /// This is the cross correlation data received from the device on each ping. The data is used to produce a sonar image of the environment.
@@ -180,18 +199,16 @@ namespace IslSdk
 
             uint64_t timeUs;                    ///< Time in microseconds of the start of the ping
             uint_t angle;                       ///< Angle the data was aquired at in units of 12800th. 360 degrees = a value of 12800
-            uint_t minRangeMm;                  ///< Start distance of the data in millimeters, \p data[0] is aquired at this range
-            uint_t maxRangeMm;                  ///< Final distance of the data in millimeters, \p data[dataCount-1] is aquired at this range
             std::vector<Echo> data;             ///< Array of echos. Each echo represents a single target.
         };
 
         struct CpuPowerTemp                     /// Power and temperature data.
         {
-            real_t core1V0;                     ///< CPU Core voltage, should be 1V.
-            real_t aux1V8;                      ///< Auxillary voltage, should be 1.8V.
-            real_t ddr1V35;                     ///< DDR voltage, should be 1.35V.
-            real_t cpuTemperature;              ///< CPU temperature in degrees C.
-            real_t auxTemperature;              ///< Auxillary temperature in degrees C.
+            real_t core1V0;                     ///< CPU Core voltage, should be 1V � 0.05V.
+            real_t aux1V8;                      ///< Auxillary voltage, should be 1.8V � 0.09V.
+            real_t ddr1V35;                     ///< DDR voltage, should be 1.35V � 0.05V.
+            real_t cpuTemperature;              ///< CPU temperature in degrees C. Should be between 0 and 85.
+            real_t auxTemperature;              ///< Auxillary temperature in degrees C. Should be between 0 and 85.
 
             CpuPowerTemp() : core1V0(0), aux1V8(0), ddr1V35(0), cpuTemperature(0), auxTemperature(0) {}
         };
@@ -203,10 +220,10 @@ namespace IslSdk
         const std::array<Point, 9>& tvgPoints = m_tvgPoints;                ///< Current TVG (Time Variable Gain) curve of the device.
         const uint8_t(&macAddress)[6] = (&m_macAddress)[0];                 ///< Mac Address of the ethernet interface. Read only, setting has no effect.
 
-        Ahrs ahrs{ Device::id, this, &Sonar::setHeading, &Sonar::clearTurnsCount };     ///< Class to manage AHRS data.
-        GyroSensor gyro{ Device::id, 0, this, &Sonar::setGyroCal };                     ///< Class to manage Gyro data.
-        AccelSensor accel{ Device::id, 0, this, &Sonar::setAccelCal };                  ///< Class to manage Accelerometer data.
-        MagSensor mag{ Device::id, 0, this, &Sonar::setMagCal };                        ///< Class to manage Magnetometer data.
+        Ahrs ahrs{ Device::id, this, &Sonar::setHeading, &Sonar::clearTurnsCount };             ///< Class to manage AHRS data.
+        GyroSensor gyro{ Device::id, 0, this, &Sonar::setGyroCal };                             ///< Class to manage Gyro data.
+        AccelSensor accel{ Device::id, 0, this, &Sonar::setAccelCal };                          ///< Class to manage Accelerometer data.
+        MagSensor mag{ Device::id, 0, this, &Sonar::setMagCal, &Sonar::loadFactoryMagCal };    ///< Class to manage Magnetometer data.
 
         /**
         * @brief A subscribable event for knowing when the settings have been updated.
@@ -217,12 +234,12 @@ namespace IslSdk
         Signal<Sonar&, bool_t, Settings::Type> onSettingsUpdated;
 
         /**
-        * @brief A subscribable event for knowing when the head has finished homing after a homeHead command.
-        * Subscribers to this signal will be called once the head has homed.
+        * @brief A subscribable event for knowing when the head has finished acquiring the home index after a acquireHeadIdx command.
+        * Subscribers to this signal will be called once the head has finished acquiring the home index.
         * @param device Sonar& The device that triggered the event.
-`        * @param homeInfo const HeadHome& Information about the homing process.
+`       * @param indexState const HeadIndexes& Information about the head index positions.
         */
-        Signal<Sonar&, const HeadHome&> onHeadHomed;
+        Signal<Sonar&, const HeadIndexes&> onHeadIndexesAcquired;
 
         /**
         * @brief A subscribable event for knowing when the device has received new ping data.
@@ -248,6 +265,20 @@ namespace IslSdk
         * @param status const CpuPowerTemp& The voltage and temperature data.
         */
         Signal<Sonar&, const CpuPowerTemp&> onPwrAndTemp{ this, & Sonar::signalSubscribersChanged };
+
+        /**
+        * @brief A subscribable event for knowing when the device has detected motor slip.
+        * @param device Sonar& The device that triggered the event.
+        */
+        Signal<Sonar&> onMotorSlip;
+
+        /**
+        * @brief A subscribable event for knowing when the device has completed moving the motor.
+        * * @param device Sonar& The device that triggered the event.
+        * @param success bool_t True if the motor moved successfully.
+        */
+        Signal<Sonar&, bool_t> onMotorMoveComplete;
+
         
 
         Sonar(const Device::Info& info);
@@ -295,9 +326,9 @@ namespace IslSdk
 
         /**
         * @brief Set the head to it's home position.
-        * @note The ::onHeadHomed event will be called when the head has finished homing.
+        * @note The ::onHeadIndexesAcquired event will be called when the head has finished homing.
         */
-        void homeHead();
+        void acquireHeadIdx(bool_t fullSync=false);
 
         /**
         * @brief Start scanning.
@@ -343,11 +374,23 @@ namespace IslSdk
         bool_t startLogging() override;
 
         /**
+        * @brief checks if the firmware has detected hardware faults.
+        * @return A vector of the detected hardware faults.
+        */
+        std::vector<std::string> getHardwareFaults() override;
+
+        /**
         * @brief Saves the configuration with the provided file name.
         * @param fileName The name of the file to save the configuration.
         * @return The boolean value indicating the success of the operation.
         */
         bool_t saveConfig(const std::string& fileName) override;
+
+        /**
+        * @brief Returns the configuration as an xml string.
+        * @return The boolean value indicating the success of the operation.
+        */
+        std::string getConfigAsString() override;
 
         /**
         * @brief Loads the configuration from the provided file name.
@@ -361,9 +404,8 @@ namespace IslSdk
         */
         static bool_t loadConfig(const std::string& fileName, Device::Info* info, Settings* settings, AhrsCal* cal, std::array<Point, 9>* tvgPoints);
 
+        Type getType();
         bool_t hasAhrs() { return (info.config & 0x01) != 0; }              ///< Returns true if the device has an AHRS.
-        bool_t isHd() { return (info.config & 0x02) != 0; }                 ///< Returns true if the device is an ISS360HD.
-        bool_t isProfiler() { return (info.config & 0x04) != 0; }           ///< Returns true if the device is a Profiler.
 
     private:
 
@@ -384,7 +426,7 @@ namespace IslSdk
             ClearTurnsCount,
             PingData,
             EchoData,
-            HomeHead,
+            AcquireHeadIdx,
             StopStart,
             SetDataOptions,
             MoveMotor,
@@ -395,9 +437,6 @@ namespace IslSdk
         };
 
         Settings m_settings;
-        std::unique_ptr<System> m_pendingSystemSettings;
-        std::unique_ptr<Acoustic> m_pendingAcousticSettings;
-        std::unique_ptr<Setup> m_pendingSetupSettings;
         SensorRates m_requestedRates;
         std::string m_saveConfigPath;
         std::array<Point, 9> m_tvgPoints;
@@ -409,6 +448,7 @@ namespace IslSdk
             static const uint_t accel = 1 << 2;
             static const uint_t mag = 1 << 3;
             static const uint_t cpuTempPower = 1 << 4;
+            static const uint_t motorSlip = 1 << 5;
         };
 
         void connectionEvent(bool_t isConnected) override;
@@ -420,13 +460,15 @@ namespace IslSdk
         void getData(uint32_t flags);
         void getSettings();
         void getAhrsCal();
-        void setGyroCal(uint_t sensorNum, const Vector3* bias);
-        void setAccelCal(uint_t sensorNum, const Vector3& bias, const Matrix3x3& transform);
-        void setMagCal(uint_t sensorNum, const Vector3& bias, const Matrix3x3& transform);
+        void setGyroCal(uint_t sensorNum, const Math::Vector3* bias);
+        void setAccelCal(uint_t sensorNum, const Math::Vector3& bias, const Math::Matrix3x3& transform);
+        void setMagCal(uint_t sensorNum, const Math::Vector3& bias, const Math::Matrix3x3& transform, bool_t factory);
+        void loadFactoryMagCal();
         void setHeading(const real_t* angleInRadians);
         void clearTurnsCount();
         void selectDataOutput(bool_t ping, bool_t echo);
         void getTvg();
+        bool_t makeXmlConfig(XmlFile& file);
     };
 }
 

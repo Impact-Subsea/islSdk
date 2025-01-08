@@ -12,16 +12,21 @@ var class_isl_sdk_1_1_device =
       [ "Isd4000", "class_isl_sdk_1_1_device.html#a9115ab19a796200c99299ca58c8fc51faef6027c059ac42fcddb3da500d37303b", null ],
       [ "Ism3d", "class_isl_sdk_1_1_device.html#a9115ab19a796200c99299ca58c8fc51fa61b507945213c88bb4dc59c6702344b5", null ],
       [ "Sonar", "class_isl_sdk_1_1_device.html#a9115ab19a796200c99299ca58c8fc51fa0ca3d6fbf046a5a156b850809755083c", null ],
+      [ "MultiPcp", "class_isl_sdk_1_1_device.html#a9115ab19a796200c99299ca58c8fc51faa3d8a9e8a60f3192a220e9c88069252f", null ],
       [ "Any", "class_isl_sdk_1_1_device.html#a9115ab19a796200c99299ca58c8fc51faed36a1ef76a59ee3f15180e0441188ad", null ]
     ] ],
     [ "bootloaderMode", "class_isl_sdk_1_1_device.html#ad40d87f787d3ecf34678d1b89557d1b1", null ],
     [ "connect", "class_isl_sdk_1_1_device.html#aab399273ca9d4cd442a90472ad315caf", null ],
+    [ "getConfigAsString", "class_isl_sdk_1_1_device.html#a684b76b69b470342b8c597bce1cf4fbb", null ],
+    [ "getHardwareFaults", "class_isl_sdk_1_1_device.html#a2fd32d2f2eeb19f41de6dfc83ca9312d", null ],
+    [ "isConnected", "class_isl_sdk_1_1_device.html#a1cab9d6cda09cd205e28a5aed5b66732", null ],
     [ "reset", "class_isl_sdk_1_1_device.html#a5dc943324a799d7be858dd69ed3d1d77", null ],
     [ "saveConfig", "class_isl_sdk_1_1_device.html#aaf4510ab6133db5b55f4c679b669fae7", null ],
     [ "setCommsRetries", "class_isl_sdk_1_1_device.html#a5db252b105d6558341043bf0322e34de", null ],
     [ "setRediscoveryTimeouts", "class_isl_sdk_1_1_device.html#a8645236dfd8966a8f65e8e0123eb1174", null ],
     [ "connection", "class_isl_sdk_1_1_device.html#a6e1f592be9cce073a345f63ebef8bd40", null ],
     [ "info", "class_isl_sdk_1_1_device.html#afdda71c725164614bec2b6bd20d3a36f", null ],
+    [ "onCommsTimeout", "class_isl_sdk_1_1_device.html#a46eed0e213905b0f4335d6f18f8bab60", null ],
     [ "onConnect", "class_isl_sdk_1_1_device.html#a87533d7fdd9131e71b989391ab676526", null ],
     [ "onDelete", "class_isl_sdk_1_1_device.html#abb302c777f4070a678344eac3f757699", null ],
     [ "onDisconnect", "class_isl_sdk_1_1_device.html#abcce03191dcf66a0de099584ae6bc632", null ],
@@ -31,5 +36,6 @@ var class_isl_sdk_1_1_device =
     [ "onPortAdded", "class_isl_sdk_1_1_device.html#a38117f99038e69d3d22b0796b7d371e5", null ],
     [ "onPortChanged", "class_isl_sdk_1_1_device.html#a8310b7180ce8ec0b8e4f7420860d751a", null ],
     [ "onPortRemoved", "class_isl_sdk_1_1_device.html#a8dcb246612a773744607b3ddaf6dd6a0", null ],
+    [ "onXmlConfig", "class_isl_sdk_1_1_device.html#a81adf3ca5ed058933d979303ac202c59", null ],
     [ "reconnectCount", "class_isl_sdk_1_1_device.html#a056e7b9a5050ecfa4c7d2efc56bfc0ac", null ]
 ];

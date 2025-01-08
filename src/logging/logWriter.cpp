@@ -69,7 +69,7 @@ bool_t LogWriter::addTrackData(uint8_t trackId, const void* data, uint_t size, u
         if (ok && m_file.fileWritePosition() >= m_maxFileSize)
         {
             m_fileCount++;
-            ok = m_file.startNew(m_filename + "-" + StringUtils::uintToStr(m_fileCount) + ".islog", Time::getTimeMs()) == LogFile::Error::None;
+            ok = m_file.startNew(m_filename + "-" + StringUtils::toStr(m_fileCount) + ".islog", Time::getTimeMs()) == LogFile::Error::None;
         }
     }
     return ok;

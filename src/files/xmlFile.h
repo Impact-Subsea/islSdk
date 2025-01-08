@@ -4,7 +4,7 @@
 //------------------------------------------ Includes ----------------------------------------------
 
 #include "types/sdkTypes.h"
-#include <fstream>
+#include <sstream>
 #include <map>
 #include <string>
 #include <vector>
@@ -62,6 +62,7 @@ namespace IslSdk
         XmlFile();
         bool_t open(const std::string& fileName);
         bool_t save(const std::string& fileName);
+        std::string asString();
         XmlElementPtr setRoot(const std::string& name);
         XmlElementPtr root() { return m_root; }
 
@@ -73,7 +74,7 @@ namespace IslSdk
         bool_t hasKey(const XmlElementPtr& element, const std::string& key);
         bool_t getValue(const XmlElementPtr& element, const std::string& key, std::string& value);
 
-        void saveElement(std::ofstream& file, XmlElementPtr& element, uint_t depth);
+        void saveElement(std::ostringstream& file, XmlElementPtr& element, uint_t depth);
         XmlElementPtr m_root;
     };
 }

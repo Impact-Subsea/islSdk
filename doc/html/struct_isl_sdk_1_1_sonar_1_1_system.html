@@ -32,7 +32,7 @@
  <tr id="projectrow">
   <td id="projectlogo"><img alt="Logo" src="logo.png"/></td>
   <td id="projectalign">
-   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.0</span>
+   <div id="projectname">Impact Subsea SDK<span id="projectnumber">&#160;V3.1.6</span>
    </div>
   </td>
     <td>        <div id="MSearchBox" class="MSearchBoxInactive">
@@ -114,11 +114,11 @@ $(document).ready(function(){initNavTree('struct_isl_sdk_1_1_sonar_1_1_system.ht
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-types" name="pub-types"></a>
 Public Types</h2></td></tr>
-<tr class="memitem:a9a950154c3046ab620a6872f19f220a6" id="r_a9a950154c3046ab620a6872f19f220a6"><td class="memItemLeft" align="right" valign="top"><a id="a9a950154c3046ab620a6872f19f220a6" name="a9a950154c3046ab620a6872f19f220a6"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>EchoMode</b> { <b>First</b>
-, <b>Strongest</b>
-, <b>All</b>
+<tr class="memitem:a103795b3110582cb9cdd3764d3e2f271" id="r_a103795b3110582cb9cdd3764d3e2f271"><td class="memItemLeft" align="right" valign="top"><a id="a103795b3110582cb9cdd3764d3e2f271" name="a103795b3110582cb9cdd3764d3e2f271"></a>enum class &#160;</td><td class="memItemRight" valign="bottom"><b>GatingMode</b> { <b>Off</b>
+, <b>On</b>
+, <b>RollComp</b>
  }</td></tr>
-<tr class="separator:a9a950154c3046ab620a6872f19f220a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a103795b3110582cb9cdd3764d3e2f271"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-methods" name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -143,10 +143,10 @@ Public Member Functions</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-attribs" name="pub-attribs"></a>
 Public Attributes</h2></td></tr>
-<tr class="memitem:ae4e15a3b93d04622b27e6023897a4e28" id="r_ae4e15a3b93d04622b27e6023897a4e28"><td class="memItemLeft" align="right" valign="top"><a id="ae4e15a3b93d04622b27e6023897a4e28" name="ae4e15a3b93d04622b27e6023897a4e28"></a>
-Device::UartMode&#160;</td><td class="memItemRight" valign="bottom"><b>uartMode</b></td></tr>
-<tr class="memdesc:ae4e15a3b93d04622b27e6023897a4e28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serial port mode. <br /></td></tr>
-<tr class="separator:ae4e15a3b93d04622b27e6023897a4e28"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6944b4e79e3f81c9752ac64e3cbc4e1c" id="r_a6944b4e79e3f81c9752ac64e3cbc4e1c"><td class="memItemLeft" align="right" valign="top"><a id="a6944b4e79e3f81c9752ac64e3cbc4e1c" name="a6944b4e79e3f81c9752ac64e3cbc4e1c"></a>
+Uart::Mode&#160;</td><td class="memItemRight" valign="bottom"><b>uartMode</b></td></tr>
+<tr class="memdesc:a6944b4e79e3f81c9752ac64e3cbc4e1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serial port mode. <br /></td></tr>
+<tr class="separator:a6944b4e79e3f81c9752ac64e3cbc4e1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0c3f643a91669b735a6bc0a4209bc0c2" id="r_a0c3f643a91669b735a6bc0a4209bc0c2"><td class="memItemLeft" align="right" valign="top"><a id="a0c3f643a91669b735a6bc0a4209bc0c2" name="a0c3f643a91669b735a6bc0a4209bc0c2"></a>
 <a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>baudrate</b></td></tr>
 <tr class="memdesc:a0c3f643a91669b735a6bc0a4209bc0c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Serial port baudrate. Limits are standard bauds between 9600 and 921600. <br /></td></tr>
@@ -187,18 +187,18 @@ bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>invertHeadDirection
 <a class="el" href="class_isl_sdk_1_1_callback.html">uint8_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>ahrsMode</b></td></tr>
 <tr class="memdesc:a29e72c3fcdc42d3bca1c872cbb6f4da7"><td class="mdescLeft">&#160;</td><td class="mdescRight">If bit zero is 1 use inertial mode. 0 is mag slave mode. <br /></td></tr>
 <tr class="separator:a29e72c3fcdc42d3bca1c872cbb6f4da7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a702eb70612af803137682ae159bea6c6" id="r_a702eb70612af803137682ae159bea6c6"><td class="memItemLeft" align="right" valign="top"><a id="a702eb70612af803137682ae159bea6c6" name="a702eb70612af803137682ae159bea6c6"></a>
-<a class="el" href="class_isl_sdk_1_1_quaternion.html">Quaternion</a>&#160;</td><td class="memItemRight" valign="bottom"><b>orientationOffset</b></td></tr>
-<tr class="memdesc:a702eb70612af803137682ae159bea6c6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Heading, pitch and roll offsets (or down and forward vectors) expressed as a quaternion. <br /></td></tr>
-<tr class="separator:a702eb70612af803137682ae159bea6c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac32503749511ac4050b055ace11c3b42" id="r_ac32503749511ac4050b055ace11c3b42"><td class="memItemLeft" align="right" valign="top"><a id="ac32503749511ac4050b055ace11c3b42" name="ac32503749511ac4050b055ace11c3b42"></a>
+<a class="el" href="class_isl_sdk_1_1_math_1_1_quaternion.html">Math::Quaternion</a>&#160;</td><td class="memItemRight" valign="bottom"><b>orientationOffset</b></td></tr>
+<tr class="memdesc:ac32503749511ac4050b055ace11c3b42"><td class="mdescLeft">&#160;</td><td class="mdescRight">Heading, pitch and roll offsets (or down and forward vectors) expressed as a quaternion. <br /></td></tr>
+<tr class="separator:ac32503749511ac4050b055ace11c3b42"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3b7026f6fb5498d0b3854d307db1a455" id="r_a3b7026f6fb5498d0b3854d307db1a455"><td class="memItemLeft" align="right" valign="top"><a id="a3b7026f6fb5498d0b3854d307db1a455" name="a3b7026f6fb5498d0b3854d307db1a455"></a>
 <a class="el" href="class_isl_sdk_1_1_callback.html">real_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>headingOffsetRad</b></td></tr>
 <tr class="memdesc:a3b7026f6fb5498d0b3854d307db1a455"><td class="mdescLeft">&#160;</td><td class="mdescRight">Offset in radians to add to the heading. Typically use for magnetic declination. <br /></td></tr>
 <tr class="separator:a3b7026f6fb5498d0b3854d307db1a455"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7653bfe0586ecd56433e804381c5587b" id="r_a7653bfe0586ecd56433e804381c5587b"><td class="memItemLeft" align="right" valign="top"><a id="a7653bfe0586ecd56433e804381c5587b" name="a7653bfe0586ecd56433e804381c5587b"></a>
-<a class="el" href="class_isl_sdk_1_1_vector3.html">Vector3</a>&#160;</td><td class="memItemRight" valign="bottom"><b>turnsAbout</b></td></tr>
-<tr class="memdesc:a7653bfe0586ecd56433e804381c5587b"><td class="mdescLeft">&#160;</td><td class="mdescRight">A vector representing the axis which turn are measured about. <br /></td></tr>
-<tr class="separator:a7653bfe0586ecd56433e804381c5587b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a56d3ed6b779866bf1926e9d250bc3759" id="r_a56d3ed6b779866bf1926e9d250bc3759"><td class="memItemLeft" align="right" valign="top"><a id="a56d3ed6b779866bf1926e9d250bc3759" name="a56d3ed6b779866bf1926e9d250bc3759"></a>
+<a class="el" href="class_isl_sdk_1_1_math_1_1_vector3.html">Math::Vector3</a>&#160;</td><td class="memItemRight" valign="bottom"><b>turnsAbout</b></td></tr>
+<tr class="memdesc:a56d3ed6b779866bf1926e9d250bc3759"><td class="mdescLeft">&#160;</td><td class="mdescRight">A vector representing the axis which turn are measured about. <br /></td></tr>
+<tr class="separator:a56d3ed6b779866bf1926e9d250bc3759"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af532c551a2f8797507e5960293953301" id="r_af532c551a2f8797507e5960293953301"><td class="memItemLeft" align="right" valign="top"><a id="af532c551a2f8797507e5960293953301" name="af532c551a2f8797507e5960293953301"></a>
 bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>turnsAboutEarthFrame</b></td></tr>
 <tr class="memdesc:af532c551a2f8797507e5960293953301"><td class="mdescLeft">&#160;</td><td class="mdescRight">If true the "turnAbout" vector is referenced to the earth frame. False is sensor frame. <br /></td></tr>
@@ -207,43 +207,27 @@ bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>turnsAboutEarthFram
 bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>useXcNorm</b></td></tr>
 <tr class="memdesc:a98c302ea9bd1084d77474b9f134ad825"><td class="mdescLeft">&#160;</td><td class="mdescRight">Output normalised cross correlation data instead of unnormalised. Normalised data represents the quality of the echo rather than the strength of the echo. <br /></td></tr>
 <tr class="separator:a98c302ea9bd1084d77474b9f134ad825"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac28967da858db76ebd6e31a8b2bf22c2" id="r_ac28967da858db76ebd6e31a8b2bf22c2"><td class="memItemLeft" align="right" valign="top"><a id="ac28967da858db76ebd6e31a8b2bf22c2" name="ac28967da858db76ebd6e31a8b2bf22c2"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">enum</a> IslSdk::Sonar::System::EchoMode&#160;</td><td class="memItemRight" valign="bottom"><b>echoMode</b></td></tr>
-<tr class="memdesc:ac28967da858db76ebd6e31a8b2bf22c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies to profiling mode only. Selects which echo to report back as the chosen one when profiling. <br /></td></tr>
-<tr class="separator:ac28967da858db76ebd6e31a8b2bf22c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd471c1886f27adc16275f9ae5324319" id="r_afd471c1886f27adc16275f9ae5324319"><td class="memItemLeft" align="right" valign="top"><a id="afd471c1886f27adc16275f9ae5324319" name="afd471c1886f27adc16275f9ae5324319"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">real_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>xcThreasholdLow</b></td></tr>
-<tr class="memdesc:afd471c1886f27adc16275f9ae5324319"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies to profiling mode only. Sets a lower limit on the quality of the return pulse. This ensures resilience to false echos. Value ranges from 0 to 1. <br /></td></tr>
-<tr class="separator:afd471c1886f27adc16275f9ae5324319"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa7004b1611a5bc1ec4f139e027996e9f" id="r_aa7004b1611a5bc1ec4f139e027996e9f"><td class="memItemLeft" align="right" valign="top"><a id="aa7004b1611a5bc1ec4f139e027996e9f" name="aa7004b1611a5bc1ec4f139e027996e9f"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">real_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>xcThreasholdHigh</b></td></tr>
-<tr class="memdesc:aa7004b1611a5bc1ec4f139e027996e9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies to profiling mode only. When the return signal level drops bellow this value the end of an echo pulse is realised. Value ranges from 0 to 1. <br /></td></tr>
-<tr class="separator:aa7004b1611a5bc1ec4f139e027996e9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8ec209f6416bd128d3941732f0d77b9" id="r_aa8ec209f6416bd128d3941732f0d77b9"><td class="memItemLeft" align="right" valign="top"><a id="aa8ec209f6416bd128d3941732f0d77b9" name="aa8ec209f6416bd128d3941732f0d77b9"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">real_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>energyThreashold</b></td></tr>
-<tr class="memdesc:aa8ec209f6416bd128d3941732f0d77b9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies to profiling mode only. Minimum enery an echo must have to be reported. Range is 0 to 1. <br /></td></tr>
-<tr class="separator:aa8ec209f6416bd128d3941732f0d77b9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afdac2c12092ad4648302592695dfc367" id="r_afdac2c12092ad4648302592695dfc367"><td class="memItemLeft" align="right" valign="top"><a id="afdac2c12092ad4648302592695dfc367" name="afdac2c12092ad4648302592695dfc367"></a>
-bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>useTiltCorrection</b></td></tr>
-<tr class="memdesc:afdac2c12092ad4648302592695dfc367"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies to profiling mode only. Not implemented yet. <br /></td></tr>
-<tr class="separator:afdac2c12092ad4648302592695dfc367"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa1c312f0ce087c9ecfbc86eb1d0661df" id="r_aa1c312f0ce087c9ecfbc86eb1d0661df"><td class="memItemLeft" align="right" valign="top"><a id="aa1c312f0ce087c9ecfbc86eb1d0661df" name="aa1c312f0ce087c9ecfbc86eb1d0661df"></a>
-bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>profilerDepthGating</b></td></tr>
-<tr class="memdesc:aa1c312f0ce087c9ecfbc86eb1d0661df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies to profiling mode only. Not implemented yet. <br /></td></tr>
-<tr class="separator:aa1c312f0ce087c9ecfbc86eb1d0661df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a045c79bf472d3ee5937887f575017c66" id="r_a045c79bf472d3ee5937887f575017c66"><td class="memItemLeft" align="right" valign="top"><a id="a045c79bf472d3ee5937887f575017c66" name="a045c79bf472d3ee5937887f575017c66"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>profilerMinRangeMm</b></td></tr>
-<tr class="memdesc:a045c79bf472d3ee5937887f575017c66"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies to profiling mode only. Start listening for echos after this range in millimeters. <br /></td></tr>
-<tr class="separator:a045c79bf472d3ee5937887f575017c66"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7b300bd317946d5ec2585f1acd562881" id="r_a7b300bd317946d5ec2585f1acd562881"><td class="memItemLeft" align="right" valign="top"><a id="a7b300bd317946d5ec2585f1acd562881" name="a7b300bd317946d5ec2585f1acd562881"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">uint32_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>profilerMaxRangeMm</b></td></tr>
-<tr class="memdesc:a7b300bd317946d5ec2585f1acd562881"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies to profiling mode only. Listen for echos up until this range in millimeters. <br /></td></tr>
-<tr class="separator:a7b300bd317946d5ec2585f1acd562881"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa28457c135303fab3488918d25d8e8f0" id="r_aa28457c135303fab3488918d25d8e8f0"><td class="memItemLeft" align="right" valign="top"><a id="aa28457c135303fab3488918d25d8e8f0" name="aa28457c135303fab3488918d25d8e8f0"></a>
+bool_t&#160;</td><td class="memItemRight" valign="bottom"><b>data8Bit</b></td></tr>
+<tr class="memdesc:aa28457c135303fab3488918d25d8e8f0"><td class="mdescLeft">&#160;</td><td class="mdescRight">true = 8-bit data, false = 16-bit data <br /></td></tr>
+<tr class="separator:aa28457c135303fab3488918d25d8e8f0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa7ce3d45d32d8b3e3654dc16d58a8655" id="r_aa7ce3d45d32d8b3e3654dc16d58a8655"><td class="memItemLeft" align="right" valign="top"><a id="aa7ce3d45d32d8b3e3654dc16d58a8655" name="aa7ce3d45d32d8b3e3654dc16d58a8655"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">enum</a> IslSdk::Sonar::System::GatingMode&#160;</td><td class="memItemRight" valign="bottom"><b>gatingMode</b></td></tr>
+<tr class="memdesc:aa7ce3d45d32d8b3e3654dc16d58a8655"><td class="mdescLeft">&#160;</td><td class="mdescRight">Gating mode for the sonar. Off = no gating, On = gating at an angle to the sector center, RollComp = gating at an angle to the sector center and compensating for roll. <br /></td></tr>
+<tr class="separator:aa7ce3d45d32d8b3e3654dc16d58a8655"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abea262b41afb0a7caa24e8ccbf4f058b" id="r_abea262b41afb0a7caa24e8ccbf4f058b"><td class="memItemLeft" align="right" valign="top"><a id="abea262b41afb0a7caa24e8ccbf4f058b" name="abea262b41afb0a7caa24e8ccbf4f058b"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">int16_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>gatingAngle</b></td></tr>
+<tr class="memdesc:abea262b41afb0a7caa24e8ccbf4f058b"><td class="mdescLeft">&#160;</td><td class="mdescRight">The gating angle to a line perpendicular to the sector center in units of 12800th. 360 degrees = a value of 12800. <br /></td></tr>
+<tr class="separator:abea262b41afb0a7caa24e8ccbf4f058b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9fe2028a69124dede8ede3dfedd590d7" id="r_a9fe2028a69124dede8ede3dfedd590d7"><td class="memItemLeft" align="right" valign="top"><a id="a9fe2028a69124dede8ede3dfedd590d7" name="a9fe2028a69124dede8ede3dfedd590d7"></a>
+<a class="el" href="class_isl_sdk_1_1_callback.html">real_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>speedOfSound</b></td></tr>
+<tr class="memdesc:a9fe2028a69124dede8ede3dfedd590d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Speed of sound in meters per second. limits 1000 to 2500. <br /></td></tr>
+<tr class="separator:a9fe2028a69124dede8ede3dfedd590d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a id="pub-static-attribs" name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
 <tr class="memitem:a4ad5f06850f7745c649165aeac0ffb4f" id="r_a4ad5f06850f7745c649165aeac0ffb4f"><td class="memItemLeft" align="right" valign="top"><a id="a4ad5f06850f7745c649165aeac0ffb4f" name="a4ad5f06850f7745c649165aeac0ffb4f"></a>
-<a class="el" href="class_isl_sdk_1_1_callback.html">static</a> <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> = baseSize + profilerSize</td></tr>
+<a class="el" href="class_isl_sdk_1_1_callback.html">static</a> <a class="el" href="class_isl_sdk_1_1_callback.html">const</a> <a class="el" href="class_isl_sdk_1_1_callback.html">uint_t</a>&#160;</td><td class="memItemRight" valign="bottom"><b>size</b> = 63</td></tr>
 <tr class="separator:a4ad5f06850f7745c649165aeac0ffb4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>

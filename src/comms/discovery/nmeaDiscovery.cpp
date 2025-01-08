@@ -40,7 +40,7 @@ bool_t NmeaDiscovery::run()
             {
                 m_timeoutMs = timeMs + param.timeoutMs;
                 param.count--;
-                debugLog("NmeaDiscovery", "%s discovering at %s", m_sysPort.name.c_str(), m_sysPort.type == SysPort::Type::Net ? (StringUtils::ipToStr(param.meta.ipAddress) + ":" + StringUtils::uintToStr(param.meta.port)).c_str() : StringUtils::uintToStr(param.meta.baudrate).c_str());
+                debugLog("NmeaDiscovery", "%s discovering at %s", m_sysPort.name.c_str(), m_sysPort.type == SysPort::Type::Net ? (StringUtils::ipToStr(param.meta.ipAddress) + ":" + StringUtils::toStr(param.meta.port)).c_str() : StringUtils::toStr(param.meta.baudrate).c_str());
                 m_sysPort.onDiscoveryEvent(m_sysPort, param.meta, AutoDiscovery::Type::Nmea, discoveryCount);
 
                 if (param.count == 0)

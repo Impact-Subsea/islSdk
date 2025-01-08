@@ -8,11 +8,16 @@ using namespace IslSdk;
 constexpr uint_t memoryAligment = sizeof(uint_t);
 
 //--------------------------------------------------------------------------------------------------
-Queue::Queue(uint_t size)
+Queue::Queue(uint_t size) :
+    m_bufSize(size),
+	m_buf(new uint8_t[m_bufSize]),
+	m_head(m_buf),
+	m_tail(m_buf),
+	m_end(nullptr),
+	m_headTemp(m_buf),
+	m_itemsPushed(0),
+	m_itemsPopped(0)
 {
-    m_bufSize = size;
-    m_buf = new uint8_t[m_bufSize];
-    reset();
 }
 //--------------------------------------------------------------------------------------------------
 Queue::~Queue()
@@ -41,13 +46,12 @@ uint_t Queue::itemCount()
 void* Queue::newItem(uint_t size)
 {
     uint8_t* mem = nullptr;
-    uint8_t* end;
-    uint_t freeMem;
-
+    
     if (size)
     {
         push();
 
+        uint8_t* end;
         if (m_head >= m_tail)
         {
             end = &m_buf[m_bufSize - 1];
@@ -56,15 +60,15 @@ void* Queue::newItem(uint_t size)
         {
             end = m_tail;
         }
-
-        freeMem = (uint_t)(end - m_head);
+        
+        uintptr_t freeMem = (uintptr_t)(end - m_head);
 
         size += sizeof(uint_t);
         size += (~size + 1) & (memoryAligment - 1);
 
         if ((size >= freeMem) && (m_head >= m_tail))
         {
-            freeMem = (uint_t)(m_tail - m_buf);
+            freeMem = (uintptr_t)(m_tail - m_buf);
             if (size < freeMem)
             {
                 m_end = m_head.load();
@@ -81,7 +85,7 @@ void* Queue::newItem(uint_t size)
         }
         else
         {
-            //debugLog("Queue", "out of memory - buf: %p, head: %p, headTemp: %p, tail: %p, end: %p, SIZE: %u, freeMem: %u", m_buf, m_head, m_headTemp, m_tail, m_end, size, freeMem);
+            debugLog("Queue", "out of memory: freeMem: %u, requested %u", freeMem, size);
         }
     }
     return (void*)mem;
@@ -95,13 +99,13 @@ void Queue::cancelNewItem()
 bool_t Queue::reduceSize(uint_t newSize)
 {
     int_t dif = -1;
-    uint_t* size;
 
     if (m_head != m_headTemp)
     {
         newSize += sizeof(uint_t);
         newSize += (~newSize + 1) & (memoryAligment - 1);
 
+        uint_t* size;
         if (m_end == m_head)
         {
             size = (uint_t*)m_buf;

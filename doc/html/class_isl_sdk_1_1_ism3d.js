@@ -3,6 +3,8 @@ var class_isl_sdk_1_1_ism3d =
     [ "AhrsCal", "struct_isl_sdk_1_1_ism3d_1_1_ahrs_cal.html", "struct_isl_sdk_1_1_ism3d_1_1_ahrs_cal" ],
     [ "SensorRates", "struct_isl_sdk_1_1_ism3d_1_1_sensor_rates.html", "struct_isl_sdk_1_1_ism3d_1_1_sensor_rates" ],
     [ "Settings", "struct_isl_sdk_1_1_ism3d_1_1_settings.html", "struct_isl_sdk_1_1_ism3d_1_1_settings" ],
+    [ "getConfigAsString", "class_isl_sdk_1_1_ism3d.html#ac1e8fc8382620d5daaee1e797a43bff1", null ],
+    [ "getHardwareFaults", "class_isl_sdk_1_1_ism3d.html#a61f58b8fd5a9f146dbefad1d01e0afd9", null ],
     [ "getScripts", "class_isl_sdk_1_1_ism3d.html#abac67ea3bf5fd116807ab75a5f6f1a30", null ],
     [ "saveConfig", "class_isl_sdk_1_1_ism3d.html#a491fd5732b14dd40fbbaf87efa5e5e0c", null ],
     [ "setAhrsScript", "class_isl_sdk_1_1_ism3d.html#af1731e7f514962331ac1384a0f565284", null ],

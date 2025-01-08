@@ -8,6 +8,7 @@
 #include "comms/ports/sysPort.h"
 #include "types/sigSlot.h"
 #include "logging/loggingDevice.h"
+#include "platform/uart.h"
 #include <list>
 #include <vector>
 
@@ -53,6 +54,7 @@ namespace IslSdk
     {
         friend class Sdk;
         friend class DeviceMgr;
+        friend class PcpDevice;
 
     public:
         typedef std::shared_ptr<Device> SharedPtr;
@@ -68,12 +70,10 @@ namespace IslSdk
             Isd4000 = 1342,                 ///< ISD4000 with firmware V3.0.0 and above.
             Ism3d = 1461,                   ///< ISM3D with firmware V3.0.0 and above.
             Sonar = 1791,                   ///< ISS360, ISS360HD or ISP360 with firmware V3.0.0 and above.
+            MultiPcp = 1865,                ///< A device with multiple Powered Com Ports.
             Any = 0xffff,
         };
 
-        enum class UartMode : uint8_t { Rs232, Rs485, Rs485Terminated, Unknown = 255};
-        enum class Parity : uint8_t { None, Odd, Even, Mark, Space, Unknown = 255};
-        enum class StopBits : uint8_t { One, OneAndHalf, Two, Unknown  = 255};
         enum class PhyMdixMode : uint8_t { Normal, Swapped, Auto, Unknown = 255};
         enum class PhyPortMode : uint8_t { Auto, Base10TxHalf, Base10TxFull, Base100TxHalf, Base100TxFull, Unknown = 255 };
 
@@ -111,16 +111,11 @@ namespace IslSdk
             std::string str;
             CustomStr() : enable(false) {}
             CustomStr(bool_t enable, const std::string& str) : enable(false), str(str) {}
-            uint_t packStr(uint8_t* ptr) const
-            {
-                for (uint_t i = 0; i < size; i++)
-				{
-                    *ptr++ = i < str.size() ? str[i] : 0;
-				}
-                return size;
-            }
+            uint8_t packStr(uint8_t* ptr) const;
+            void unPackStr(const uint8_t* data, uint_t size);
         };
 
+        const static uint64_t deleteAfterTime = 10000;                  ///< The time in milliseconds before the device is deleted when not connected
         const uint_t& reconnectCount = m_reconnectCount;                ///< The number of times the device has been reconnected.
         const Info& info = m_info;                                      ///< The device information.
         const std::unique_ptr<Connection>& connection = m_connection;   ///< The connection object.
@@ -203,6 +198,26 @@ namespace IslSdk
         */
         Signal<Device&, uint_t, uint_t, uint_t, uint_t> onPacketCount;
 
+
+        /**
+        * @brief A subscribable event for when a comms timeout occurs.
+        * This event is triggered when the device has not responded to a packet within the timeout period.
+        * @param device Device& The device that triggered the event.
+        * @param timeoutCount bool_t True if the device will be disconnected.
+        */
+        Signal<Device&, bool_t> onCommsTimeout;
+
+
+        /**
+        * @brief A subscribable event for when the device xml configuration is ready to read.
+        * This event is triggered after a getConfigAsString() call and the data has been received.
+        * @param device Device& The device that triggered the event.
+        * @param xmlConfig std::string The xml configuration.
+		*/
+        Signal<Device&, const std::string&> onXmlConfig;
+
+
+
         Device(const Device::Info& info);
         virtual ~Device();
 
@@ -239,12 +254,31 @@ namespace IslSdk
         void reset();
 
         /**
+        * @brief Check if the device is connected.
+        * This function returns true if the device is connected to the host.
+        * @return True if the device is connected.
+        */
+        bool_t isConnected();
+
+        /**
         * @brief Save the device configuration to an xml file.
         * This function saves all device parameters to an xml file.
         * @param fileName The name of the file to save the configuration to.
         * @return True if the configuration was saved successfully.
         */
         virtual bool_t saveConfig(const std::string& fileName) { return false; }
+
+        /**
+        * @brief Returns the configuration as an xml string.
+        * @return The boolean value indicating the success of the operation.
+        */
+        virtual std::string getConfigAsString() { return std::string(); };
+
+        /**
+        * @brief checks if the firmware has detected hardware faults.
+        * @return A vector of the detected hardware faults.
+        */
+        virtual std::vector<std::string> getHardwareFaults() { return std::vector<std::string>(); }
 
         /**
         * @brief Check if the devices is in bootloader mode.
@@ -257,12 +291,13 @@ namespace IslSdk
         enum class Commands { Reset = 1, Descriptor, ReplyBit = 0x80 };
         virtual void connectionEvent(bool_t connected);
         virtual bool_t newPacket(uint8_t command, const uint8_t* data, uint_t size) { return false; }
-        void enqueuePacket(const uint8_t* data, uint_t size);
-        void sendPacket(const uint8_t* data, uint_t size);
+        bool_t enqueuePacket(const uint8_t* data, uint_t size);
+        bool_t sendPacket(const uint8_t* data, uint_t size);
         void connectionSettingsUpdated(const ConnectionMeta& meta, bool_t isHalfDuplex);
         bool_t startLogging() override;
         bool_t m_connectionDataSynced;
         uint64_t m_epochUs;
+        bool_t m_waitingForXmlConfig;
 
     private:
         std::unique_ptr<ConnectionMeta> m_pendingMeta;

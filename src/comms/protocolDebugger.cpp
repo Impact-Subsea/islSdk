@@ -37,7 +37,7 @@ void ProtocolDebugger::monitorPort(const SysPort::SharedPtr& port)
 //--------------------------------------------------------------------------------------------------
 void ProtocolDebugger::rxData(SysPort& port, const ConstBuffer& buf)
 {
-    if (port.type == SysPort::Type::Serial || port.type == SysPort::Type::Sol)
+    if (port.type == SysPort::Type::Serial)
     {
         uint_t bytesToProcess = buf.size;
 
@@ -62,7 +62,7 @@ void ProtocolDebugger::rxData(SysPort& port, const ConstBuffer& buf)
 //--------------------------------------------------------------------------------------------------
 void ProtocolDebugger::txData(SysPort& port, const ConstBuffer& buf)
 {
-    if (port.type == SysPort::Type::Serial || port.type == SysPort::Type::Sol)
+    if (port.type == SysPort::Type::Serial)
     {
         uint_t bytesToProcess = buf.size;
 

@@ -12,7 +12,6 @@ using namespace StringUtils;
 
 //--------------------------------------------------------------------------------------------------
 
-#define charCmpNoCase(c1, c2) ((c1 == c2) || (((c1 - c2) == 32) && c2 >= 'A' && c2 <= 'Z') || (((c1 - c2) == -32) && c1 >= 'A' && c1 <= 'Z'))
 uint_t parseDigits(const char* str, uint_t& digits);
 
 //--------------------------------------------------------------------------------------------------
@@ -33,21 +32,41 @@ std::string StringUtils::toStr(const uint8_t* str, uint_t maxSize)
     return s;
 }
 //--------------------------------------------------------------------------------------------------
-std::string StringUtils::uintToStr(uint_t number, uint_t leadingZeros)
+std::string StringUtils::toStr(uint16_t number, uint_t leadingZeros)
+{
+    return toStr(static_cast<uint_t>(number), leadingZeros);
+}
+//--------------------------------------------------------------------------------------------------
+std::string StringUtils::toStr(uint32_t number, uint_t leadingZeros)
+{
+    return toStr(static_cast<uint_t>(number), leadingZeros);
+}
+//--------------------------------------------------------------------------------------------------
+std::string StringUtils::toStr(uint_t number, uint_t leadingZeros)
 {
     std::ostringstream oss;
     oss << std::setw(leadingZeros) << std::setfill('0') << number;
     return oss.str();
 }
 //--------------------------------------------------------------------------------------------------
-std::string StringUtils::intToStr(int_t number, uint_t leadingZeros, bool_t forceSign)
+std::string StringUtils::toStr(int16_t number, uint_t leadingZeros, bool_t forceSign)
+{
+    return toStr(static_cast<int_t>(number), leadingZeros, forceSign);
+}
+//--------------------------------------------------------------------------------------------------
+std::string StringUtils::toStr(int32_t number, uint_t leadingZeros, bool_t forceSign)
+{
+    return toStr(static_cast<int_t>(number), leadingZeros, forceSign);
+}
+//--------------------------------------------------------------------------------------------------
+std::string StringUtils::toStr(int_t number, uint_t leadingZeros, bool_t forceSign)
 {
     std::ostringstream oss;
-    oss << (forceSign ? std::showpos : std::noshowpos) << std::setw(leadingZeros) << std::setfill('0') << number;
+    oss << (forceSign ? std::showpos : std::noshowpos) << std::setw(leadingZeros) << std::setfill('0') << std::internal << number;
     return oss.str();
 }
 //--------------------------------------------------------------------------------------------------
-std::string StringUtils::realToStr(real_t number, uint_t leadingZeros, uint_t precision, uint8_t format, bool_t forceSign)
+std::string StringUtils::toStr(real_t number, uint_t leadingZeros, uint_t precision, uint8_t format, bool_t forceSign)
 {
     if (std::isnan(number))
     {
@@ -60,18 +79,23 @@ std::string StringUtils::realToStr(real_t number, uint_t leadingZeros, uint_t pr
     }
 
     std::ostringstream oss;
-    oss << std::fixed << std::setprecision(precision);
+    oss << std::setprecision(precision);
 
     if (forceSign)
     {
         oss << std::showpos;
     }
 
-    oss << std::setw(leadingZeros) << std::setfill('0');
+    leadingZeros = leadingZeros + precision + (precision != 0);
 
     if (format == 'e' || format == 'E')
     {
-        oss << std::scientific << format;
+        leadingZeros += leadingZeros ? 4 : 0;
+        oss << std::setw(leadingZeros) << std::setfill('0') << std::internal << std::scientific;
+    }
+    else
+    {
+        oss << std::setw(leadingZeros) << std::setfill('0') << std::internal << std::fixed;
     }
 
     oss << number;
@@ -79,7 +103,7 @@ std::string StringUtils::realToStr(real_t number, uint_t leadingZeros, uint_t pr
     return oss.str();
 }
 //--------------------------------------------------------------------------------------------------
-std::string StringUtils::uintToHexStr(uint_t number, uint_t leadingZeros, bool_t useCaps)
+std::string StringUtils::toHexStr(uint_t number, uint_t leadingZeros, bool_t useCaps)
 {
     std::ostringstream oss;
     oss << (useCaps ? std::uppercase : std::nouppercase) << std::setw(leadingZeros) << std::setfill('0') << std::hex << number;
@@ -106,6 +130,8 @@ std::string StringUtils::pidToStr(Device::Pid pid)
         return "ISM3D";
     case IslSdk::Device::Pid::Sonar:
         return "Sonar";
+    case IslSdk::Device::Pid::MultiPcp:
+        return "MultiPcp";
         
     default:
         break;
@@ -118,9 +144,9 @@ std::string StringUtils::pnSnToStr(uint16_t pn, uint16_t sn)
 {
     std::string str;
 
-    str += uintToStr(pn, 4);
+    str += toStr(pn, 4);
     str += '.';
-    str += uintToStr(sn, 4);
+    str += toStr(sn, 4);
 
     return str;
 }
@@ -161,15 +187,15 @@ std::string StringUtils::bcdVersionToStr(uint16_t bcdVersion)
     return str;
 }
 //--------------------------------------------------------------------------------------------------
-std::string StringUtils::uartModeToStr(Device::UartMode mode)
+std::string StringUtils::uartModeToStr(Uart::Mode mode)
 {
     switch (mode)
     {
-    case Device::UartMode::Rs232:
+    case Uart::Mode::Rs232:
         return "RS232";
-    case Device::UartMode::Rs485:
+    case Uart::Mode::Rs485:
         return "RS485";
-    case Device::UartMode::Rs485Terminated:
+    case Uart::Mode::Rs485Terminated:
         return "RS485T";
     default:
         break;
@@ -178,19 +204,19 @@ std::string StringUtils::uartModeToStr(Device::UartMode mode)
     return "";
 }
 //--------------------------------------------------------------------------------------------------
-std::string StringUtils::uartParityToStr(Device::Parity parity)
+std::string StringUtils::uartParityToStr(Uart::Parity parity)
 {
     switch (parity)
     {
-    case Device::Parity::None:
+    case Uart::Parity::None:
         return "NONE";
-    case Device::Parity::Odd:
+    case Uart::Parity::Odd:
         return "ODD";
-    case Device::Parity::Even:
+    case Uart::Parity::Even:
         return "EVEN";
-    case Device::Parity::Mark:
+    case Uart::Parity::Mark:
         return "MARK";
-    case Device::Parity::Space:
+    case Uart::Parity::Space:
         return "SPACE";
     default:
         break;
@@ -199,15 +225,15 @@ std::string StringUtils::uartParityToStr(Device::Parity parity)
     return "";
 }
 //--------------------------------------------------------------------------------------------------
-std::string StringUtils::uartStopBitsToStr(Device::StopBits stopBits)
+std::string StringUtils::uartStopBitsToStr(Uart::StopBits stopBits)
 {
     switch (stopBits)
     {
-    case Device::StopBits::One:
+    case Uart::StopBits::One:
         return "1";
-    case Device::StopBits::OneAndHalf:
+    case Uart::StopBits::OneAndHalf:
         return "1.5";
-    case Device::StopBits::Two:
+    case Uart::StopBits::Two:
         return "2";
     default:
         break;
@@ -258,17 +284,17 @@ std::string StringUtils::macAddressToStr(const uint8_t(&macAddress)[6])
 {
     std::string str;
 
-    str += uintToHexStr(macAddress[0], 2, true);
+    str += toHexStr(macAddress[0], 2, true);
     str += ':';
-    str += uintToHexStr(macAddress[1], 2, true);
+    str += toHexStr(macAddress[1], 2, true);
     str += ':';
-    str += uintToHexStr(macAddress[2], 2, true);
+    str += toHexStr(macAddress[2], 2, true);
     str += ':';
-    str += uintToHexStr(macAddress[3], 2, true);
+    str += toHexStr(macAddress[3], 2, true);
     str += ':';
-    str += uintToHexStr(macAddress[4], 2, true);
+    str += toHexStr(macAddress[4], 2, true);
     str += ':';
-    str += uintToHexStr(macAddress[5], 2, true);
+    str += toHexStr(macAddress[5], 2, true);
 
     return str;
 }
@@ -277,13 +303,13 @@ std::string StringUtils::ipToStr(uint32_t ip)
 {
     std::string str;
 
-    str += uintToStr((ip >> 0) & 0xff, 0);
+    str += toStr((ip >> 0) & 0xff, 0);
     str += '.';
-    str += uintToStr((ip >> 8) & 0xff, 0);
+    str += toStr((ip >> 8) & 0xff, 0);
     str += '.';
-    str += uintToStr((ip >> 16) & 0xff, 0);
+    str += toStr((ip >> 16) & 0xff, 0);
     str += '.';
-    str += uintToStr((ip >> 24) & 0xff, 0);
+    str += toStr((ip >> 24) & 0xff, 0);
 
     return str;
 }
@@ -463,6 +489,10 @@ Device::Pid StringUtils::toPid(const std::string& str)
     {
         return Device::Pid::Sonar;
     }
+    else if (compareNoCase(str, "multipcp"))
+    {
+        return Device::Pid::MultiPcp;
+    }
 
     return Device::Pid::Unknown;
 }
@@ -512,65 +542,65 @@ uint16_t StringUtils::toBcdVersion(const std::string& str, bool_t& error)
     return version;
 }
 //--------------------------------------------------------------------------------------------------
-Device::UartMode StringUtils::toUartMode(const std::string& str)
+Uart::Mode StringUtils::toUartMode(const std::string& str)
 {
     if (compareNoCase(str, "rs232"))
     {
-        return Device::UartMode::Rs232;
+        return Uart::Mode::Rs232;
     }
     else if (compareNoCase(str, "rs485"))
     {
-        return Device::UartMode::Rs485;
+        return Uart::Mode::Rs485;
     }
-    else if (compareNoCase(str, "rs485t"))
+    else if (compareNoCase(str, "rs485t") || compareNoCase(str, "rs485terminated"))
     {
-        return Device::UartMode::Rs485Terminated;
+        return Uart::Mode::Rs485Terminated;
     }
 
-    return Device::UartMode::Unknown;
+    return Uart::Mode::Unknown;
 }
 //--------------------------------------------------------------------------------------------------
-Device::Parity StringUtils::toUartParity(const std::string& str)
+Uart::Parity StringUtils::toUartParity(const std::string& str)
 {
-    if (compareNoCase(str, "none"))
+    if (compareNoCase(str, "none") || compareNoCase(str, "off"))
     {
-        return Device::Parity::None;
+        return Uart::Parity::None;
     }
     if (compareNoCase(str, "odd"))
     {
-        return Device::Parity::Odd;
+        return Uart::Parity::Odd;
     }
     if (compareNoCase(str, "even"))
     {
-        return Device::Parity::Even;
+        return Uart::Parity::Even;
     }
     if (compareNoCase(str, "mark"))
     {
-        return Device::Parity::Mark;
+        return Uart::Parity::Mark;
     }
     if (compareNoCase(str, "space"))
     {
-        return Device::Parity::Space;
+        return Uart::Parity::Space;
     }
-    return Device::Parity::Unknown;
+    return Uart::Parity::Unknown;
 }
 //--------------------------------------------------------------------------------------------------
-Device::StopBits StringUtils::toUartStopBits(const std::string& str)
+Uart::StopBits StringUtils::toUartStopBits(const std::string& str)
 {
-    if (str == "1")
+    if ((str == "1") || compareNoCase(str, "one"))
     {
-        return Device::StopBits::One;
+        return Uart::StopBits::One;
     }
-    if (str == "1.5")
+    if ((str == "1.5") || compareNoCase(str, "OneAndHalf"))
     {
-        return Device::StopBits::OneAndHalf;
+        return Uart::StopBits::OneAndHalf;
     }
-    if (str == "2")
+    if ((str == "2") || compareNoCase(str, "two"))
     {
-        return Device::StopBits::Two;
+        return Uart::StopBits::Two;
     }
 
-    return Device::StopBits::Unknown;
+    return Uart::StopBits::Unknown;
 }
 //--------------------------------------------------------------------------------------------------
 Device::PhyPortMode StringUtils::toPhyPortMode(const std::string& str)
@@ -701,7 +731,7 @@ bool_t StringUtils::compareNoCase(const std::string& str1, const std::string& st
     {
         for (size_t i = 0; i < str1.size(); ++i)
         {
-            if (!charCmpNoCase(str1[i], str2[i]))
+            if (!((str1[i] == str2[i]) || (((str1[i] - str2[i]) == 32) && str2[i] >= 'A' && str2[i] <= 'Z') || (((str2[i] - str1[i]) == 32) && str1[i] >= 'A' && str1[i] <= 'Z')))
             {
                 return false;
             }

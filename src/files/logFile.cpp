@@ -30,6 +30,10 @@ LogFile::Error LogFile::open(const std::string& fileName)
 
     m_tracks.clear();
     m_records.clear();
+    m_isModified = false;
+    m_timeMs = 0;
+    m_fileWritePosition = 0;
+    m_durationMs = 0;
 
     m_file.open(fileName, std::fstream::in | std::fstream::out | std::fstream::binary);
 
@@ -63,6 +67,23 @@ LogFile::Error LogFile::open(const std::string& fileName)
         else
         {
             err = LogFile::Error::None;
+
+            for (Track& track : m_tracks)
+            {
+                if (track.dataType == 0 && track.data.size() == 11)
+                {
+                    track.dataType = 1;
+                    uint16_t pn = Mem::get16Bit(&track.data[7]);
+                    uint16_t sn = Mem::get16Bit(&track.data[5]);
+
+                    track.data.clear();
+                    track.data.resize(22, 0);
+                    Mem::pack16Bit(&track.data[0], 1791);
+                    Mem::pack16Bit(&track.data[2], pn);
+                    Mem::pack16Bit(&track.data[4], sn);
+                    track.data[14] = 4;
+                }
+            }
         }
     }
 

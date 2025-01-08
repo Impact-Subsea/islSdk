@@ -2,6 +2,7 @@
 
 #include "sdk.h"
 #include "utils/stringUtils.h"
+#include "platform/timeUtils.h"
 #include "comms/discovery/islDeviceDiscovery.h"
 #include "comms/protocols/nmea.h"
 #include "platform/netSocket.h"
@@ -25,7 +26,7 @@ void Sdk::run()
 {
     if (m_first)
     {
-        ports.createNetPort("NETWORK");
+        ports.createNetPort("NETWORK", false, false, 0xffffffff, 0);
         m_first = false;
     }
 
@@ -43,14 +44,6 @@ void Sdk::portDeleted(SysPort& sysPort)
 {
     devices.removePortFromAll(sysPort);
     nmeaDevices.removePortFromAll(sysPort);
-}
-//--------------------------------------------------------------------------------------------------
-void Sdk::deviceDeleted(Device& device)
-{
-    if (device.connection && device.connection->sysPort->type == SysPort::Type::Net)
-    {
-        ports.deleteSysPort(device.connection->sysPort);
-    }
 }
 //--------------------------------------------------------------------------------------------------
 void Sdk::newFrameEvent(SysPort& sysPort, const uint8_t* data, uint_t size, const ConnectionMeta& meta, Codec::Type codecType)
@@ -99,7 +92,6 @@ void Sdk::newFrameEvent(SysPort& sysPort, const uint8_t* data, uint_t size, cons
                 if (newDevice)
                 {
                     device = devices.createDevice(deviceInfo);
-                    device->onDelete.connect(m_slotDeviceDeleted);
                 }
                 else if (device->m_address == packet.header.address)
                 {
@@ -114,8 +106,9 @@ void Sdk::newFrameEvent(SysPort& sysPort, const uint8_t* data, uint_t size, cons
                     }
                     else
                     {
-                        sysPortPtr = ports.createNetPort("NET " + device->info.pnSnAsStr());
-                        sysPortPtr->m_sdkCanClose = sysPortPtr->open();
+                        sysPortPtr = ports.createNetPort("NET " + device->info.pnSnAsStr(), false, false, 0xffffffff, 0);
+                        sysPortPtr->m_sdkCanClose = true;
+                        sysPortPtr->open();
                     }
                 }
 
@@ -132,7 +125,13 @@ void Sdk::newFrameEvent(SysPort& sysPort, const uint8_t* data, uint_t size, cons
                         device->m_info = deviceInfo;
                         device->onInfoChanged(*device, deviceInfo);
                     }
-                    device->connect();
+
+                    device->m_deleteTimer = Time::getTimeMs() + Device::deleteAfterTime;
+
+                    if (!device->info.inUse && device->reconnectCount > 0)
+                    {
+                        device->connect();
+                    }
                 }
 
                 if (sysPort.m_autoDiscoverer)

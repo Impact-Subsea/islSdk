@@ -6,19 +6,19 @@
 
 using namespace IslSdk;
 
-enum TelnetCmd : uint8_t {Se = 0xf0, Sb = 0xfa, Will = 0xfb, Wont = 0xfc, Do = 0xfd, Dont = 0xfe, Iac = 0xff};
-enum ComPortCmd : uint8_t { TransmitBinary = 0, Options = 44, Baudrate = 1, DataBits = 2, Parity = 3, StopBits = 4, Close = 20, Request = 100};
+enum TelnetCmd : uint8_t { Se = 0xf0, Sb = 0xfa, Will = 0xfb, Wont = 0xfc, Do = 0xfd, Dont = 0xfe, Iac = 0xff };
+enum ComPortCmd : uint8_t { TransmitBinary = 0, Options = 44, Baudrate = 1, DataBits = 2, Parity = 3, StopBits = 4, Request = 100 };
 
 std::vector<uint32_t> SolPort::defaultBaudrates = { 115200, 9600, 57600, 38400, 19200, 4800 };
 
 //--------------------------------------------------------------------------------------------------
 SolPort::SolPort(const std::string& name, bool_t isTcp, bool_t useTelnet, uint32_t ipAddress, uint16_t port) :
-    SysPort(name, Type::Sol, 500),
+    SysPort(name, ClassType::Sol, Type::Serial, 500),
     m_isTcp(isTcp),
     m_useTelnet(useTelnet),
     m_ipAddress(ipAddress),
     m_port(port),
-    m_baudrate(0),
+    m_baudrate(9600),
     m_dataBits(8),
     m_parity(Uart::Parity::None),
     m_stopBits(Uart::StopBits::One),
@@ -38,20 +38,17 @@ SolPort::~SolPort()
     close();
 }
 //--------------------------------------------------------------------------------------------------
-bool_t SolPort::open()
+void SolPort::open()
 {
     if (!m_isOpen)
     {
         m_socket = std::make_unique<NetSocket>(m_isTcp, false, m_ipAddress, m_port);
         m_isOpen = m_socket->isOpen();
-        m_baudrate = 0;
-        m_dataBits = 8;
-        m_parity = Uart::Parity::None;
-        m_stopBits = Uart::StopBits::One;
+        m_active = m_isOpen;
+        setSerial(m_baudrate, m_dataBits, m_parity, m_stopBits);
         debugLog("SysPort", "%s opening", name.c_str());
-        onOpen(*this, !m_isOpen);
+        onOpen(*this, m_isOpen);
     }
-    return m_isOpen;
 }
 //--------------------------------------------------------------------------------------------------
 void SolPort::close()
@@ -65,20 +62,6 @@ void SolPort::close()
 
     if (m_socket)
     {
-        if (m_useTelnet && !m_isTcp)
-        {
-            uint8_t cmd[6];
-            uint_t size = 0;
-            cmd[size++] = TelnetCmd::Iac;
-            cmd[size++] = TelnetCmd::Sb;
-            cmd[size++] = ComPortCmd::Options;
-            cmd[size++] = ComPortCmd::Close;
-            cmd[size++] = TelnetCmd::Iac;
-            cmd[size++] = TelnetCmd::Se;
-
-            m_socket->write(&cmd[0], &size, m_ipAddress, m_port);
-        }
-
         m_socket.reset();
     }
     SysPort::close();
@@ -103,8 +86,9 @@ bool_t SolPort::config(bool_t isTcp, bool_t useTelnet, uint32_t ipAddress, uint1
 bool_t SolPort::setSerial(uint32_t baudrate, uint8_t dataBits, Uart::Parity parity, Uart::StopBits stopBits)
 {
     const uint8_t stopBitsLut[] = { 1, 3, 2 };
+    bool_t ok = true;
 
-    if (m_useTelnet)
+    if (m_useTelnet && m_isOpen)
     {
         uint_t i = 0;
         uint8_t cmd[64];
@@ -143,17 +127,18 @@ bool_t SolPort::setSerial(uint32_t baudrate, uint8_t dataBits, Uart::Parity pari
         cmd[i++] = TelnetCmd::Iac;
         cmd[i++] = TelnetCmd::Se;
 
-        if (m_socket->write(&cmd[0], &i, m_ipAddress, m_port) == NetSocket::State::Ok)
-        {
-            m_baudrate = baudrate;
-            m_parity = parity;
-            m_dataBits = dataBits;
-            m_stopBits = stopBits;
-            return true;
-        }
+        ok = m_socket->write(&cmd[0], &i, m_ipAddress, m_port) == NetSocket::State::Ok;
     }
 
-    return false;
+    if (ok)
+    {
+        m_baudrate = baudrate;
+        m_parity = parity;
+        m_dataBits = dataBits;
+        m_stopBits = stopBits;
+    }
+
+    return ok;
 }
 //--------------------------------------------------------------------------------------------------
 bool_t SolPort::write(const uint8_t* data, uint_t size, const ConnectionMeta& meta)
@@ -162,7 +147,7 @@ bool_t SolPort::write(const uint8_t* data, uint_t size, const ConnectionMeta& me
 
     if (!m_lock && m_socket)
     {
-        if (m_baudrate != meta.baudrate)
+        if (meta.baudrate && m_baudrate != meta.baudrate)
         {
             setSerial(meta.baudrate, m_dataBits, m_parity, m_stopBits);
         }
@@ -191,28 +176,45 @@ bool_t SolPort::write(const uint8_t* data, uint_t size, const ConnectionMeta& me
             data = &m_rxBuf[0];
         }
 
-        NetSocket::State state = m_socket->write(data, &size, m_ipAddress, m_port);
+        uint_t bytesSent = 0;
 
-        if (state == NetSocket::State::Ok)
+        if (data)
+        {
+            while (bytesSent < size)
+            {
+                uint_t amountToSend = (size - bytesSent) > 1200 ? 1200 : (size - bytesSent);
+                NetSocket::State state = m_socket->write(&data[bytesSent], &amountToSend, m_ipAddress, m_port);
+                if (state == NetSocket::State::Ok)
+                {
+                    bytesSent += amountToSend;
+                }
+                else
+                {
+                    if (state == NetSocket::State::Error)
+                    {
+                        m_portError = true;
+                    }
+                    else if (state == NetSocket::State::TcpWating)
+                    {
+                        if (m_tcpTimeout == 0)
+                        {
+                            m_tcpTimeout = 5000 + Time::getTimeMs();
+                        }
+                        else if (Time::getTimeMs() >= m_tcpTimeout)
+                        {
+                            m_tcpTimeout = 0;
+                            m_portError = true;
+                        }
+                    }
+                    break;
+                }
+            }
+        }
+
+        if (bytesSent == size)
         {
             written = true;
             txComplete(data, size);
-        }
-        else if (state == NetSocket::State::Error)
-        {
-            m_portError = true;
-        }
-        else if (state == NetSocket::State::TcpWating)
-        {
-            if (m_tcpTimeout == 0)
-            {
-                m_tcpTimeout = 5000 + Time::getTimeMs();
-            }
-            else if (Time::getTimeMs() >= m_tcpTimeout)
-            {
-                m_tcpTimeout = 0;
-                m_portError = true;
-            }
         }
     }
 
@@ -320,7 +322,7 @@ bool_t SolPort::process()
             {
                 uint_t bytesToProcess = size;
 
-                while (bytesToProcess)
+                while (bytesToProcess && m_codec)
                 {
                     uint_t frameSize = m_codec->decode(&m_rxBuf[size - bytesToProcess], &bytesToProcess);
 
@@ -335,6 +337,10 @@ bool_t SolPort::process()
                 newFrameEvent(*this, &m_rxBuf[0], size, ConnectionMeta(fromAddress, remoteSrcPort), Codec::Type::None);
             }
 
+            if (!m_socket)
+            {
+                break;
+            }
             size = sizeof(m_rxBuf);
             state = m_socket->read(&m_rxBuf[0], &size, &fromAddress, &remoteSrcPort);
         }
@@ -394,7 +400,7 @@ void SolPort::processTelnetCmd(uint8_t cmd, uint8_t* buf, uint_t size)
         {
             msg[1] = TelnetCmd::Will;
             m_telnetModes.comPort = true;
-            m_socket->write( &msg[0], &i, m_ipAddress, m_port);
+            m_socket->write(&msg[0], &i, m_ipAddress, m_port);
         }
         else
         {

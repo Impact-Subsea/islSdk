@@ -46,6 +46,18 @@ namespace IslSdk
         */
         const std::shared_ptr<SolPort> createSol(const std::string& name, bool_t isTcp, bool_t useTelnet, uint32_t ipAddress, uint16_t port);
 
+
+        /**
+        * @brief This function creates a UDP or TCP socket
+        * @param name The name of the port.
+        * @param isTcp True if the network protocol should use tcp, otherwise it will be udp.
+        * @param isServer True if the port should be a server, otherwise it will be a client.
+        * @param ipAddress The ip address to listen on when a TCP or UDP server. Or the ip address to connect to when a TCP client.
+        * @param port The port number to listen on when a TCP or UDP server. Or the port number to connect to when a TCP client.
+        * @return The newly created port.
+		*/
+        const std::shared_ptr<NetPort> createNetPort(const std::string& name, bool_t isTcp, bool_t isServer, uint32_t ipAddress, uint16_t port);
+
         /**
         * @brief Deletes a serial over lan (SOL) port.
         * This function deletes a serial over lan (SOL) port from the SDK. The port will be removed from the \p m_sysPortList
@@ -60,10 +72,10 @@ namespace IslSdk
         SysPort::SharedPtr getSharedPtr(SysPort& sysPort);
         uint64_t m_timer;
         std::list<SysPort::SharedPtr> m_sysPortList;
-        void deleteSysPort(const SysPort::SharedPtr& sysPort);
+        void addSysPort(const SysPort::SharedPtr& sysPort) override;
+        void deleteSysPort(const SysPort::SharedPtr& sysPort) override;
         std::list<SysPort::SharedPtr>::iterator deleteSysPort(std::list<SysPort::SharedPtr>::iterator it);
         void updateAttachedSerialPorts();
-        const std::shared_ptr<NetPort> createNetPort(const std::string& name);
     };
 }
 //--------------------------------------------------------------------------------------------------

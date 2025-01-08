@@ -5,6 +5,8 @@ var class_isl_sdk_1_1_isa500 =
     [ "LicenceFlags", "struct_isl_sdk_1_1_isa500_1_1_licence_flags.html", null ],
     [ "SensorRates", "struct_isl_sdk_1_1_isa500_1_1_sensor_rates.html", "struct_isl_sdk_1_1_isa500_1_1_sensor_rates" ],
     [ "Settings", "class_isl_sdk_1_1_isa500_1_1_settings.html", "class_isl_sdk_1_1_isa500_1_1_settings" ],
+    [ "getConfigAsString", "class_isl_sdk_1_1_isa500.html#adbbecc0391484c85226ad169025c9846", null ],
+    [ "getHardwareFaults", "class_isl_sdk_1_1_isa500.html#a4f0918b0336316b52679f4b5f00c0da6", null ],
     [ "getScripts", "class_isl_sdk_1_1_isa500.html#a95d1c02a5e0a5c1e84ab7a294ec5dcbb", null ],
     [ "hasAhrs", "class_isl_sdk_1_1_isa500.html#acc75193d42bec950e228248ad86169e3", null ],
     [ "hasCurrentLoop", "class_isl_sdk_1_1_isa500.html#ad11175b5c3a56f4039a1e5a81931fb6f", null ],

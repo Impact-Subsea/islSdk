@@ -8,7 +8,7 @@ using namespace IslSdk;
 
 //--------------------------------------------------------------------------------------------------
 NetPort::NetPort(const std::string& name, bool_t isTcp, bool_t isServer, uint32_t ipAddress, uint16_t port) :
-    SysPort(name, Type::Net, 1000),
+    SysPort(name, ClassType::Net, Type::Net, 1000),
     m_isTcp(isTcp),
     m_isServer(isServer),
     m_ipAddress(ipAddress),
@@ -20,16 +20,16 @@ NetPort::~NetPort()
 {
 }
 //--------------------------------------------------------------------------------------------------
-bool_t NetPort::open()
+void NetPort::open()
 {
     if (!m_isOpen)
     {
         m_socket = std::make_unique<NetSocket>(m_isTcp, m_isServer, m_ipAddress, m_port);
         m_isOpen = m_socket->isOpen();
+        m_active = m_isOpen;
         debugLog("SysPort", "%s opening", name.c_str());
-        onOpen(*this, !m_isOpen);
+        onOpen(*this, m_isOpen);
     }
-    return m_isOpen;
 }
 //--------------------------------------------------------------------------------------------------
 void NetPort::close()
@@ -94,7 +94,7 @@ bool_t NetPort::process()
             {
                 uint_t bytesToProcess = size;
 
-                while (bytesToProcess)
+                while (bytesToProcess && m_codec)
                 {
                     uint_t frameSize = m_codec->decode(&rxBuf[size - bytesToProcess], &bytesToProcess);
 

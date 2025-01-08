@@ -5,7 +5,7 @@
 
 #include "device.h"
 #include "maths/quaternion.h"
-#include "maths/vector3.h"
+#include "maths/vector.h"
 #include "files/xmlFile.h"
 #include "ahrs.h"
 #include <string>
@@ -19,15 +19,15 @@ namespace IslSdk
     public:
         struct Settings                                 /// Ism3d Settings information.
         {
-            Device::UartMode uartMode;                  ///< Serial port mode.
+            Uart::Mode uartMode;                  ///< Serial port mode.
             uint32_t baudrate;                          ///< Serial port baudrate. Limits are standard bauds between 300 and 115200.
-            Device::Parity parity;                      ///< Serial parity.
+            Uart::Parity parity;                      ///< Serial parity.
             uint8_t dataBits;                           ///< Serial word length 5 to 8 bits.
-            Device::StopBits stopBits;                  ///< Serial stop bits.
+            Uart::StopBits stopBits;                  ///< Serial stop bits.
             uint8_t ahrsMode;                           ///< If bit zero is 1 use inertial mode. 0 is mag slave mode.
-            Quaternion orientationOffset;               ///< Heading, pitch and roll offsets (or down and forward vectors) expressed as a quaternion.
+            Math::Quaternion orientationOffset;         ///< Heading, pitch and roll offsets (or down and forward vectors) expressed as a quaternion.
             real_t headingOffsetRad;                    ///< Offset in radians to add to the heading. Typically use for magnetic declination.
-            Vector3 turnsAbout;                         ///< A vector representing the axis which turn are measured about.
+            Math::Vector3 turnsAbout;                   ///< A vector representing the axis which turn are measured about.
             bool_t turnsAboutEarthFrame;                ///< If true the "turnsAbout" vector is referenced to the earth frame. False is sensor frame.
             Device::CustomStr clrTurn;                  ///< The turns clearing string.
             Device::CustomStr setHeading2Mag;           ///< A string to set the heading to magnetometer heading.
@@ -61,22 +61,22 @@ namespace IslSdk
 
         struct AhrsCal
         {
-            Vector3 gyroBias;                           ///< Gyro bias corrections in degress per second.
-            Vector3 accelBias;                          ///< Accel bias corrections in G.
-            Vector3 magBias;                            ///< Mag bias corrections in uT.
-            Matrix3x3 accelTransform;                   ///< Transformation matrix for accelerometer.
-            Matrix3x3 magTransform;                     ///< Transformation matrix for magnetometer.
-            Vector3 gyroBiasSec;                        ///< Backup Gyro bias corrections in degress per second.
-            Vector3 accelBiasSec;                       ///< Backup Accel bias corrections in G.
-            Matrix3x3 accelTransformSec;                ///< Backup Accel Transformation matrix for accelerometer.
+            Math::Vector3 gyroBias;                           ///< Gyro bias corrections in degress per second.
+            Math::Vector3 accelBias;                          ///< Accel bias corrections in G.
+            Math::Vector3 magBias;                            ///< Mag bias corrections in uT.
+            Math::Matrix3x3 accelTransform;                   ///< Transformation matrix for accelerometer.
+            Math::Matrix3x3 magTransform;                     ///< Transformation matrix for magnetometer.
+            Math::Vector3 gyroBiasSec;                        ///< Backup Gyro bias corrections in degress per second.
+            Math::Vector3 accelBiasSec;                       ///< Backup Accel bias corrections in G.
+            Math::Matrix3x3 accelTransformSec;                ///< Backup Accel Transformation matrix for accelerometer.
         };
 
-        Ahrs ahrs{ Device::id, this, &Ism3d::setHeading, &Ism3d::clearTurnsCount };     ///< Class to manage AHRS data.
-        GyroSensor gyro{ Device::id, 0, this, &Ism3d::setGyroCal };                     ///< Class to manage gyro data.
-        GyroSensor gyroSec{ Device::id, 1, this, &Ism3d::setGyroCal };                  ///< Class to manage backup gyro data.
-        AccelSensor accel{ Device::id, 0, this, &Ism3d::setAccelCal };                  ///< Class to manage accelerometer data.
-        AccelSensor accelSec{ Device::id, 1, this, &Ism3d::setAccelCal };               ///< Class to manage backup accelerometer data.
-        MagSensor mag{ Device::id, 0, this, &Ism3d::setMagCal };                        ///< Class to manage magnetometer data.
+        Ahrs ahrs{ Device::id, this, &Ism3d::setHeading, &Ism3d::clearTurnsCount };             ///< Class to manage AHRS data.
+        GyroSensor gyro{ Device::id, 0, this, &Ism3d::setGyroCal };                             ///< Class to manage gyro data.
+        GyroSensor gyroSec{ Device::id, 1, this, &Ism3d::setGyroCal };                          ///< Class to manage backup gyro data.
+        AccelSensor accel{ Device::id, 0, this, &Ism3d::setAccelCal };                          ///< Class to manage accelerometer data.
+        AccelSensor accelSec{ Device::id, 1, this, &Ism3d::setAccelCal };                       ///< Class to manage backup accelerometer data.
+        MagSensor mag{ Device::id, 0, this, &Ism3d::setMagCal, &Ism3d::loadFactoryMagCal };     ///< Class to manage magnetometer data.
 
         /**
         * @brief A subscribable event for knowing when the scriptVars, onPing and onAhrs data members are valid.
@@ -138,11 +138,23 @@ namespace IslSdk
         bool_t startLogging() override;
 
         /**
+        * @brief checks if the firmware has detected hardware faults.
+        * @return A vector of the detected hardware faults.
+        */
+        std::vector<std::string> getHardwareFaults() override;
+
+        /**
         * @brief Saves the configuration with the provided file name.
         * @param fileName The name of the file to save the configuration.
         * @return The boolean value indicating the success of the operation.
         */
         bool_t saveConfig(const std::string& fileName) override;
+
+        /**
+        * @brief Returns the configuration as an xml string.
+        * @return The boolean value indicating the success of the operation.
+        */
+        std::string getConfigAsString() override;
 
         /**
         * @brief Loads the configuration from the provided file name.
@@ -156,7 +168,6 @@ namespace IslSdk
         */
         static bool_t loadConfig(const std::string& fileName, Device::Info* info, Settings* settings, DeviceScript* script0, AhrsCal* cal);
 
-    public:
         const Settings& settings = m_settings;                                      ///< The current settings.
         const SensorRates& sensorRates = m_requestedRates;                          ///< The sensor rates.
         const std::vector<std::string>& hardCodedAhrsOutputStrings = m_hardCodedAhrsOutputStrings;
@@ -183,7 +194,6 @@ namespace IslSdk
         };
 
         Settings m_settings;
-        std::unique_ptr<Settings> m_pendingSettings;
         SensorRates m_requestedRates;
         std::vector<std::string> m_hardCodedAhrsOutputStrings;
         ScriptVars m_scriptVars;
@@ -204,15 +214,17 @@ namespace IslSdk
         void getData(uint32_t flags);
         void getSettings();
         void getAhrsCal();
-        void setGyroCal(uint_t sensorNum, const Vector3* bias);
-        void setAccelCal(uint_t sensorNum, const Vector3& bias, const Matrix3x3& transform);
-        void setMagCal(uint_t sensorNum, const Vector3& bias, const Matrix3x3& transform);
+        void setGyroCal(uint_t sensorNum, const Math::Vector3* bias);
+        void setAccelCal(uint_t sensorNum, const Math::Vector3& bias, const Math::Matrix3x3& transform);
+        void setMagCal(uint_t sensorNum, const Math::Vector3& bias, const Math::Matrix3x3& transform, bool_t factory);
+        void loadFactoryMagCal();
         void setHeading(const real_t* angleInRadians);
         void clearTurnsCount();
         void getStringNames();
         void getScriptVars();
         void getScript();
         bool_t setScript(const std::string& name, const std::string& code);
+        bool_t makeXmlConfig(XmlFile& file);
     };
 }
 

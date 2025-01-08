@@ -6,6 +6,7 @@
 #include "isd4000.h"
 #include "ism3d.h"
 #include "sonar.h"
+#include "multiPcp.h"
 #include "platform/timeUtils.h"
 #include "platform/debug.h"
 
@@ -101,6 +102,10 @@ void DeviceMgr::remove(Device& device)
 std::list<Device::SharedPtr>::iterator DeviceMgr::deleteDevice(std::list<Device::SharedPtr>::iterator it)
 {
     Device& device = *(*it);
+    if (device.connection && device.connection->sysPort && device.connection->sysPort->type == SysPort::Type::Net)
+    {
+        m_sysPortServices.deleteSysPort(device.connection->sysPort);
+    }
     debugLog("Device", "Deleting device %04u.%04u", device.info.pn, device.info.sn);
     device.disconnect();
     device.onDelete(device);
@@ -147,7 +152,7 @@ void DeviceMgr::run()
             m_deviceList.splice(m_deviceList.end(), m_deviceList, currentIt);
         }
 
-        if (timerEvent)
+        if (device->m_connected && timerEvent)
         {
             device->onPacketCount(*device, device->m_packetCount.tx, device->m_packetCount.rx, device->m_packetCount.resent, device->m_packetCount.rxMissed);
         }
@@ -176,6 +181,11 @@ Device::SharedPtr DeviceMgr::createDevice(const Device::Info& deviceInfo)
         device = std::make_shared<Sonar>(deviceInfo);
         break;
 
+    case Device::Pid::MultiPcp:
+        device = std::make_shared<MultiPcp>(deviceInfo, m_sysPortServices);
+        break;
+
+ 
 
     default:
         device = std::make_shared<Device>(deviceInfo);

@@ -20,7 +20,7 @@ namespace IslSdk
 
         SolPort(const std::string& name, bool_t isTcp, bool_t useTelnet, uint32_t ipAddress, uint16_t port);
         ~SolPort();
-        bool_t open() override;         ///< Open the port.
+        void open() override;           ///< Open the port.
         void close() override;          ///< Close the port.
         bool_t process() override;
 

@@ -6,5 +6,6 @@ var searchData=
   ['headingtrue_3',['headingtrue',['../struct_isl_sdk_1_1_gps_device_1_1_gpvtg.html#a00d239a6ba136aa09b95d74bb7f3da54',1,'IslSdk::GpsDevice::Gpvtg::headingTrue'],['../struct_isl_sdk_1_1_gps_device_1_1_gprmc.html#a8fe0b7224c0b60951878607b02303d8c',1,'IslSdk::GpsDevice::Gprmc::headingTrue']]],
   ['height_4',['height',['../class_isl_sdk_1_1_sonar_image.html#ae5e3991a0fe4c7a872d2178097b28533',1,'IslSdk::SonarImage']]],
   ['highsamplerate_5',['highSampleRate',['../struct_isl_sdk_1_1_sonar_1_1_acoustic.html#a1be7181995089819e60fa1b252252598',1,'IslSdk::Sonar::Acoustic']]],
-  ['hour_6',['hour',['../struct_isl_sdk_1_1_gps_device_1_1_gpgll.html#a2aa607512869874b2f27802b493a9e2e',1,'IslSdk::GpsDevice::Gpgll::hour'],['../struct_isl_sdk_1_1_gps_device_1_1_gpgga.html#aca85be26cb9da76a3c41dcacdb55ace8',1,'IslSdk::GpsDevice::Gpgga::hour'],['../struct_isl_sdk_1_1_gps_device_1_1_gprmc.html#a8e883e02883202e9b677d34fdff57b2b',1,'IslSdk::GpsDevice::Gprmc::hour']]]
+  ['hour_6',['hour',['../struct_isl_sdk_1_1_gps_device_1_1_gpgll.html#a2aa607512869874b2f27802b493a9e2e',1,'IslSdk::GpsDevice::Gpgll::hour'],['../struct_isl_sdk_1_1_gps_device_1_1_gpgga.html#aca85be26cb9da76a3c41dcacdb55ace8',1,'IslSdk::GpsDevice::Gpgga::hour'],['../struct_isl_sdk_1_1_gps_device_1_1_gprmc.html#a8e883e02883202e9b677d34fdff57b2b',1,'IslSdk::GpsDevice::Gprmc::hour']]],
+  ['hysteresiscorrection_7',['hysteresisCorrection',['../struct_isl_sdk_1_1_sonar_1_1_head_indexes.html#a7d26b87bd5f75891fec767cc39ae6267',1,'IslSdk::Sonar::HeadIndexes']]]
 ];
